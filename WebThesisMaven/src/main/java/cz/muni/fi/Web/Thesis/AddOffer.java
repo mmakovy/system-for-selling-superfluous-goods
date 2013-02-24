@@ -41,67 +41,73 @@ public class AddOffer extends HttpServlet {
         CompanyManager CompanyManager = new CompanyManagerImpl();
         OfferManager OfferManager = new OfferManagerImpl();
         HttpSession session = request.getSession();
+        Object userID = session.getAttribute("userID");
 
-        try {
+        if (userID == null) {
+            response.sendRedirect("index.jsp");
+        } else {
 
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AddOffer</title>");
-            out.println("</head>");
-            out.println("<body>");
+            try {
 
-            String name = request.getParameter("name");
-            String description = request.getParameter("description");
-            String quantityString = request.getParameter("quantity");
-            String priceString = request.getParameter("price");
-            Object idString = session.getAttribute("userID");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet AddOffer</title>");
+                out.println("</head>");
+                out.println("<body>");
 
-            if (name.length() != 0 && description.length() != 0
-                    && idString != null && priceString.length() != 0
-                    && quantityString.length() != 0) {
+                String name = request.getParameter("name");
+                String description = request.getParameter("description");
+                String quantityString = request.getParameter("quantity");
+                String priceString = request.getParameter("price");
 
-                Long id = (Long)idString;
-                BigDecimal price = new BigDecimal(priceString);
-                int quantity = Integer.parseInt(quantityString);
 
-                Offer offer = new Offer();
-                offer.setCompany_id(id);
-                offer.setDescription(description);
-                offer.setName(name);
-                offer.setPrice(price);
-                offer.setQuantity(quantity);
+                if (name.length() != 0 && description.length() != 0
+                        && userID != null && priceString.length() != 0
+                        && quantityString.length() != 0) {
 
-                try {
+                    Long id = (Long) userID;
+                    BigDecimal price = new BigDecimal(priceString);
+                    int quantity = Integer.parseInt(quantityString);
 
-                    Company company = CompanyManager.getCompany(id);
+                    Offer offer = new Offer();
+                    offer.setCompany_id(id);
+                    offer.setDescription(description);
+                    offer.setName(name);
+                    offer.setPrice(price);
+                    offer.setQuantity(quantity);
 
-                    if (company == null) {
-                        out.println("Company wasnt found interface database");
-                    } else {
-                        Offer added = OfferManager.addOffer(company, offer);
-                        if (added == null) {
-                            out.println("Offer wasnt added");
+                    try {
+
+                        Company company = CompanyManager.getCompany(id);
+
+                        if (company == null) {
+                            out.println("Company wasnt found interface database");
                         } else {
-                            out.println("Offer was sucessfuly added");
+                            Offer added = OfferManager.addOffer(company, offer);
+                            if (added == null) {
+                                out.println("Offer wasnt added");
+                            } else {
+                                out.println("Offer was sucessfuly added");
+                            }
                         }
+
+                    } catch (DatabaseException ex) {
+                        log.error(ex.getMessage());
+                        out.println(ex.getMessage());
                     }
-
-                } catch (DatabaseException ex) {
-                    log.error(ex.getMessage());
-                    out.println(ex.getMessage());
+                } else {
+                    out.println("Offer wasnt added because one of text fields was left blank or you didn choose company");
                 }
-            } else {
-                out.println("Offer wasnt added because one of text fields was left blank or you didn choose company");
+
+
+                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("</body>");
+                out.println("</html>");
+
+
+            } finally {
+                out.close();
             }
-
-
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-
-
-        } finally {
-            out.close();
         }
     }
 

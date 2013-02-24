@@ -24,7 +24,7 @@
             if (user == null) {
                 out.println("Not logged in");
             } else {
-                out.println("Logged in as " + user.getUserName() + ".");
+                out.println("Logged in as " + user.getUserName() + "("+ user.getId()+")");
             }
         %>
         <table>
@@ -56,6 +56,11 @@
                 <td>
                     <form method="POST" action="/WebThesisMaven/ListMyOffers">
                         <input type="submit" value="List my offers" name="option"/>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="/WebThesisMaven/updateCompany">
+                        <input type="submit" value="Update my profile" name="option"/>
                     </form>
                 </td>
 

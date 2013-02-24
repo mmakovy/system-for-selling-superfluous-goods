@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,8 @@ public class updateCompany extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
-        Long id = Long.parseLong(request.getParameter("id"));
+        HttpSession session = request.getSession();
+        Long id = (Long)session.getAttribute("userID");
         Company company = null;
 
 
