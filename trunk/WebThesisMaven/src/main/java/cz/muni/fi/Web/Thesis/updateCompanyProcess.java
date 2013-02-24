@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -43,45 +44,52 @@ public class updateCompanyProcess extends HttpServlet {
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phone");
         Long id = Long.parseLong(request.getParameter("id"));
+        HttpSession session = request.getSession();
+        Long userID = (Long) session.getAttribute("userID");
 
-        try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet updateCompanyProcess</title>");
-            out.println("</head>");
-            out.println("<body>");
+        if (!id.equals(userID)) {
+            response.sendRedirect("denied.jsp");
+        } else {
 
-            if ((name != null && name.length() != 0)
-                    && (email != null && email.length() != 0)
-                    && (phoneNumber != null && phoneNumber.length() != 0)) {
-                company.setName(name);
-                company.setEmail(email);
-                company.setPhoneNumber(phoneNumber);
-                company.setId(id);
+            try {
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet updateCompanyProcess</title>");
+                out.println("</head>");
+                out.println("<body>");
 
-                try {
-                    manager.updateCompany(company);
-                } catch (DatabaseException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                } catch (CompanyException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                }
-                
+                if ((name != null && name.length() != 0)
+                        && (email != null && email.length() != 0)
+                        && (phoneNumber != null && phoneNumber.length() != 0)) {
+                    company.setName(name);
+                    company.setEmail(email);
+                    company.setPhoneNumber(phoneNumber);
+                    company.setId(id);
+
+                    try {
+                        manager.updateCompany(company);
+                    } catch (DatabaseException ex) {
+                        out.println(ex.getMessage());
+                        log.error(ex.getMessage());
+                    } catch (CompanyException ex) {
+                        out.println(ex.getMessage());
+                        log.error(ex.getMessage());
+                    }
+
                     out.println("Company was succesfully updated");
                     out.println("<form method = 'POST' action = '/WebThesisMaven/ListCompanies'> <input type = 'submit' value = 'List all companies' name = 'option' /> </form >");
 
-            } else {
-                out.println("Company wasnt updated, because one of fields was left blank<br/>");
+                } else {
+                    out.println("Company wasnt updated, because one of fields was left blank<br/>");
+                }
+
+
+                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("</body>");
+                out.println("</html>");
+            } finally {
+                out.close();
             }
-
-
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
         }
     }
 
