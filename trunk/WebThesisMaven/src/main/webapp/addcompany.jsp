@@ -14,10 +14,25 @@
     <script src="myjs.js">
     </script>    
     <body>
+
         <h1>Add company</h1>
         <form method="post" name='form2' action="/WebThesisMaven/AddCompany" onsubmit="return submit_company()">    
             Username: <input type="text" name="usrname"><br/>
-            Password: <input type="text" name="pwd"><br/>
+            <%
+                session = request.getSession();
+                if (session.getAttribute("password") != null) {
+            %>
+            Passwords dont match!
+            Password: <input type="password" name="pwd" alt=":)"><br/>
+            Password(verification): <input type="password" name="pwd-ver" alt=":)"><br/> 
+
+            <%
+                session.setAttribute("password", null);
+            } else {
+            %>
+            Password: <input type="password" name="pwd"><br/>
+            Password(verification): <input type="password" name="pwd-ver"><br/>
+            <% }%>
             Name: <input type="text" name="name"><br/>
             Email: <input type="text" name="email"><br/>
             PhoneNumber: <input type="text" name="phone"><br/>   

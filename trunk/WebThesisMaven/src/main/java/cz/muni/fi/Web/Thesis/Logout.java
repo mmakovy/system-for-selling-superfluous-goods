@@ -36,7 +36,7 @@ public class Logout extends HttpServlet {
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-        if (userID != null) {
+        if (userID == null) {
             out.println("Already logged out.");
             out.println("<a href='index.jsp'>Home</a>");
         } else {
