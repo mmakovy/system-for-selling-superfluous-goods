@@ -43,52 +43,66 @@ public class updateCompanyProcess extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phone");
+        
         Long id = Long.parseLong(request.getParameter("id"));
+
+        /**
+         * testing log-in
+         */
         HttpSession session = request.getSession();
-        Long userID = (Long) session.getAttribute("userID");
+        Object userID = session.getAttribute("userID");
 
-        if (!id.equals(userID)) {
-            response.sendRedirect("denied.jsp");
+        if (userID == null) {
+            response.sendRedirect("index.jsp");
         } else {
+            Long userIdLong = (Long) userID;
 
-            try {
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet updateCompanyProcess</title>");
-                out.println("</head>");
-                out.println("<body>");
+            /**
+             * end of login testing
+             */
+            if (!id.equals(userIdLong)) {
+                response.sendRedirect("denied.jsp");
+            } else {
 
-                if ((name != null && name.length() != 0)
-                        && (email != null && email.length() != 0)
-                        && (phoneNumber != null && phoneNumber.length() != 0)) {
-                    company.setName(name);
-                    company.setEmail(email);
-                    company.setPhoneNumber(phoneNumber);
-                    company.setId(id);
+                try {
+                    out.println("<html>");
+                    out.println("<head>");
+                    out.println("<title>Servlet updateCompanyProcess</title>");
+                    out.println("</head>");
+                    out.println("<body>");
 
-                    try {
-                        manager.updateCompany(company);
-                    } catch (DatabaseException ex) {
-                        out.println(ex.getMessage());
-                        log.error(ex.getMessage());
-                    } catch (CompanyException ex) {
-                        out.println(ex.getMessage());
-                        log.error(ex.getMessage());
+                    if ((name != null && name.length() != 0)
+                            && (email != null && email.length() != 0)
+                            && (phoneNumber != null && phoneNumber.length() != 0)) {
+                        company.setName(name);
+                        company.setEmail(email);
+                        company.setPhoneNumber(phoneNumber);
+                        company.setId(id);
+
+                        try {
+                            manager.updateCompany(company);
+                        } catch (DatabaseException ex) {
+                            out.println(ex.getMessage());
+                            log.error(ex.getMessage());
+                        } catch (CompanyException ex) {
+                            out.println(ex.getMessage());
+                            log.error(ex.getMessage());
+                        }
+
+                        out.println("Company was succesfully updated");
+                        out.println("<form method = 'POST' action = '/WebThesisMaven/ListCompanies'> <input type = 'submit' value = 'List all companies' name = 'option' /> </form >");
+
+                    } else {
+                        out.println("Company wasnt updated, because one of fields was left blank<br/>");
                     }
 
-                    out.println("Company was succesfully updated");
-                    out.println("<form method = 'POST' action = '/WebThesisMaven/ListCompanies'> <input type = 'submit' value = 'List all companies' name = 'option' /> </form >");
 
-                } else {
-                    out.println("Company wasnt updated, because one of fields was left blank<br/>");
+                    out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                    out.println("</body>");
+                    out.println("</html>");
+                } finally {
+                    out.close();
                 }
-
-
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
             }
         }
     }

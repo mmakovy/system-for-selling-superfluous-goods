@@ -22,13 +22,21 @@
             Long id = (Long) session.getAttribute("userID");
             User user = userManager.getUser(id);
             if (user == null) {
-                out.println("Not logged in");
+                response.sendRedirect("index.jsp");
             } else {
-                out.println("Logged in as " + user.getUserName() + "("+ user.getId()+")");
+                out.println("Logged in as " + user.getUserName() + "(" + user.getId() + ")");
             }
         %>
         <table>
 
+            <tr>
+                <td>
+                    <a href="ListMyOffers">List My Offers</a>
+                </td>
+                <td>
+                    <a href="updateCompany">My profile</a>
+                </td>
+            </tr>
             <tr>
                 <td>
                     <form method="POST" action="/WebThesisMaven/ListCompanies">
@@ -50,19 +58,6 @@
                 </td>
 
 
-
-                <td>
-                </td>
-                <td>
-                    <form method="POST" action="/WebThesisMaven/ListMyOffers">
-                        <input type="submit" value="List my offers" name="option"/>
-                    </form>
-                </td>
-                <td>
-                    <form method="POST" action="/WebThesisMaven/updateCompany">
-                        <input type="submit" value="Update my profile" name="option"/>
-                    </form>
-                </td>
 
             </tr> 
             <tr>

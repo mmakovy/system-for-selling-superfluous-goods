@@ -36,12 +36,15 @@ public class ListOffers extends HttpServlet {
 
         OfferManager offerMng = new OfferManagerImpl();
         List<Offer> offers = null;
+        
+       /** testing log-in */
         HttpSession session = request.getSession();
-        Long userID = (Long) session.getAttribute("userID");
+        Object userID = session.getAttribute("userID");
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
         } else {
+        /** end of login testing */ 
             try {
                 offers = offerMng.getAllOffers();
             } catch (DatabaseException ex) {

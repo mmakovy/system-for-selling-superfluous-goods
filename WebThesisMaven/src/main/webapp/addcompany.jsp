@@ -14,13 +14,6 @@
     <script src="myjs.js">
     </script>    
     <body>
-         <%
-            session = request.getSession();
-            Long id = (Long) session.getAttribute("userID");
-            if (id != null) {
-                out.println("You are logged in <a href='Logout'>Logout</a> first.");
-            } else {
-        %>
         <h1>Add company</h1>
         <form method="post" name='form2' action="/WebThesisMaven/AddCompany" onsubmit="return submit_company()">    
             Username: <input type="text" name="usrname"><br/>
@@ -31,6 +24,5 @@
             <input type="submit" value="Add Company" name="option"/>
         </form>
         <a href="index.jsp"> Go to Home Page </a>
-        <% }%>
     </body>
 </html>

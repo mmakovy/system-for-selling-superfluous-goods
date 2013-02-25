@@ -41,14 +41,19 @@ public class updateOffer extends HttpServlet {
         OfferManager manager = new OfferManagerImpl();
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer = null;
+
+        /**
+         * testing log-in
+         */
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
         } else {
-
-
+            /**
+             * end of login testing
+             */
             try {
 
                 out.println("<html>");
@@ -62,32 +67,44 @@ public class updateOffer extends HttpServlet {
                 try {
                     offer = manager.getOffer(id);
 
-                    if (userID != offer.getCompany_id()) {
-                        response.sendRedirect("denied.jsp");
-
+                    if (offer == null) {
+                        out.println("Offer wasnt found in database");
                     } else {
-                        if (offer == null) {
-                            out.println("Offer wasnt found in database");
+                        /**
+                         * testing if user has permission for this action
+                         */
+                        if (!userID.equals(offer.getCompany_id())) {
+                            response.sendRedirect("denied.jsp");
+
                         } else {
+                            /**
+                             * end
+                             */
+                            if (offer == null) {
+                                out.println("Offer wasnt found in database");
+                            } else {
 
-                            out.println("<form method='post' name='form1' onsubmit='return submit_offer()' action='/WebThesisMaven/updateOfferProcess?id=" + id + "&id_company=" + offer.getCompany_id() + "'>");
-                            out.println("Name:");
-                            out.println("<input type='text' name='name'  value='" + offer.getName() + "'><br/>");
-                            out.println("Price:");
-                            out.println("<input type='text' name='price'  value='" + offer.getPrice() + "'><br/>");
-                            out.println("Quantity:");
-                            out.println("<input type='text' name='quantity' value='" + offer.getQuantity() + "'><br/>");
-                            out.println("Description:");
-                            out.println("<input type='text' name='description' value='" + offer.getDescription() + "'><br/>");
+                                out.println("<form method='post' name='form1' onsubmit='return submit_offer()' action='/WebThesisMaven/updateOfferProcess?id=" + id + "&id_company=" + offer.getCompany_id() + "'>");
+                                out.println("Name:");
+                                out.println("<input type='text' name='name'  value='" + offer.getName() + "'><br/>");
+                                out.println("Price:");
+                                out.println("<input type='text' name='price'  value='" + offer.getPrice() + "'><br/>");
+                                out.println("Quantity:");
+                                out.println("<input type='text' name='quantity' value='" + offer.getQuantity() + "'><br/>");
+                                out.println("Description:");
+                                out.println("<input type='text' name='description' value='" + offer.getDescription() + "'><br/>");
 
-                            out.println("<input type='submit' name='submit' value='Update'>");
-                            out.println("</form>");
+                                out.println("<input type='submit' name='submit' value='Update'>");
+                                out.println("</form>");
+                            }
                         }
                     }
                 } catch (DatabaseException ex) {
                     out.println(ex.getMessage());
                     log.error(ex.getMessage());
                 }
+
+
                 out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");

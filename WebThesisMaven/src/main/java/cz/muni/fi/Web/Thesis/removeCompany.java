@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,45 +35,54 @@ public class removeCompany extends HttpServlet {
         PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
         Company company = null;
+        
+        /** testing log-in */
+        HttpSession session = request.getSession();
 
-        Long id = Long.parseLong(request.getParameter("id"));
+        Long id = (Long) session.getAttribute("userID");
 
-        try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet removeCompany</title>");
-            out.println("</head>");
-            out.println("<body>");
+        if (id == null) {
+            response.sendRedirect("index.jsp");
+        } else {
 
+        /** end of login testing */ 
             try {
-                company = manager.getCompany(id);
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet removeCompany</title>");
+                out.println("</head>");
+                out.println("<body>");
 
-                if (company == null) {
-                    out.println("Company wasnt found in database");
-                } else {
-                    manager.removeCompany(company);
-                    out.println( company.toString() + " was deleted<br/>");
+                try {
+                    company = manager.getCompany(id);
+
+                    if (company == null) {
+                        out.println("Company wasnt found in database");
+                    } else {
+                        manager.removeCompany(company);
+                        out.println(company.toString() + " was deleted<br/>");
+                    }
+
+                } catch (DatabaseException ex) {
+                    out.println(ex.getMessage());
+                    log.error(ex.getMessage());
+                } catch (CompanyException ex) {
+                    out.println(ex.getMessage());
+                    log.error(ex.getMessage());
+                } catch (OfferException ex) {
+                    out.println(ex.getMessage());
+                    log.error(ex.getMessage());
+                } catch (Exception ex) {
+                    out.println(ex.getMessage());
+                    log.error(ex.getMessage());
                 }
 
-            } catch (DatabaseException ex) {
-                out.println(ex.getMessage());
-                log.error(ex.getMessage());
-            } catch (CompanyException ex) {
-                out.println(ex.getMessage());
-                log.error(ex.getMessage());
-            } catch (OfferException ex) {
-                out.println(ex.getMessage());
-                log.error(ex.getMessage());
-            } catch (Exception ex) {
-                out.println(ex.getMessage());
-                log.error(ex.getMessage());
+                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("</body>");
+                out.println("</html>");
+            } finally {
+                out.close();
             }
-
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
         }
     }
 

@@ -32,26 +32,33 @@ public class Logout extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+
         HttpSession session = request.getSession();
-        
-        session.removeAttribute("userID");
-        response.sendRedirect("index.jsp");
-        
-        try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Logout</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Logout at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
+        Object userID = session.getAttribute("userID");
+
+        if (userID != null) {
+            out.println("Already logged out.");
+            out.println("<a href='index.jsp'>Home</a>");
+        } else {
+            session.removeAttribute("userID");
+            response.sendRedirect("index.jsp");
+
+            try {
+                /*
+                 * TODO output your page here. You may use following sample
+                 * code.
+                 */
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet Logout</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Servlet Logout at " + request.getContextPath() + "</h1>");
+                out.println("</body>");
+                out.println("</html>");
+            } finally {
+                out.close();
+            }
         }
     }
 

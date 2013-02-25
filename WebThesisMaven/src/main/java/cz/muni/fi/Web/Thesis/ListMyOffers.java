@@ -7,7 +7,6 @@ package cz.muni.fi.Web.Thesis;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,64 +41,72 @@ public class ListMyOffers extends HttpServlet {
         PrintWriter out = response.getWriter();
         OfferManager offerManager = new OfferManagerImpl();
         CompanyManager companyManager = new CompanyManagerImpl();
-        
-        HttpSession session = request.getSession();
         List<Offer> offers = null;
-
-        Long id = (Long)session.getAttribute("userID");
         Company company = null;
 
+        /**
+         * testing log-in
+         */
+        HttpSession session = request.getSession();
+        Object userID = session.getAttribute("userID");
 
-
-        try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ListOffersCompanyProcess</title>");
-            out.println("</head>");
-            out.println("<body>");
-
+        if (userID == null) {
+            response.sendRedirect("index.jsp");
+        } else {
+            /**
+             * end of login testing
+             */
+            Long id = (Long) userID;
             try {
-                company = companyManager.getCompany(id);
-                if (company == null) {
-                    out.println("Your company wasnt found in database");
-                } else {
-                    offers = offerManager.getOffersByCompany(company);
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet ListOffersCompanyProcess</title>");
+                out.println("</head>");
+                out.println("<body>");
 
-                    if (offers.isEmpty()) {
-                        out.println("Your Company has no offers");
+                try {
+                    company = companyManager.getCompany(id);
+                    if (company == null) {
+                        out.println("Your company wasnt found in database");
                     } else {
-                        out.println("OFFERS");
-                        out.println("<table>");
-                        out.println("<th> ID </th>");
-                        out.println("<th> Company ID </th>");
-                        out.println("<th> Name </th>");
-                        out.println("<th> Description </th>");
-                        out.println("<th> Price </th>");
-                        out.println("<th> Quantity </th>");
+                        offers = offerManager.getOffersByCompany(company);
 
-                        for (int i = 0; i < offers.size(); i++) {
-                            out.println("<tr>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getName() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
-                            out.println("</tr>");
+                        if (offers.isEmpty()) {
+                            out.println("Your Company has no offers");
+                        } else {
+                            out.println("OFFERS");
+                            out.println("<table>");
+                            out.println("<th> ID </th>");
+                            out.println("<th> Company ID </th>");
+                            out.println("<th> Name </th>");
+                            out.println("<th> Description </th>");
+                            out.println("<th> Price </th>");
+                            out.println("<th> Quantity </th>");
+
+                            for (int i = 0; i < offers.size(); i++) {
+                                out.println("<tr>");
+                                out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
+                                out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
+                                out.println("<td style='border: 1px solid black;'>" + offers.get(i).getName() + "</td>");
+                                out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
+                                out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
+                                out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
+                                out.println("</tr>");
+                            }
+                            out.println("</table>");
                         }
-                        out.println("</table>");
                     }
+
+                } catch (DatabaseException ex) {
+                    Logger.getLogger(ListMyOffers.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-            } catch (DatabaseException ex) {
-                Logger.getLogger(ListMyOffers.class.getName()).log(Level.SEVERE, null, ex);
+                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("</body>");
+                out.println("</html>");
+            } finally {
+                out.close();
             }
-
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
         }
     }
 

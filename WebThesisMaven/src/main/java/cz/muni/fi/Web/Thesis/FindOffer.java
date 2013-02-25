@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -44,54 +45,65 @@ public class FindOffer extends HttpServlet {
 
         String expression = request.getParameter("expression");
 
+        /**
+         * testing log-in
+         */
+        HttpSession session = request.getSession();
+        Object userID = session.getAttribute("userID");
 
-
-        try {
-
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FindOffer</title>");
-            out.println("</head>");
-            out.println("<body>");
-
+        if (userID == null) {
+            response.sendRedirect("index.jsp");
+        } else {
+            /**
+             * end of login testing
+             */
             try {
-                offers = offerManager.findOffer(expression);
-                if (offers.isEmpty()) {
-                    out.println("No search results");
-                } else {
-                    out.println("OFFERS");
-                    out.println("<table>");
-                    out.println("<th> ID </th>");
-                    out.println("<th> Company ID </th>");
-                    out.println("<th> Name </th>");
-                    out.println("<th> Description </th>");
-                    out.println("<th> Price </th>");
-                    out.println("<th> Quantity </th>");
+
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet FindOffer</title>");
+                out.println("</head>");
+                out.println("<body>");
+
+                try {
+                    offers = offerManager.findOffer(expression);
+                    if (offers.isEmpty()) {
+                        out.println("No search results");
+                    } else {
+                        out.println("OFFERS");
+                        out.println("<table>");
+                        out.println("<th> ID </th>");
+                        out.println("<th> Company ID </th>");
+                        out.println("<th> Name </th>");
+                        out.println("<th> Description </th>");
+                        out.println("<th> Price </th>");
+                        out.println("<th> Quantity </th>");
 
 
-                    for (int i = 0; i < offers.size(); i++) {
-                        out.println("<tr>");
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
-                        out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/ShowOffer?id=" + offers.get(i).getId() + "'>" + offers.get(i).getName() + "</a></td>");
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
-                        out.println("</tr>");
+                        for (int i = 0; i < offers.size(); i++) {
+                            out.println("<tr>");
+                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
+                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
+                            out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/ShowOffer?id=" + offers.get(i).getId() + "'>" + offers.get(i).getName() + "</a></td>");
+                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
+                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
+                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
+                            out.println("</tr>");
+                        }
+
+                        out.println("</table>");
                     }
-
-                    out.println("</table>");
+                } catch (DatabaseException ex) {
+                    log.error(ex.getMessage());
+                    out.println(ex.getMessage());
                 }
-            } catch (DatabaseException ex) {
-                log.error(ex.getMessage());
-                out.println(ex.getMessage());
-            }
 
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("</body>");
+                out.println("</html>");
+            } finally {
+                out.close();
+            }
         }
     }
 

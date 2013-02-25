@@ -8,10 +8,13 @@ import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -35,9 +38,9 @@ public class updateOfferProcess extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         PrintWriter out = response.getWriter();
         OfferManager manager = new OfferManagerImpl();
-
         Offer offer = null;
 
         String name = request.getParameter("name");
@@ -45,54 +48,84 @@ public class updateOfferProcess extends HttpServlet {
         String quantityString = request.getParameter("quantity");
         String priceString = request.getParameter("price");
         Long id = Long.parseLong(request.getParameter("id"));
-        Long id_company = Long.parseLong(request.getParameter("id_company"));
 
-        try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet updateCompanyProcess</title>");
-            out.println("</head>");
-            out.println("<body>");
 
-            if (name.length() != 0 && description.length() != 0
-                    && priceString.length() != 0
-                    && quantityString.length() != 0) {
 
-                BigDecimal price = new BigDecimal(priceString);
-                int quantity = Integer.parseInt(quantityString);
+        /**
+         * testing log-in
+         */
+        HttpSession session = request.getSession();
+        Object userID = session.getAttribute("userID");
 
-                offer = new Offer();
-                offer.setDescription(description);
-                offer.setName(name);
-                offer.setPrice(price);
-                offer.setQuantity(quantity);
-                offer.setId(id);
-                offer.setCompany_id(id_company);
+        if (userID == null) {
+            response.sendRedirect("index.jsp");
+        } else {
+            Long userIdLong = (Long) userID;
+
+            /**
+             * end of login testing
+             */
+            try {
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Servlet updateCompanyProcess</title>");
+                out.println("</head>");
+                out.println("<body>");
 
                 try {
-                    manager.updateOffer(offer);
+                    offer = manager.getOffer(id);
                 } catch (DatabaseException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                } catch (OfferException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
+                    Logger.getLogger(updateOfferProcess.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                out.println("Offer was succesfully updated");
-                out.println("<form method = 'POST' action = '/WebThesisMaven/ListOffers'> <input type = 'submit' value = 'List all offers' name = 'option' /> </form >");
+                if (offer == null) {
+                    out.println("Offer wasnt found in database");
+                } else {
 
-            } else {
-                out.println("Company wasnt updated, because one of fields was left blank<br/>");
+                    if (name.length() != 0 && description.length() != 0
+                            && priceString.length() != 0
+                            && quantityString.length() != 0) {
+
+                        BigDecimal price = new BigDecimal(priceString);
+                        int quantity = Integer.parseInt(quantityString);
+
+                        if (!userIdLong.equals(offer.getCompany_id())) {
+                            response.sendRedirect("denied.jsp");
+                        } else {
+                            Offer updatedOffer = new Offer();
+                            updatedOffer.setDescription(description);
+                            updatedOffer.setName(name);
+                            updatedOffer.setPrice(price);
+                            updatedOffer.setQuantity(quantity);
+                            updatedOffer.setId(id);
+                            updatedOffer.setCompany_id(offer.getCompany_id());
+
+                            try {
+                                manager.updateOffer(updatedOffer);
+                            } catch (DatabaseException ex) {
+                                out.println(ex.getMessage());
+                                log.error(ex.getMessage());
+                            } catch (OfferException ex) {
+                                out.println(ex.getMessage());
+                                log.error(ex.getMessage());
+                            }
+
+                            out.println("Offer was succesfully updated");
+                            out.println("<form method = 'POST' action = '/WebThesisMaven/ListOffers'> <input type = 'submit' value = 'List all offers' name = 'option' /> </form >");
+                        }
+                    } else {
+                        out.println("Company wasnt updated, because one of fields was left blank<br/>");
+                    }
+                }
+
+                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("</body>");
+                out.println("</html>");
+            } finally {
+                out.close();
             }
-
-
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
