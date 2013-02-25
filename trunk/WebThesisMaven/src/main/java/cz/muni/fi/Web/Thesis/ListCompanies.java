@@ -44,12 +44,14 @@ public class ListCompanies extends HttpServlet {
 
         List<Company> companies = null;
 
+        /** testing log-in */
         HttpSession session = request.getSession();
-        Long userID = (Long) session.getAttribute("userID");
+        Object userID = session.getAttribute("userID");
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
         } else {
+        /** end of login testing */ 
 
             try {
                 companies = companyMng.getAllCompanies();

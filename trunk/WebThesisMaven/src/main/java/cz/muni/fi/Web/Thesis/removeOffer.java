@@ -41,12 +41,20 @@ public class removeOffer extends HttpServlet {
         OfferManager offerManager = new OfferManagerImpl();
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer = null;
+
+        /**
+         * login testing
+         */
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
         } else {
+
+            /**
+             * end of login testing
+             */
             try {
 
                 out.println("<html>");
@@ -57,11 +65,18 @@ public class removeOffer extends HttpServlet {
                 try {
                     offer = offerManager.getOffer(id);
 
-                    if (userID != offer.getCompany_id()) {
+                    if (offer == null) {
+                        out.println("Offer wasnt found in database");
+                    } else /**
+                     * testing if user has permission for this action
+                     */
+                    if (!userID.equals(offer.getCompany_id())) {
                         response.sendRedirect("denied.jsp");
 
                     } else {
-
+                        /**
+                         * end
+                         */
                         if (offer == null) {
                             out.println("Offer wasnt found in database");
                         } else {
@@ -69,24 +84,27 @@ public class removeOffer extends HttpServlet {
                             out.println(offer.toString() + " was deleted");
                         }
                     }
+                
 
-                } catch (DatabaseException ex) {
-                    log.error(ex.getMessage());
-                    out.println(ex.getMessage());
-                } catch (OfferException ex) {
-                    log.error(ex.getMessage());
-                    out.println(ex.getMessage());
-                }
-
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
+            } catch (DatabaseException ex) {
+                log.error(ex.getMessage());
+                out.println(ex.getMessage());
+            } catch (OfferException ex) {
+                log.error(ex.getMessage());
+                out.println(ex.getMessage());
             }
-        }
 
+            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+            out.println("</body>");
+            out.println("</html>");
+        } 
+
+    
+        finally {
+                out.close();
     }
+}
+}
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -99,7 +117,7 @@ public class removeOffer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -114,7 +132,7 @@ public class removeOffer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -125,7 +143,7 @@ public class removeOffer extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo() {
+        public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 }

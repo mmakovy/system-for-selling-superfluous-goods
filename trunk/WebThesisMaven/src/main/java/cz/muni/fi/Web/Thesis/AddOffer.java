@@ -36,17 +36,20 @@ public class AddOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+ 
         PrintWriter out = response.getWriter();
 
         CompanyManager CompanyManager = new CompanyManagerImpl();
         OfferManager OfferManager = new OfferManagerImpl();
+        
+        /** testing log-in */
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
         } else {
-
+        /** end of login testing */    
             try {
 
                 out.println("<html>");
