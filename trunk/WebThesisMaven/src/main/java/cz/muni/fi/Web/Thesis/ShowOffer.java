@@ -81,8 +81,15 @@ public class ShowOffer extends HttpServlet {
                     out.println(offer.getPrice() + "</br>");
                     out.println("<u>Quantity:</u>");
                     out.println(offer.getQuantity() + "</br>");
+                    out.println("<u>Minimal buy quantity:</u>");
+                    out.println(offer.getMinimalBuyQuantity() + "</br>");
+                    out.println("<u>Purchase Date:</u>");
+                    out.println(offer.getPurchaseDate() + "</br>");
+                    out.println("<u>Category:</u>");
+                    out.println(offer.getCategory() + "</br>");
                     out.println("<u>Description:</u>");
                     out.println(offer.getDescription() + "</br></br>");
+                    
                     out.println("is offered by COMPANY<br/></br>");
                     out.println("<u>Name:</u>");
                     out.println(company.getName() + "</br>");

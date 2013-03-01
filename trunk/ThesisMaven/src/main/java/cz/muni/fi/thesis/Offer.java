@@ -1,6 +1,7 @@
 package cz.muni.fi.thesis;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * Object representing one offer in system
@@ -13,8 +14,19 @@ public class Offer {
     private BigDecimal price;
     private int quantity;
     private String description;
+    private Date purchaseDate;
+    private Category category;
+    private int minimalBuyQuantity;
     private Long id;
     private Long company_id;
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public Long getCompany_id() {
         return company_id;
@@ -40,6 +52,14 @@ public class Offer {
         this.id = id;
     }
 
+    public int getMinimalBuyQuantity() {
+        return minimalBuyQuantity;
+    }
+
+    public void setMinimalBuyQuantity(int minimalBuyQuantity) {
+        this.minimalBuyQuantity = minimalBuyQuantity;
+    }
+
     public String getName() {
         return name;
     }
@@ -54,6 +74,14 @@ public class Offer {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(Date purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 
     public int getQuantity() {
@@ -82,6 +110,18 @@ public class Offer {
         if (this.quantity != other.quantity) {
             return false;
         }
+        if ((this.description == null) ? (other.description != null) : !this.description.equals(other.description)) {
+            return false;
+        }
+        if (this.purchaseDate != other.purchaseDate && (this.purchaseDate == null || !this.purchaseDate.equals(other.purchaseDate))) {
+            return false;
+        }
+        if (this.category != other.category) {
+            return false;
+        }
+        if (this.minimalBuyQuantity != other.minimalBuyQuantity) {
+            return false;
+        }
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
@@ -94,18 +134,19 @@ public class Offer {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 59 * hash + (this.price != null ? this.price.hashCode() : 0);
-        hash = 59 * hash + this.quantity;
-        hash = 59 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 59 * hash + (this.company_id != null ? this.company_id.hashCode() : 0);
+        hash = 67 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 67 * hash + (this.price != null ? this.price.hashCode() : 0);
+        hash = 67 * hash + this.quantity;
+        hash = 67 * hash + (this.description != null ? this.description.hashCode() : 0);
+        hash = 67 * hash + (this.purchaseDate != null ? this.purchaseDate.hashCode() : 0);
+        hash = 67 * hash + (this.category != null ? this.category.hashCode() : 0);
+        hash = 67 * hash + this.minimalBuyQuantity;
+        hash = 67 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 67 * hash + (this.company_id != null ? this.company_id.hashCode() : 0);
         return hash;
     }
 
-    @Override
-    public String toString() {
-        return "Offer{" + "name=" + name + ", price=" + price + ", quantity=" + quantity + ", description=" + description + ", id=" + id + ", company_id=" + company_id + '}';
-    }
+    
     
     
 }

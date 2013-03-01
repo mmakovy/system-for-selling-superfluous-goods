@@ -8,6 +8,8 @@ import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.Calendar;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,20 +38,57 @@ public class AddOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
- 
+
         PrintWriter out = response.getWriter();
+        CompanyManager companyManager = new CompanyManagerImpl();
+        OfferManager offerManager = new OfferManagerImpl();
+        Calendar calendar = Calendar.getInstance();
 
-        CompanyManager CompanyManager = new CompanyManagerImpl();
-        OfferManager OfferManager = new OfferManagerImpl();
-        
-        /** testing log-in */
+
+        /**
+         * testing log-in
+         */
         HttpSession session = request.getSession();
-        Object userID = session.getAttribute("userID");
+        Object userIdObject = session.getAttribute("userID");
 
-        if (userID == null) {
+        if (userIdObject == null) {
             response.sendRedirect("index.jsp");
         } else {
-        /** end of login testing */    
+            /**
+             * end of login testing
+             */
+            /**
+             * Processing parameters from request
+             */
+            String name = request.getParameter("name");
+            String description = request.getParameter("description");
+            String quantityString = request.getParameter("quantity");
+            String priceString = request.getParameter("price");
+            String minimalBuyString = request.getParameter("minimal_buy");
+            String categoryString = request.getParameter("category");
+            String dayString = request.getParameter("dob_day");
+            String monthString = request.getParameter("dob_month");
+            String yearString = request.getParameter("dob_year");
+            /**
+             * end
+             */
+            
+            /**
+             * converting String to integer
+             */
+
+                int YearInt = Integer.parseInt(yearString);
+                int MonthInt = Integer.parseInt(monthString) - 1; /** corection*/
+                int DayInt = Integer.parseInt(dayString);
+                int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
+                int quantity = Integer.parseInt(quantityString);
+
+            /**
+             * end
+             */
+            calendar.set(YearInt, MonthInt, DayInt);
+            Date date = new Date(calendar.getTimeInMillis());
+
             try {
 
                 out.println("<html>");
@@ -58,35 +97,34 @@ public class AddOffer extends HttpServlet {
                 out.println("</head>");
                 out.println("<body>");
 
-                String name = request.getParameter("name");
-                String description = request.getParameter("description");
-                String quantityString = request.getParameter("quantity");
-                String priceString = request.getParameter("price");
-
 
                 if (name.length() != 0 && description.length() != 0
-                        && userID != null && priceString.length() != 0
+                        && userIdObject != null && priceString.length() != 0
                         && quantityString.length() != 0) {
 
-                    Long id = (Long) userID;
+                    Long userId = (Long) userIdObject;
                     BigDecimal price = new BigDecimal(priceString);
-                    int quantity = Integer.parseInt(quantityString);
 
                     Offer offer = new Offer();
-                    offer.setCompany_id(id);
+                    offer.setCompany_id(userId);
                     offer.setDescription(description);
                     offer.setName(name);
                     offer.setPrice(price);
                     offer.setQuantity(quantity);
+                    offer.setPurchaseDate(date);
+                    offer.setCategory(Category.valueOf(categoryString));
+                    offer.setMinimalBuyQuantity(minimalBuyQuantity);
+
+
 
                     try {
 
-                        Company company = CompanyManager.getCompany(id);
+                        Company company = companyManager.getCompany(userId);
 
                         if (company == null) {
-                            out.println("Company wasnt found interface database");
+                            out.println("Company wasnt found in database");
                         } else {
-                            Offer added = OfferManager.addOffer(company, offer);
+                            Offer added = offerManager.addOffer(company, offer);
                             if (added == null) {
                                 out.println("Offer wasnt added");
                             } else {
