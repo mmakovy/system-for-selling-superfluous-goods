@@ -7,6 +7,7 @@ package cz.muni.fi.Web.Thesis;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,8 @@ public class updateOffer extends HttpServlet {
          */
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
+        Calendar calendar = Calendar.getInstance();
+        
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
@@ -83,6 +86,10 @@ public class updateOffer extends HttpServlet {
                             if (offer == null) {
                                 out.println("Offer wasnt found in database");
                             } else {
+                                calendar.setTime(offer.getPurchaseDate());
+                                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                int month = calendar.get(Calendar.MONTH) + 1;
+                                int year = calendar.get(Calendar.YEAR);
 
                                 out.println("<form method='post' name='form1' onsubmit='return submit_offer()' action='/WebThesisMaven/updateOfferProcess?id=" + id + "&id_company=" + offer.getCompany_id() + "'>");
                                 out.println("Name:");
@@ -91,6 +98,55 @@ public class updateOffer extends HttpServlet {
                                 out.println("<input type='text' name='price'  value='" + offer.getPrice() + "'><br/>");
                                 out.println("Quantity:");
                                 out.println("<input type='text' name='quantity' value='" + offer.getQuantity() + "'><br/>");
+                                out.println("Minimal Buy Quantity:");
+                                out.println("<input type='text' name='minimal_buy' value='" + offer.getMinimalBuyQuantity() + "'><br/>");
+                                out.println("Category:");
+                                out.println("<select name='category'>");
+                                if (offer.getCategory().toString().equals("BUILDING")) {
+                                    out.println("<option selected>BUILDING</option>");
+                                } else {
+                                    out.println("<option>BUILDING</option>");
+                                }
+                                if (offer.getCategory().toString().equals("FURNITURE")) {
+                                    out.println("<option selected>FURNITURE</option>");
+                                } else {
+                                    out.println("<option>FURNITURE</option>");
+                                }
+                                if (offer.getCategory().toString().equals("ELECTROTECHNICS")) {
+                                    out.println("<option selected>ELECTROTECHNICS</option>");
+                                } else {
+                                    out.println("<option>ELECTROTECHNICS</option>");
+                                }
+                                if (offer.getCategory().toString().equals("CARS")) {
+                                    out.println("<option selected>CARS</option>");
+                                } else {
+                                    out.println("<option>CARS</option>");
+                                }
+                                if (offer.getCategory().toString().equals("COMPUTER")) {
+                                    out.println("<option selected>COMPUTER</option>");
+                                } else {
+                                    out.println("<option>COMPUTER</option>");
+                                }
+                                if (offer.getCategory().toString().equals("COSMETICS")) {
+                                    out.println("<option selected>COSMETICS</option>");
+                                } else {
+                                    out.println("<option>COSMETICS</option>");
+                                }
+                                if (offer.getCategory().toString().equals("SPORTS")) {
+                                    out.println("<option selected>SPORTS</option>");
+                                } else {
+                                    out.println("<option>SPORTS</option>");
+                                }
+                                out.println("</select>    <br/>");
+
+                                out.println("Purchase Date:<br/>");
+                                out.println("Day:");
+                                out.println("<input type='text' name='dob_day' value='" + day + "'/>");
+                                out.println("Month:");
+                                out.println("<input type='text' name='dob_month' value='" + month  + "'/>");
+                                out.println("Year:");
+                                out.println("<input type='text' name='dob_year' value='" + year + "'/> <br/>");
+                                
                                 out.println("Description:");
                                 out.println("<input type='text' name='description' value='" + offer.getDescription() + "'><br/>");
 

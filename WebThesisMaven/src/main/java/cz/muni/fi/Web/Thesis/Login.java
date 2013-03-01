@@ -63,6 +63,7 @@ public class Login extends HttpServlet {
                 if (user == null) {
                     out.println("Wrong username or password");
                 } else {
+                    
                     session = request.getSession(true);
                     String sessionID = UUID.randomUUID().toString();
                     session.setAttribute("sessionID", sessionID);

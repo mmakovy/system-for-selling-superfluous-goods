@@ -8,6 +8,8 @@ import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -42,12 +44,32 @@ public class updateOfferProcess extends HttpServlet {
         PrintWriter out = response.getWriter();
         OfferManager manager = new OfferManagerImpl();
         Offer offer = null;
+        Calendar calendar = Calendar.getInstance();        
 
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String quantityString = request.getParameter("quantity");
         String priceString = request.getParameter("price");
+        String minimalBuyString = request.getParameter("minimal_buy");
+        String category = request.getParameter("category");
+        String day = request.getParameter("dob_day");
+        String month = request.getParameter("dob_month");
+        String year = request.getParameter("dob_year");
+        
         Long id = Long.parseLong(request.getParameter("id"));
+        
+        /** converting String to integer */
+            
+            int YearInt = Integer.parseInt(year);
+            int MonthInt = Integer.parseInt(month)-1; /**corection*/
+            int DayInt = Integer.parseInt(day);
+            int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
+            int quantity = Integer.parseInt(quantityString);
+            
+            /**end*/
+            
+            calendar.set(YearInt,MonthInt,DayInt);
+            Date date = new Date(calendar.getTimeInMillis());
 
 
 
@@ -87,7 +109,6 @@ public class updateOfferProcess extends HttpServlet {
                             && quantityString.length() != 0) {
 
                         BigDecimal price = new BigDecimal(priceString);
-                        int quantity = Integer.parseInt(quantityString);
 
                         if (!userIdLong.equals(offer.getCompany_id())) {
                             response.sendRedirect("denied.jsp");
@@ -99,6 +120,10 @@ public class updateOfferProcess extends HttpServlet {
                             updatedOffer.setQuantity(quantity);
                             updatedOffer.setId(id);
                             updatedOffer.setCompany_id(offer.getCompany_id());
+                            updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
+                            updatedOffer.setPurchaseDate(date);
+                            updatedOffer.setCategory(Category.valueOf(category));
+                            
 
                             try {
                                 manager.updateOffer(updatedOffer);
