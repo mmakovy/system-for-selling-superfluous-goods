@@ -11,7 +11,52 @@ public class Company {
     private String name;
     private String email;
     private String phoneNumber;
+    private String street;
+    private String city;
+    private String country;
+    private String psc;
+    private String other;
     private Long id;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getOther() {
+        return other;
+    }
+
+    public void setOther(String other) {
+        this.other = other;
+    }
+
+    public String getPsc() {
+        return psc;
+    }
+
+    public void setPsc(String psc) {
+        this.psc = psc;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
     
     public Long getId() {
@@ -47,11 +92,6 @@ public class Company {
     }
 
     @Override
-    public String toString() {
-        return "Company{" + "name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + ", id=" + id + '}';
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -69,6 +109,21 @@ public class Company {
         if ((this.phoneNumber == null) ? (other.phoneNumber != null) : !this.phoneNumber.equals(other.phoneNumber)) {
             return false;
         }
+        if ((this.street == null) ? (other.street != null) : !this.street.equals(other.street)) {
+            return false;
+        }
+        if ((this.city == null) ? (other.city != null) : !this.city.equals(other.city)) {
+            return false;
+        }
+        if ((this.country == null) ? (other.country != null) : !this.country.equals(other.country)) {
+            return false;
+        }
+        if ((this.psc == null) ? (other.psc != null) : !this.psc.equals(other.psc)) {
+            return false;
+        }
+        if ((this.other == null) ? (other.other != null) : !this.other.equals(other.other)) {
+            return false;
+        }
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
@@ -78,12 +133,23 @@ public class Company {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 89 * hash + (this.email != null ? this.email.hashCode() : 0);
-        hash = 89 * hash + (this.phoneNumber != null ? this.phoneNumber.hashCode() : 0);
-        hash = 89 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 73 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 73 * hash + (this.email != null ? this.email.hashCode() : 0);
+        hash = 73 * hash + (this.phoneNumber != null ? this.phoneNumber.hashCode() : 0);
+        hash = 73 * hash + (this.street != null ? this.street.hashCode() : 0);
+        hash = 73 * hash + (this.city != null ? this.city.hashCode() : 0);
+        hash = 73 * hash + (this.country != null ? this.country.hashCode() : 0);
+        hash = 73 * hash + (this.psc != null ? this.psc.hashCode() : 0);
+        hash = 73 * hash + (this.other != null ? this.other.hashCode() : 0);
+        hash = 73 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return "Company{" + "name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + ", street=" + street + ", city=" + city + ", country=" + country + ", psc=" + psc + ", other=" + other + ", id=" + id + '}';
+    }
+
     
     
 }

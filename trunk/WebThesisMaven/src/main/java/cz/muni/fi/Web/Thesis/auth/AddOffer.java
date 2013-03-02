@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.muni.fi.Web.Thesis;
+package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
@@ -51,9 +51,9 @@ public class AddOffer extends HttpServlet {
         HttpSession session = request.getSession();
         Object userIdObject = session.getAttribute("userID");
 
-        if (userIdObject == null) {
+     /**   if (userIdObject == null) {
             response.sendRedirect("index.jsp");
-        } else {
+        } else {*/
             /**
              * end of login testing
              */
@@ -72,22 +72,25 @@ public class AddOffer extends HttpServlet {
             /**
              * end
              */
-            
             /**
              * converting String to integer
              */
-
-                int YearInt = Integer.parseInt(yearString);
-                int MonthInt = Integer.parseInt(monthString) - 1; /** corection*/
-                int DayInt = Integer.parseInt(dayString);
-                int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
-                int quantity = Integer.parseInt(quantityString);
+            int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
+            int quantity = Integer.parseInt(quantityString);
 
             /**
              * end
              */
-            calendar.set(YearInt, MonthInt, DayInt);
-            Date date = new Date(calendar.getTimeInMillis());
+            Date date;
+            if (yearString.length() == 0|| monthString.length() == 0 || dayString.length() == 0 ) {
+                date = null;
+            } else {
+                int YearInt = Integer.parseInt(yearString);
+                int MonthInt = Integer.parseInt(monthString) - 1;
+                int DayInt = Integer.parseInt(dayString);
+                calendar.set(YearInt, MonthInt, DayInt);
+                date = new Date(calendar.getTimeInMillis());
+            }
 
             try {
 
@@ -141,7 +144,7 @@ public class AddOffer extends HttpServlet {
                 }
 
 
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");
 
@@ -149,7 +152,7 @@ public class AddOffer extends HttpServlet {
             } finally {
                 out.close();
             }
-        }
+       /* }*/
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

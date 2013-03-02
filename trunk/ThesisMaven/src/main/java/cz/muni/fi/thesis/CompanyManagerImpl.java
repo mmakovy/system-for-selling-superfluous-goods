@@ -20,7 +20,7 @@ public class CompanyManagerImpl implements CompanyManager {
     public Company addCompany(Company company, String username, String password) throws DatabaseException {
 
         UserManager usrManager = new UserManagerImpl();
-        
+
         if (company == null) {
             throw new IllegalArgumentException("company");
         }
@@ -32,11 +32,16 @@ public class CompanyManagerImpl implements CompanyManager {
         } else {
             try {
                 con.setAutoCommit(false);
-                
-                PreparedStatement st = con.prepareStatement("INSERT INTO company(name,email,phone_number) VALUES (?,?,?);", Statement.RETURN_GENERATED_KEYS);
+
+                PreparedStatement st = con.prepareStatement("INSERT INTO company(name,email,phone_number,street,city,country,psc,other) VALUES (?,?,?,?,?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
                 st.setString(1, company.getName());
                 st.setString(2, company.getEmail());
                 st.setString(3, company.getPhoneNumber());
+                st.setString(4, company.getStreet());
+                st.setString(5, company.getCity());
+                st.setString(6, company.getCountry());
+                st.setString(7, company.getPsc());
+                st.setString(8, company.getOther());
 
 
                 if (st.executeUpdate() == 0) {
@@ -49,22 +54,22 @@ public class CompanyManagerImpl implements CompanyManager {
                 if (keys.next()) {
                     returnCompany.setId(keys.getLong(1));
                 }
-                
+
 
                 st = con.prepareStatement("INSERT INTO users(username,passwd,userId) VALUES (?,?,?);");
 
                 st.setString(1, username);
                 st.setString(2, password);
                 st.setLong(3, returnCompany.getId());
-                
-                
+
+
                 if (st.executeUpdate() == 0) {
                     log.error("Error while adding Company-USER to database");
                     return null;
                 }
-                
+
                 con.commit();
-                
+
                 return returnCompany;
 
             } catch (SQLException ex) {
@@ -86,7 +91,7 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number FROM company;");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number,street,city,country,psc,other FROM company;");
                 ResultSet companyDB = st.executeQuery();
                 while (companyDB.next()) {
                     Company company = new Company();
@@ -94,6 +99,11 @@ public class CompanyManagerImpl implements CompanyManager {
                     company.setName(companyDB.getString("name"));
                     company.setEmail(companyDB.getString("email"));
                     company.setPhoneNumber(companyDB.getString("phone_number"));
+                    company.setCity(companyDB.getString("city"));
+                    company.setCountry(companyDB.getString("country"));
+                    company.setPsc(companyDB.getString("psc"));
+                    company.setStreet(companyDB.getString("street"));
+                    company.setOther(companyDB.getString("other"));
                     companies.add(company);
                 }
                 return companies;
@@ -132,26 +142,26 @@ public class CompanyManagerImpl implements CompanyManager {
             }
 
             try {
-                
+
                 con.setAutoCommit(false);
-                
-               PreparedStatement st = con.prepareStatement("DELETE FROM users WHERE userId=?;");
+
+                PreparedStatement st = con.prepareStatement("DELETE FROM users WHERE userId=?;");
                 st.setLong(1, company.getId());
-                
+
                 if (st.executeUpdate() == 0) {
                     log.error("Contact wasnt removed - users");
                     throw new CompanyException("Contact wasnt removed - users");
                 }
-                
-               PreparedStatement st1 = con.prepareStatement("DELETE FROM company WHERE id_company=?;");
+
+                PreparedStatement st1 = con.prepareStatement("DELETE FROM company WHERE id_company=?;");
                 st1.setLong(1, company.getId());
                 if (st1.executeUpdate() == 0) {
                     log.error("Contact wasnt removed");
                     throw new CompanyException("Contact wasnt removed");
                 }
-                
+
                 con.commit();
-                
+
             } catch (SQLException ex) {
                 log.error(ex.getMessage());
             } finally {
@@ -178,11 +188,16 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("UPDATE company SET name=?, email=?, phone_number=? WHERE id_company=?;");
+                PreparedStatement st = con.prepareStatement("UPDATE company SET name=?, email=?, phone_number=?, street=?, city=?, country=?, psc=?, other=? WHERE id_company=?;");
                 st.setString(1, company.getName());
                 st.setString(2, company.getEmail());
                 st.setString(3, company.getPhoneNumber());
-                st.setLong(4, company.getId());
+                st.setString(4, company.getStreet());
+                st.setString(5, company.getCity());
+                st.setString(6, company.getCountry());
+                st.setString(7, company.getPsc());
+                st.setString(8, company.getOther());
+                st.setLong(9, company.getId());
 
                 if (st.executeUpdate() == 0) {
                     log.error("Update wasnt done");
@@ -211,7 +226,7 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT name,email,phone_number,id_company FROM company WHERE id_company=?");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number,street,city,country,psc,other FROM company WHERE id_company=?");
                 st.setLong(1, id);
                 ResultSet companyDB = st.executeQuery();
                 Company company = null;
@@ -221,6 +236,11 @@ public class CompanyManagerImpl implements CompanyManager {
                     company.setName(companyDB.getString("name"));
                     company.setEmail(companyDB.getString("email"));
                     company.setPhoneNumber(companyDB.getString("phone_number"));
+                    company.setCity(companyDB.getString("city"));
+                    company.setCountry(companyDB.getString("country"));
+                    company.setPsc(companyDB.getString("psc"));
+                    company.setStreet(companyDB.getString("street"));
+                    company.setOther(companyDB.getString("other"));
                 }
                 return company;
 
@@ -233,5 +253,4 @@ public class CompanyManagerImpl implements CompanyManager {
         return null;
 
     }
-    
 }

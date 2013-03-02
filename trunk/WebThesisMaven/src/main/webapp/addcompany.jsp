@@ -35,7 +35,19 @@
             <% }%>
             Name: <input type="text" name="name"><br/>
             Email: <input type="text" name="email"><br/>
-            PhoneNumber: <input type="text" name="phone"><br/>   
+            PhoneNumber: <input type="text" name="phone"><br/>   <br/>
+            Address: <br/>
+            Street:
+            <input type="text" name="street"/><br/>
+            City:
+            <input type="text" name="city"/><br/>
+            Country:
+            <input type="text" name="country"/><br/>
+            PSC:
+            <input type="text" name="psc"/><br/>
+            Other information:
+            <input type="text" name="other"/><br/>
+           
             <input type="submit" value="Add Company" name="option"/>
         </form>
         <a href="index.jsp"> Go to Home Page </a>

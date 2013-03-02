@@ -12,19 +12,11 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <%
-                session = request.getSession();
-                Long id = (Long) session.getAttribute("userID");
-                if (id == null) {
-                    response.sendRedirect("index.jsp");
-                } else {
-            %>
         <h1>Find offer</h1>
-        <form name="fomr3" method="post" action="/WebThesisMaven/FindOffer">
+        <form name="fomr3" method="post" action="/WebThesisMaven/auth/FindOffer">
             <input type="text" name="expression">
             <input type="submit" value="Find">
         </form>    
          <a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>
-         <% } %>
     </body>
 </html>

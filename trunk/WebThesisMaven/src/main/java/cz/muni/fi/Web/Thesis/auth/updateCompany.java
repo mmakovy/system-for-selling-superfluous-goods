@@ -1,30 +1,26 @@
-package cz.muni.fi.Web.Thesis;
+package cz.muni.fi.Web.Thesis.auth;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
 import cz.muni.fi.thesis.Company;
 import cz.muni.fi.thesis.CompanyManager;
 import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.DatabaseException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matus
  */
-public class ListCompanies extends HttpServlet {
+public class updateCompany extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -40,56 +36,56 @@ public class ListCompanies extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        CompanyManager companyMng = new CompanyManagerImpl();
+        CompanyManager manager = new CompanyManagerImpl();
 
-        List<Company> companies = null;
-
-        /** testing log-in */
+        /**
+         * testing log-in
+         */
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
         if (userID == null) {
             response.sendRedirect("index.jsp");
         } else {
-        /** end of login testing */ 
+            /**
+             * end of login testing
+             */
+            Long id = (Long) userID;
+            Company company = null;
+
 
             try {
-                companies = companyMng.getAllCompanies();
-            } catch (DatabaseException ex) {
-                out.println(ex.getMessage());
-                log.error(ex.getMessage());
-            }
 
-            try {
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Servlet servletTest</title>");
+                out.println("<title>Servlet updateCompany</title>");
                 out.println("</head>");
+                out.println("<script src='myjs.js'>");
+                out.println("</script>");
                 out.println("<body>");
 
+                try {
+                    company = manager.getCompany(id);
+                    if (company == null) {
+                        out.println("Company wasnt found in database");
+                    } else {
 
-                if (companies.isEmpty()) {
-                    out.println("No companies in database");
-                } else {
-                    out.println("COMPANIES");
-                    out.println("<table>");
-                    out.println("<th> ID </th>");
-                    out.println("<th> Name </th>");
-                    out.println("<th> E-mail </th>");
-                    out.println("<th> Phone Number </th>");
+                        out.println("<form method='post' name='form2' onsubmit='return submit_company()' action='/WebThesisMaven/updateCompanyProcess?id=" + id + "'>");
+                        out.println("Name:");
+                        out.println("<input type='text' name='name' value='" + company.getName() + "'><br/>");
+                        out.println("Email:");
+                        out.println("<input type='text' name='email' value='" + company.getEmail() + "'><br/>");
+                        out.println("Phone Number:");
+                        out.println("<input type='text' name='phone' value='" + company.getPhoneNumber() + "'><br/>");
 
-                    for (int i = 0; i < companies.size(); i++) {
-                        out.println("<tr>");
-                        out.println("<td style='border: 1px solid black;'>" + companies.get(i).getId() + "</td>");
-                        out.println("<td style='border: 1px solid black;'>" + companies.get(i).getName() + "</td>");
-                        out.println("<td style='border: 1px solid black;'>" + companies.get(i).getEmail() + "</td>");
-                        out.println("<td style='border: 1px solid black;'>" + companies.get(i).getPhoneNumber() + "</td>");
-
-                        out.println("</tr>");
-
+                        out.println("<input type='submit' name='submit' value='Update'>");
+                        out.println("</form>");
                     }
-                    out.println("</table>");
+                } catch (DatabaseException ex) {
+                    out.println(ex.getMessage());
+                    log.error(ex.getMessage());
                 }
+                out.println("<a href='removeCompany'>Remove my company from system</a><br/>");
                 out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");

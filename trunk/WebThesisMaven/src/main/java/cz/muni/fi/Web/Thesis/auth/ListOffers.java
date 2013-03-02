@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package cz.muni.fi.Web.Thesis;
+package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +15,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author matus
  */
-public class FindOffer extends HttpServlet {
+public class ListOffers extends HttpServlet {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
@@ -38,12 +32,10 @@ public class FindOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-        OfferManager offerManager = new OfferManagerImpl();
-        List<Offer> offers = null;
 
-        String expression = request.getParameter("expression");
+        OfferManager offerMng = new OfferManagerImpl();
+        List<Offer> offers = null;
 
         /**
          * testing log-in
@@ -58,56 +50,72 @@ public class FindOffer extends HttpServlet {
              * end of login testing
              */
             try {
+                offers = offerMng.getAllOffers();
+            } catch (DatabaseException ex) {
+                log.error(ex.getMessage());
+                out.println(ex.getMessage());
+            }
 
+
+
+            try {
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Servlet FindOffer</title>");
+                out.println("<title>Servlet servletTest</title>");
                 out.println("</head>");
+
                 out.println("<body>");
 
-                try {
-                    offers = offerManager.findOffer(expression);
-                    if (offers.isEmpty()) {
-                    out.println("No search results");
-                    } else {
-                        out.println("OFFERS");
-                        out.println("<table>");
-                        out.println("<th> ID </th>");
-                        out.println("<th> Company ID </th>");
-                        out.println("<th> Name </th>");
-                        out.println("<th> Description </th>");
-                        out.println("<th> Price </th>");
-                        out.println("<th> Quantity </th>");
-                        out.println("<th> Minimal Buy Quantity </th>");
-                        out.println("<th> Purchase Date </th>");
-                        out.println("<th> Category </th>");
+                if (offers.isEmpty()) {
+                    out.println("No offers in database");
+                } else {
+                    out.println("OFFERS");
+                    out.println("<table>");
+                    out.println("<th> ID </th>");
+                    out.println("<th> Company ID </th>");
+                    out.println("<th> Name </th>");
+                    out.println("<th> Description </th>");
+                    out.println("<th> Price </th>");
+                    out.println("<th> Quantity </th>");
+                    out.println("<th> Minimal Buy Quantity </th>");
+                    out.println("<th> Purchase Date </th>");
+                    out.println("<th> Category </th>");
 
 
-                        for (int i = 0; i < offers.size(); i++) {
-                            out.println("<tr>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
-                            out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/ShowOffer?id=" + offers.get(i).getId() + "'>" + offers.get(i).getName() + "</a></td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
+                    for (int i = 0; i < offers.size(); i++) {
+                        out.println("<tr>");
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
+                        out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/ShowOffer?id=" + offers.get(i).getId() + "'>" + offers.get(i).getName() + "</a></td>");
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
+
+                        if (offers.get(i).getMinimalBuyQuantity() == 0) {
+                            out.println("<td style='border: 1px solid black;'> Not specified</td>");
+                        } else {
                             out.println("<td style='border: 1px solid black;'>" + offers.get(i).getMinimalBuyQuantity() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPurchaseDate() + "</td>");
-                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCategory() + "</td>");
-
-                            if (offers.get(i).getCompany_id().equals(userID)) {
-                                out.println("<td><a href='/WebThesisMaven/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
-                                out.println("<td><a href='/WebThesisMaven/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
-                            }
-
-                            out.println("</tr>");
                         }
-                    }
-                } catch (DatabaseException ex) {
-                    log.error(ex.getMessage());
-                    out.println(ex.getMessage());
-                }
 
+
+                        if (offers.get(i).getPurchaseDate() == null) {
+                            out.println("<td style='border: 1px solid black;'> Not specified</td>");
+                        } else {
+                            out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPurchaseDate() + "</td>");
+                        }
+
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCategory() + "</td>");
+
+                        if (offers.get(i).getCompany_id().equals(userID)) {
+                            out.println("<td><a href='/WebThesisMaven/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
+                            out.println("<td><a href='/WebThesisMaven/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
+                        }
+
+                        out.println("</tr>");
+                    }
+
+                    out.println("</table>");
+                }
                 out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");

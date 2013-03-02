@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>WebThesisMaven</display-name>
+    <filter>
+        <filter-name>LoggedInFilter</filter-name>
+        <filter-class>cz.muni.fi.Web.Thesis.LoggedInFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoggedInFilter</filter-name>
+        <url-pattern>/auth/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <servlet-name>AddOffer</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.AddOffer</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.AddOffer</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ListCompanies</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.ListCompanies</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.ListCompanies</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ListOffers</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.ListOffers</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.ListOffers</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AddCompany</servlet-name>
@@ -19,27 +27,27 @@
     </servlet>
     <servlet>
         <servlet-name>removeCompany</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.removeCompany</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.removeCompany</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>updateCompany</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.updateCompany</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.updateCompany</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>updateCompanyProcess</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.updateCompanyProcess</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.updateCompanyProcess</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>removeOffer</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.removeOffer</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.removeOffer</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>updateOffer</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.updateOffer</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.updateOffer</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>updateOfferProcess</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.updateOfferProcess</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.updateOfferProcess</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ListOffersCompany</servlet-name>
@@ -47,15 +55,15 @@
     </servlet>
     <servlet>
         <servlet-name>ListMyOffers</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.ListMyOffers</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.ListMyOffers</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ShowOffer</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.ShowOffer</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.ShowOffer</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>FindOffer</servlet-name>
-        <servlet-class>cz.muni.fi.Web.Thesis.FindOffer</servlet-class>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.FindOffer</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Login</servlet-name>
@@ -67,11 +75,11 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
-        <url-pattern>/ListCompanies</url-pattern>
+        <url-pattern>/auth/ListCompanies</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListOffers</servlet-name>
-        <url-pattern>/ListOffers</url-pattern>
+        <url-pattern>/auth/ListOffers</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AddCompany</servlet-name>
@@ -79,47 +87,47 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>removeCompany</servlet-name>
-        <url-pattern>/removeCompany</url-pattern>
+        <url-pattern>/auth/removeCompany</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updateCompany</servlet-name>
-        <url-pattern>/updateCompany</url-pattern>
+        <url-pattern>/auth/updateCompany</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updateCompanyProcess</servlet-name>
-        <url-pattern>/updateCompanyProcess</url-pattern>
+        <url-pattern>/auth/updateCompanyProcess</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AddOffer</servlet-name>
-        <url-pattern>/AddOffer</url-pattern>
+        <url-pattern>/auth/AddOffer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>removeOffer</servlet-name>
-        <url-pattern>/removeOffer</url-pattern>
+        <url-pattern>/auth/removeOffer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updateOffer</servlet-name>
-        <url-pattern>/updateOffer</url-pattern>
+        <url-pattern>/auth/updateOffer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updateOfferProcess</servlet-name>
-        <url-pattern>/updateOfferProcess</url-pattern>
+        <url-pattern>/auth/updateOfferProcess</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListOffersCompany</servlet-name>
-        <url-pattern>/ListOffersCompany</url-pattern>
+        <url-pattern>/auth/ListOffersCompany</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListMyOffers</servlet-name>
-        <url-pattern>/ListMyOffers</url-pattern>
+        <url-pattern>/auth/ListMyOffers</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ShowOffer</servlet-name>
-        <url-pattern>/ShowOffer</url-pattern>
+        <url-pattern>/auth/ShowOffer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FindOffer</servlet-name>
-        <url-pattern>/FindOffer</url-pattern>
+        <url-pattern>/auth/FindOffer</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>

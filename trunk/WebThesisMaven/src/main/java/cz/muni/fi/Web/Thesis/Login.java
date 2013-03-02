@@ -69,7 +69,7 @@ public class Login extends HttpServlet {
                     session.setAttribute("sessionID", sessionID);
                     session.setAttribute("userID", user.getId());
                     
-                    response.sendRedirect("menu.jsp");
+                    response.sendRedirect("auth/menu.jsp");
                    
                 }
                 
