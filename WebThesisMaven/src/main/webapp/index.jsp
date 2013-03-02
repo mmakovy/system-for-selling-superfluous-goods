@@ -12,21 +12,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <%
-            session = request.getSession();
-            Object userId = session.getAttribute("userID");
-
-            if (userId == null) {
-        %> 
-
         <h1>Welcome to our system</h1>
         <p> You are not logged-in </p>
         <a href="login.jsp">Log-in</a> or <a href="addcompany.jsp">Register</a>
-
-        <%            
-            } else {
-                response.sendRedirect("menu.jsp");
-            }
-        %>
     </body>
 </html>

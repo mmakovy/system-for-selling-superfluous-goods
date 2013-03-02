@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.muni.fi.Web.Thesis;
+package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
@@ -43,20 +43,10 @@ public class updateOffer extends HttpServlet {
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer = null;
 
-        /**
-         * testing log-in
-         */
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
         Calendar calendar = Calendar.getInstance();
-        
 
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-            /**
-             * end of login testing
-             */
             try {
 
                 out.println("<html>");
@@ -161,13 +151,13 @@ public class updateOffer extends HttpServlet {
                 }
 
 
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");
             } finally {
                 out.close();
             }
-        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

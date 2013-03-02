@@ -16,14 +16,7 @@
         <script src='myjs.js'>  
         </script>  
         <body>  
-            <%
-                session = request.getSession();
-                Long id = (Long) session.getAttribute("userID");
-                if (id == null) {
-                    response.sendRedirect("index.jsp");
-                } else {
-            %>
-            <form name='form1' method='post' action='/WebThesisMaven/AddOffer'  onsubmit='return submit_offer()'>  
+            <form name='form1' method='post' action='/WebThesisMaven/auth/AddOffer'  onsubmit='return submit_offer()'>  
                 Name:  
                 <input type='text' name='name'><br/>  
                 Price:  
@@ -31,12 +24,13 @@
                 Quantity:  
                 <input type='text' name='quantity'><br/>  
                 MINIMAL Quantity to Buy:  
-                <input type='text' name='minimal_buy'><br/>  
+                <input type='text' name='minimal_buy' value="0"><br/>  
                 Description:  
                 <input type='text' name='description'><br/>  
 
                 Category:  
                 <select name="category">
+                    <option selected>OTHER</option>
                     <option>BUILDING</option>
                     <option>FURNITURE</option>
                     <option>ELECTROTECHNICS</option>
@@ -49,18 +43,17 @@
                 Date of purchase:  
                 <br/>
                 Day:
-                <input type="text" name="dob_day"/>
+                <input type="text" name="dob_day" />
                 Month:
-                <input type="text" name="dob_month"/>
+                <input type="text" name="dob_month" />
                 Year:
-                <input type="text" name="dob_year"/>
+                <input type="text" name="dob_year" />
                     <br/>
 
                 <input type='submit' value='Add offer'><br/>  
             </form>  
 
-            <a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>  
-            <% }%>
+            <a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>  
         </body>  
     </html>  
 

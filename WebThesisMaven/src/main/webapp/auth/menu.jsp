@@ -21,11 +21,7 @@
             UserManager userManager = new UserManagerImpl();
             Long id = (Long) session.getAttribute("userID");
             User user = userManager.getUser(id);
-            if (user == null) {
-                response.sendRedirect("index.jsp");
-            } else {
-                out.println("Logged in as " + user.getUserName() + "(" + user.getId() + ")");
-            }
+            out.println("Logged in as " + user.getUserName() + "(" + user.getId() + ")");
         %>
         <table>
 
@@ -39,12 +35,12 @@
             </tr>
             <tr>
                 <td>
-                    <form method="POST" action="/WebThesisMaven/ListCompanies">
+                    <form method="POST" action="/WebThesisMaven/auth/ListCompanies">
                         <input type="submit" value="List all companies" name="option"/>
                     </form>
                 </td>
                 <td>
-                    <form method="POST" action="/WebThesisMaven/ListOffers">
+                    <form method="POST" action="/WebThesisMaven/auth/ListOffers">
                         <input type="submit" value="List all offers" name="option"/>
                     </form>
                 </td>  

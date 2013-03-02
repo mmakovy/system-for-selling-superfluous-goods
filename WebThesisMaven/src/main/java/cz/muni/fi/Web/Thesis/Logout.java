@@ -37,10 +37,12 @@ public class Logout extends HttpServlet {
         Object userID = session.getAttribute("userID");
 
         if (userID == null) {
+            session.invalidate();
             out.println("Already logged out.");
             out.println("<a href='index.jsp'>Home</a>");
         } else {
             session.removeAttribute("userID");
+            session.invalidate();
             response.sendRedirect("index.jsp");
 
             try {

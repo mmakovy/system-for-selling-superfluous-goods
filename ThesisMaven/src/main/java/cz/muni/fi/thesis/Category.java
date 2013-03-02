@@ -15,5 +15,6 @@ public enum Category {
     CARS,
     COMPUTER,
     COSMETICS,
-    SPORTS
+    SPORTS,
+    OTHERS
 }

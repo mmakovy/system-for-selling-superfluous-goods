@@ -53,6 +53,12 @@ public class AddCompany extends HttpServlet {
         String usrname = request.getParameter("usrname");
         String pwd = request.getParameter("pwd");
         String pwdVer = request.getParameter("pwd-ver");
+        String street = request.getParameter("street");
+        String city = request.getParameter("city");
+        String country = request.getParameter("country");
+        String psc = request.getParameter("psc");
+        String other = request.getParameter("other");
+
 
         if (!pwd.equals(pwdVer)) {
             request.getSession().setAttribute("password", "error");
@@ -73,21 +79,25 @@ public class AddCompany extends HttpServlet {
                     company.setName(name);
                     company.setEmail(email);
                     company.setPhoneNumber(phoneNumber);
+                    company.setStreet(street);
+                    company.setCountry(country);
+                    company.setCity(city);
+                    company.setOther(other);
+                    company.setPsc(psc);
 
                     Company added = null;
-                    
-                    MessageDigest md = null;
-                    try {
-                        md = MessageDigest.getInstance("SHA-256");
-                    } catch (NoSuchAlgorithmException ex) {
-                        Logger.getLogger(AddCompany.class.getName()).log(Level.SEVERE, null, ex);
-                    }
 
-
-                    md.update(pwd.getBytes("UTF-8"));
-                    byte[] digest = md.digest();
-                    out.println(digest.length+  " <br/>");
-
+                    /**
+                     * MessageDigest md = null; try { md =
+                     * MessageDigest.getInstance("SHA-256"); } catch
+                     * (NoSuchAlgorithmException ex) {
+                     * Logger.getLogger(AddCompany.class.getName()).log(Level.SEVERE,
+                     * null, ex); }
+                     *
+                     *
+                     * md.update(pwd.getBytes("UTF-8")); byte[] digest =
+                     * md.digest(); out.println(digest.length+ " <br/>");
+                     */
                     try {
                         added = companyMng.addCompany(company, usrname, pwd);
                     } catch (DatabaseException ex) {
