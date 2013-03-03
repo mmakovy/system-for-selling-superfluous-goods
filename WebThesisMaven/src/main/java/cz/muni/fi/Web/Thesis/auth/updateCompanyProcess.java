@@ -7,7 +7,6 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +42,11 @@ public class updateCompanyProcess extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phone");
+        String street = request.getParameter("street");
+        String city = request.getParameter("city");
+        String country = request.getParameter("country");
+        String psc = request.getParameter("psc");
+        String other = request.getParameter("other");
 
         Long id = Long.parseLong(request.getParameter("id"));
 
@@ -70,6 +74,11 @@ public class updateCompanyProcess extends HttpServlet {
                     company.setEmail(email);
                     company.setPhoneNumber(phoneNumber);
                     company.setId(id);
+                    company.setPsc(psc);
+                    company.setCity(city);
+                    company.setCountry(country);
+                    company.setStreet(street);
+                    company.setOther(other);
 
                     try {
                         manager.updateCompany(company);

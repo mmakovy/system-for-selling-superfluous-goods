@@ -44,14 +44,8 @@ public class ListCompanies extends HttpServlet {
 
         List<Company> companies = null;
 
-        /** testing log-in */
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
-
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-        /** end of login testing */ 
 
             try {
                 companies = companyMng.getAllCompanies();
@@ -100,13 +94,13 @@ public class ListCompanies extends HttpServlet {
                     }
                     out.println("</table>");
                 }
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");
             } finally {
                 out.close();
             }
-        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

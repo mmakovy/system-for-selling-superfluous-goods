@@ -35,17 +35,10 @@ public class removeCompany extends HttpServlet {
         PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
         Company company = null;
-        
-        /** testing log-in */
-        HttpSession session = request.getSession();
 
+        HttpSession session = request.getSession();
         Long id = (Long) session.getAttribute("userID");
 
-        if (id == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-
-        /** end of login testing */ 
             try {
                 out.println("<html>");
                 out.println("<head>");
@@ -77,13 +70,13 @@ public class removeCompany extends HttpServlet {
                     log.error(ex.getMessage());
                 }
 
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");
             } finally {
                 out.close();
             }
-        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

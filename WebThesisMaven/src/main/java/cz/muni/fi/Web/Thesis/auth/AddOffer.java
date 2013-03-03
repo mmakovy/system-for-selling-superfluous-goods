@@ -44,19 +44,9 @@ public class AddOffer extends HttpServlet {
         OfferManager offerManager = new OfferManagerImpl();
         Calendar calendar = Calendar.getInstance();
 
-
-        /**
-         * testing log-in
-         */
         HttpSession session = request.getSession();
         Object userIdObject = session.getAttribute("userID");
 
-     /**   if (userIdObject == null) {
-            response.sendRedirect("index.jsp");
-        } else {*/
-            /**
-             * end of login testing
-             */
             /**
              * Processing parameters from request
              */
@@ -72,6 +62,7 @@ public class AddOffer extends HttpServlet {
             /**
              * end
              */
+            
             /**
              * converting String to integer
              */
@@ -81,6 +72,7 @@ public class AddOffer extends HttpServlet {
             /**
              * end
              */
+            
             Date date;
             if (yearString.length() == 0|| monthString.length() == 0 || dayString.length() == 0 ) {
                 date = null;

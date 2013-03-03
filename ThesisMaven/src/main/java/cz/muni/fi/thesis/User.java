@@ -7,7 +7,7 @@ package cz.muni.fi.thesis;
 public class User {
     
     private String userName;
-    private String password;
+    private byte[] hash;
     private Long id;    
 
     public Long getId() {
@@ -18,12 +18,12 @@ public class User {
         this.id = id;
     }
 
-    public String getPassword() {
-        return password;
+    public byte[] getHash() {
+        return hash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHash(byte[] hash) {
+        this.hash = hash;
     }
 
     public String getUserName() {

@@ -44,18 +44,9 @@ public class ListMyOffers extends HttpServlet {
         List<Offer> offers = null;
         Company company = null;
 
-        /**
-         * testing log-in
-         */
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-            /**
-             * end of login testing
-             */
             Long id = (Long) userID;
             try {
                 out.println("<html>");
@@ -109,9 +100,9 @@ public class ListMyOffers extends HttpServlet {
                                 }
 
                                 out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCategory() + "</td>");
-                                if (offers.get(i).getCompany_id().equals(userID)) {
-                                    out.println("<td><a href='/WebThesisMaven/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
-                                    out.println("<td><a href='/WebThesisMaven/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
+                                if (offers.get(i).getCompany_id().equals(id)) {
+                                    out.println("<td><a href='/WebThesisMaven/auth/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
+                                    out.println("<td><a href='/WebThesisMaven/auth/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
                                 }
                                 out.println("</tr>");
                             }
@@ -129,7 +120,7 @@ public class ListMyOffers extends HttpServlet {
             } finally {
                 out.close();
             }
-        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
