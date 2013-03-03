@@ -8,8 +8,6 @@ import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,18 +43,9 @@ public class FindOffer extends HttpServlet {
 
         String expression = request.getParameter("expression");
 
-        /**
-         * testing log-in
-         */
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-            /**
-             * end of login testing
-             */
             try {
 
                 out.println("<html>");
@@ -107,8 +96,8 @@ public class FindOffer extends HttpServlet {
                             out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCategory() + "</td>");
 
                             if (offers.get(i).getCompany_id().equals(userID)) {
-                                out.println("<td><a href='/WebThesisMaven/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
-                                out.println("<td><a href='/WebThesisMaven/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
+                                out.println("<td><a href='/WebThesisMaven/auth/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
+                                out.println("<td><a href='/WebThesisMaven/auth/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
                             }
 
                             out.println("</tr>");
@@ -119,13 +108,13 @@ public class FindOffer extends HttpServlet {
                     out.println(ex.getMessage());
                 }
 
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");
             } finally {
                 out.close();
             }
-        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -1,9 +1,15 @@
 package cz.muni.fi.thesis;
 
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +26,29 @@ public class CompanyManagerImpl implements CompanyManager {
     public Company addCompany(Company company, String username, String password) throws DatabaseException {
 
         UserManager usrManager = new UserManagerImpl();
+        
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+
+        }
+        try {
+            md.update(password.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        byte[] digest = md.digest();
+        
+        Blob blobHash = null;
+        
+        try {
+            blobHash = new SerialBlob(digest);
+        } catch (SerialException ex) {
+            java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         if (company == null) {
             throw new IllegalArgumentException("company");
@@ -56,11 +85,11 @@ public class CompanyManagerImpl implements CompanyManager {
                 }
 
 
-                st = con.prepareStatement("INSERT INTO users(username,passwd,userId) VALUES (?,?,?);");
+                st = con.prepareStatement("INSERT INTO users(username, userId,hash_pwd) VALUES (?,?,?);");
 
                 st.setString(1, username);
-                st.setString(2, password);
-                st.setLong(3, returnCompany.getId());
+                st.setLong(2, returnCompany.getId());
+                st.setBlob(3, blobHash);
 
 
                 if (st.executeUpdate() == 0) {

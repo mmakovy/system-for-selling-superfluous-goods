@@ -7,7 +7,8 @@ package cz.muni.fi.Web.Thesis;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.UUID;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -35,7 +36,7 @@ public class Login extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
@@ -44,35 +45,33 @@ public class Login extends HttpServlet {
 
         String userName = request.getParameter("userName");
         String pwd = request.getParameter("pwd");
+
         
 
 
-
         try {
-            
-            
+
+
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet Login</title>");
             out.println("</head>");
             out.println("<body>");
             try {
-                
+
                 user = userManager.findUser(userName, pwd);
 
                 if (user == null) {
                     out.println("Wrong username or password");
                 } else {
-                    
+
                     session = request.getSession(true);
-                    String sessionID = UUID.randomUUID().toString();
-                    session.setAttribute("sessionID", sessionID);
                     session.setAttribute("userID", user.getId());
-                    
+
                     response.sendRedirect("auth/menu.jsp");
-                   
+
                 }
-                
+
             } catch (DatabaseException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }

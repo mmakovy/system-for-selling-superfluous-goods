@@ -42,71 +42,67 @@ public class ShowOffer extends HttpServlet {
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer = null;
         Company company = null;
-        /**
-         * testing log-in
-         */
+
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-            /**
-             * end of login testing
-             */
+        try {
+
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ShowOffer</title>");
+            out.println("</head>");
+            out.println("<body>");
+
             try {
-
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet ShowOffer</title>");
-                out.println("</head>");
-                out.println("<body>");
-
-                try {
-                    offer = offerManager.getOffer(id);
-                    Long id_company = offer.getCompany_id();
-                    company = companyManager.getCompany(id_company);
-                } catch (DatabaseException ex) {
-                    log.error(ex.getMessage());
-                    out.println(ex.getMessage());
-                }
-
-                if (offer == null || company == null) {
-                    out.println("Error when searching for company or offer in database");
-                } else {
-                    out.println("<h1>OFFER</h1> <br/>");
-                    out.println("<u>Name:</u>");
-                    out.println(offer.getName() + "</br>");
-                    out.println("<u>Price:</u>");
-                    out.println(offer.getPrice() + "</br>");
-                    out.println("<u>Quantity:</u>");
-                    out.println(offer.getQuantity() + "</br>");
-                    out.println("<u>Minimal buy quantity:</u>");
-                    out.println(offer.getMinimalBuyQuantity() + "</br>");
-                    out.println("<u>Purchase Date:</u>");
-                    out.println(offer.getPurchaseDate() + "</br>");
-                    out.println("<u>Category:</u>");
-                    out.println(offer.getCategory() + "</br>");
-                    out.println("<u>Description:</u>");
-                    out.println(offer.getDescription() + "</br></br>");
-                    
-                    out.println("is offered by COMPANY<br/></br>");
-                    out.println("<u>Name:</u>");
-                    out.println(company.getName() + "</br>");
-                    out.println("<u>E-mail address:</u>");
-                    out.println(company.getEmail() + "</br>");
-                    out.println("<u>Phone number:</u>");
-                    out.println(company.getPhoneNumber() + "</br></br>");
-
-                }
-
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
+                offer = offerManager.getOffer(id);
+                Long id_company = offer.getCompany_id();
+                company = companyManager.getCompany(id_company);
+            } catch (DatabaseException ex) {
+                log.error(ex.getMessage());
+                out.println(ex.getMessage());
             }
+
+            if (offer == null || company == null) {
+                out.println("Error when searching for company or offer in database");
+            } else {
+                out.println("<h1>OFFER</h1> <br/>");
+                out.println("<u>Name:</u>");
+                out.println(offer.getName() + "</br>");
+                out.println("<u>Price:</u>");
+                out.println(offer.getPrice() + "</br>");
+                out.println("<u>Quantity:</u>");
+                out.println(offer.getQuantity() + "</br>");
+                out.println("<u>Minimal buy quantity:</u>");
+                out.println(offer.getMinimalBuyQuantity() + "</br>");
+                out.println("<u>Purchase Date:</u>");
+                out.println(offer.getPurchaseDate() + "</br>");
+                out.println("<u>Category:</u>");
+                out.println(offer.getCategory() + "</br>");
+                out.println("<u>Description:</u>");
+                out.println(offer.getDescription() + "</br></br>");
+
+                out.println("is offered by COMPANY<br/></br>");
+                out.println("<u>Name:</u>");
+                out.println(company.getName() + "</br>");
+                out.println("<u>E-mail address:</u>");
+                out.println(company.getEmail() + "</br>");
+                out.println("<u>Phone number:</u>");
+                out.println(company.getPhoneNumber() + "</br></br>");
+                out.println("<u>Address:</u> <br/>");
+                out.println(company.getStreet() + " " + company.getPsc() +"<br/>");
+                out.println(company.getCity() + "<br/>");
+                out.println(company.getCountry() + "<br/>");
+
+            }
+
+            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {
+            out.close();
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -38,61 +38,63 @@ public class updateCompany extends HttpServlet {
         PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
 
-        /**
-         * testing log-in
-         */
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
-            /**
-             * end of login testing
-             */
-            Long id = (Long) userID;
-            Company company = null;
+        Long id = (Long) userID;
+        Company company = null;
 
+
+        try {
+
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet updateCompany</title>");
+            out.println("</head>");
+            out.println("<script src='myjs.js'>");
+            out.println("</script>");
+            out.println("<body>");
 
             try {
+                company = manager.getCompany(id);
+                if (company == null) {
+                    out.println("Company wasnt found in database");
+                } else {
 
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet updateCompany</title>");
-                out.println("</head>");
-                out.println("<script src='myjs.js'>");
-                out.println("</script>");
-                out.println("<body>");
+                    out.println("<form method='post' name='form2' onsubmit='return submit_company()' action='/WebThesisMaven/auth/updateCompanyProcess?id=" + id + "'>");
+                    out.println("Name:");
+                    out.println("<input type='text' name='name' value='" + company.getName() + "'><br/>");
+                    out.println("Email:");
+                    out.println("<input type='text' name='email' value='" + company.getEmail() + "'><br/>");
+                    out.println("Phone Number:");
+                    out.println("<input type='text' name='phone' value='" + company.getPhoneNumber() + "'><br/><br/>");
+                    out.println("Other:");
+                    out.println("<input type='text' name='other' value='" + company.getOther() + "'><br/><br/>");
+                    out.println("Address: <br/>");
+                    out.println("Street:");
+                    out.println("<input type='text' name='street' value='" + company.getStreet() + "'><br/>");
+                    out.println("City:");
+                    out.println("<input type='text' name='city' value='" + company.getCity() + "'><br/>");
+                    out.println("PSC:");
+                    out.println("<input type='text' name='psc' value='" + company.getPsc() + "'><br/>");
+                    out.println("Country:");
+                    out.println("<input type='text' name='country' value='" + company.getCountry() + "'><br/>");
 
-                try {
-                    company = manager.getCompany(id);
-                    if (company == null) {
-                        out.println("Company wasnt found in database");
-                    } else {
-
-                        out.println("<form method='post' name='form2' onsubmit='return submit_company()' action='/WebThesisMaven/updateCompanyProcess?id=" + id + "'>");
-                        out.println("Name:");
-                        out.println("<input type='text' name='name' value='" + company.getName() + "'><br/>");
-                        out.println("Email:");
-                        out.println("<input type='text' name='email' value='" + company.getEmail() + "'><br/>");
-                        out.println("Phone Number:");
-                        out.println("<input type='text' name='phone' value='" + company.getPhoneNumber() + "'><br/>");
-
-                        out.println("<input type='submit' name='submit' value='Update'>");
-                        out.println("</form>");
-                    }
-                } catch (DatabaseException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
+                    out.println("<input type='submit' name='submit' value='Update'>");
+                    out.println("</form>");
                 }
-                out.println("<a href='removeCompany'>Remove my company from system</a><br/>");
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
+            } catch (DatabaseException ex) {
+                out.println(ex.getMessage());
+                log.error(ex.getMessage());
             }
+            out.println("<a href='removeCompany'>Remove my company from system</a><br/>");
+            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
+            out.println("</body>");
+            out.println("</html>");
+        } finally {
+            out.close();
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

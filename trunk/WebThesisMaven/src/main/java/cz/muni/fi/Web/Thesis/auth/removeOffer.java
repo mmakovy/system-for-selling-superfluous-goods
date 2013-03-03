@@ -7,7 +7,6 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,19 +41,11 @@ public class removeOffer extends HttpServlet {
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer = null;
 
-        /**
-         * login testing
-         */
+
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
 
-        if (userID == null) {
-            response.sendRedirect("index.jsp");
-        } else {
 
-            /**
-             * end of login testing
-             */
             try {
 
                 out.println("<html>");
@@ -67,7 +58,8 @@ public class removeOffer extends HttpServlet {
 
                     if (offer == null) {
                         out.println("Offer wasnt found in database");
-                    } else /**
+                    } else 
+                        /**
                      * testing if user has permission for this action
                      */
                     if (!userID.equals(offer.getCompany_id())) {
@@ -94,7 +86,7 @@ public class removeOffer extends HttpServlet {
                 out.println(ex.getMessage());
             }
 
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
+            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
             out.println("</body>");
             out.println("</html>");
         } 
@@ -103,7 +95,7 @@ public class removeOffer extends HttpServlet {
         finally {
                 out.close();
     }
-}
+
 }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

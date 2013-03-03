@@ -10,10 +10,6 @@ import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.DatabaseException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +54,8 @@ public class AddCompany extends HttpServlet {
         String country = request.getParameter("country");
         String psc = request.getParameter("psc");
         String other = request.getParameter("other");
+        
+        
 
 
         if (!pwd.equals(pwdVer)) {
@@ -87,17 +85,6 @@ public class AddCompany extends HttpServlet {
 
                     Company added = null;
 
-                    /**
-                     * MessageDigest md = null; try { md =
-                     * MessageDigest.getInstance("SHA-256"); } catch
-                     * (NoSuchAlgorithmException ex) {
-                     * Logger.getLogger(AddCompany.class.getName()).log(Level.SEVERE,
-                     * null, ex); }
-                     *
-                     *
-                     * md.update(pwd.getBytes("UTF-8")); byte[] digest =
-                     * md.digest(); out.println(digest.length+ " <br/>");
-                     */
                     try {
                         added = companyMng.addCompany(company, usrname, pwd);
                     } catch (DatabaseException ex) {
