@@ -67,7 +67,7 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT userId,username,hash_pwd FROM users WHERE username = ? AND hash_pwd = ?;");
+                PreparedStatement st = con.prepareStatement("SELECT userId,username,hash_pwd,hash_ver,active FROM users WHERE username = ? AND hash_pwd = ?;");
                 st.setString(1, username);
                 st.setBlob(2, blobHash);
 
@@ -80,6 +80,8 @@ public class UserManagerImpl implements UserManager {
                     Blob blob = usersDB.getBlob("hash_pwd");
                     int blobLength = (int) blob.length();
                     user.setHash(blob.getBytes(1, blobLength));
+                    user.setHashVer(usersDB.getString("hash_ver"));
+                    user.setActive(usersDB.getInt("active"));
                     return user;
                 } else {
                     return null;
@@ -106,7 +108,7 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT userId,username,hash_pwd,hash_ver FROM users WHERE userId = ?;");
+                PreparedStatement st = con.prepareStatement("SELECT userId,username,hash_pwd,hash_ver,active FROM users WHERE userId = ?;");
                 st.setLong(1, id);
 
                 ResultSet usersDB = st.executeQuery();
@@ -117,6 +119,7 @@ public class UserManagerImpl implements UserManager {
                     user.setUserName(usersDB.getString("username"));
                     user.setHashVer(usersDB.getString("hash_ver"));
                     Blob blob = usersDB.getBlob("hash_pwd");
+                    user.setActive(usersDB.getInt("active"));
                     int blobLength = (int) blob.length();
                     user.setHash(blob.getBytes(1, blobLength));
                     return user;
@@ -132,27 +135,27 @@ public class UserManagerImpl implements UserManager {
         }
         return null;
     }
-    
+
     @Override
-    public void verifyEmail(String code) throws DatabaseException, UserException{
-        
+    public void verifyEmail(String code) throws DatabaseException, UserException {
+
         if (code == null) {
             throw new IllegalArgumentException("code");
         }
-        
+
         Connection con = DatabaseConnection.getConnection();
 
         if (con == null) {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("UPDATE users SET active=1 WHERE hash_ver=?");                                                       
+                PreparedStatement st = con.prepareStatement("UPDATE users SET active=1 WHERE hash_ver=?");
                 st.setString(1, code);
 
                 int result = st.executeUpdate();
                 if (result == 0) {
                     throw new UserException("E-mail wasnt verified, code wasnt found in DB");
-                } 
+                }
 
 
             } catch (SQLException ex) {
@@ -162,45 +165,49 @@ public class UserManagerImpl implements UserManager {
             }
         }
     }
-    
+
     @Override
-    public boolean isVerified(User user) throws DatabaseException, UserException{
-        
+    public boolean isVerified(User user) throws DatabaseException, UserException {
+
         if (user == null) {
             throw new IllegalArgumentException("code");
         }
+
+        if (user.getActive() == 1) {
+            return true;
+        }
         
+        return false;
+    }
+
+    public boolean isInDatabase(String table, String column, String searchText) throws DatabaseException {
+        if (searchText == null) {
+            throw new IllegalArgumentException("name");
+        }
+
         Connection con = DatabaseConnection.getConnection();
 
         if (con == null) {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT active FROM users WHERE userId=?");                                                       
-                st.setLong(1, user.getId());
+                PreparedStatement st = con.prepareStatement("SELECT " + column + " FROM " + table + ";");
 
                 ResultSet usersDB = st.executeQuery();
-                int active = 2;
-                
-                while (usersDB.next()){
-                    active = usersDB.getInt("active");
+                while (usersDB.next()) {
+                    String dbEntry = usersDB.getString(column);
+                    if (dbEntry.equals(searchText)) {
+                        return true;
+                    }
                 }
-                
-                if (active == 0) {
-                    return false;
-                } else if (active == 2) {
-                    throw new UserException("User wasnt found in database");
-                } else {
-                    return true;
-                }
-
+                return false;
 
             } catch (SQLException ex) {
                 log.error(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }
+            return false;
         }
-        return false;
     }
 }

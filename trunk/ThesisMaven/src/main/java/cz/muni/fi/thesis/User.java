@@ -10,6 +10,15 @@ public class User {
     private byte[] hash;
     private Long id;  
     private String hashVer;
+    private int active;
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
 
     public String getHashVer() {
         return hashVer;

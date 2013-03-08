@@ -4,6 +4,7 @@
     Author     : matus
 --%>
 
+<%@page import="javax.print.attribute.standard.OutputDeviceAssigned"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -17,22 +18,26 @@
 
         <h1>Add company</h1>
         <form method="post" name='form2' action="/WebThesisMaven/AddCompany" onsubmit="return submit_company()">    
-            Username: <input type="text" name="usrname"><br/>
             <%
                 session = request.getSession();
-                if (session.getAttribute("password") != null) {
+                
+                if (session.getAttribute("error") != null) {
+                    String error = (String) session.getAttribute("error");
+                    if (error.equals("password")) {
+                        out.println("!!! Passwords dont match !!!<br/>");
+                        session.removeAttribute("error");
+                    } else if (error.equals("email")) {
+                        out.println("!!! Email already in database !!!<br/>");
+                        session.removeAttribute("error");
+                    } else if (error.equals("username")) {
+                        out.println("!!! Username already in database !!!<br/>");
+                        session.removeAttribute("error");
+                    }
+                }
             %>
-            Passwords dont match!
+            Username: <input type="text" name="usrname"><br/>
             Password: <input type="password" name="pwd" alt=":)"><br/>
             Password(verification): <input type="password" name="pwd-ver" alt=":)"><br/> 
-
-            <%
-                session.setAttribute("password", null);
-            } else {
-            %>
-            Password: <input type="password" name="pwd"><br/>
-            Password(verification): <input type="password" name="pwd-ver"><br/>
-            <% }%>
             Name: <input type="text" name="name"><br/>
             Email: <input type="text" name="email"><br/>
             PhoneNumber: <input type="text" name="phone"><br/>   <br/>
