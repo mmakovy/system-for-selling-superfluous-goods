@@ -15,6 +15,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -54,8 +65,8 @@ public class AddCompany extends HttpServlet {
         String country = request.getParameter("country");
         String psc = request.getParameter("psc");
         String other = request.getParameter("other");
-        
-        
+
+
 
 
         if (!pwd.equals(pwdVer)) {
@@ -87,19 +98,15 @@ public class AddCompany extends HttpServlet {
 
                     try {
                         added = companyMng.addCompany(company, usrname, pwd);
+                        if (added != null) {
+                            response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
+                        } 
+                        
                     } catch (DatabaseException ex) {
                         out.println(ex.getMessage());
                         log.error(ex.getMessage());
                     }
-
-
-                    if (added != null) {
-                        out.println("Company was succesfuly added");
-                        out.println("You can <a href='login.jsp'>Log-in</a> now");
-                        out.println("<form method = 'POST' action = '/WebThesisMaven/ListCompanies'> <input type = 'submit' value = 'List all companies' name = 'option' /> </form >");
-                    } else {
-                        out.println("Company wasnt added");
-                    }
+        
                 } else {
                     out.println("Company wasnt added, because one of fields was left blank<br/>");
                 }
@@ -114,8 +121,10 @@ public class AddCompany extends HttpServlet {
             }
         }
     }
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
+
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

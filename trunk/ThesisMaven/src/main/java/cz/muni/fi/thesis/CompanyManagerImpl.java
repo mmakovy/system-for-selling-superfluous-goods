@@ -1,12 +1,12 @@
 package cz.muni.fi.thesis;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
@@ -85,11 +85,12 @@ public class CompanyManagerImpl implements CompanyManager {
                 }
 
 
-                st = con.prepareStatement("INSERT INTO users(username, userId,hash_pwd) VALUES (?,?,?);");
+                st = con.prepareStatement("INSERT INTO users(username, userId,hash_pwd,hash_ver) VALUES (?,?,?,?);");
 
                 st.setString(1, username);
                 st.setLong(2, returnCompany.getId());
                 st.setBlob(3, blobHash);
+                st.setString(4, UUID.randomUUID().toString());
 
 
                 if (st.executeUpdate() == 0) {

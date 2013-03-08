@@ -7,21 +7,16 @@ package cz.muni.fi.Web.Thesis;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author matus
  */
-public class Login extends HttpServlet {
+public class VerifyEmail extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -36,52 +31,35 @@ public class Login extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-        CompanyManager manager = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
-        User user;
-        HttpSession session;
 
-        String userName = request.getParameter("userName");
-        String pwd = request.getParameter("pwd");
+        String code = request.getParameter("code");
+
+        try {
+            userManager.verifyEmail(code);
+        } catch (DatabaseException ex) {
+        } catch (UserException ex) {
+            out.println("Account wasnt activated, because verification code wasnt found in DB");
+            out.println(ex.getMessage());
+        }
+        out.println("Your account was activated");
+        out.println("You can <a href='login.jsp'>Log-in</a> now");
+
 
 
 
 
         try {
-
-
+            /*
+             * TODO output your page here. You may use following sample code.
+             */
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Login</title>");
+            out.println("<title>Servlet VerifyEmail</title>");
             out.println("</head>");
             out.println("<body>");
-            try {
-
-                user = userManager.findUser(userName, pwd);
-
-                if (user == null) {
-                    out.println("Wrong username or password");
-                } else {
-
-                    if (!userManager.isVerified(user)) {
-                        response.sendRedirect("notverified.jsp");
-                    } else {
-
-                        session = request.getSession(true);
-                        session.setAttribute("userID", user.getId());
-
-                        response.sendRedirect("auth/menu.jsp");
-                    }
-
-                }
-
-            } catch (DatabaseException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UserException ex) {
-            }
-
+            out.println("<h1>Servlet VerifyEmail at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -118,7 +96,6 @@ public class Login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-
     }
 
     /**

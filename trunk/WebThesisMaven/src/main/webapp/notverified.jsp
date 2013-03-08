@@ -1,10 +1,9 @@
 <%-- 
-    Document   : index
-    Created on : 11.2.2013, 10:54:17
+    Document   : notverified
+    Created on : 8.3.2013, 11:05:44
     Author     : matus
 --%>
 
-<%@page import="java.util.UUID"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,8 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Welcome to our system</h1>
-        <p> You are not logged-in </p>
-        <a href="login.jsp">Log-in</a> or <a href="addcompany.jsp">Register</a>
+        Your account hasnt been verified
     </body>
 </html>
