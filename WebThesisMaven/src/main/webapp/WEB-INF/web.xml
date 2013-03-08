@@ -73,6 +73,18 @@
         <servlet-name>Logout</servlet-name>
         <servlet-class>cz.muni.fi.Web.Thesis.Logout</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EmailServlet</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.EmailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerificationEmailSender</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.VerificationEmailSender</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerifyEmail</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.VerifyEmail</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
         <url-pattern>/auth/ListCompanies</url-pattern>
@@ -136,6 +148,18 @@
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/Logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EmailServlet</servlet-name>
+        <url-pattern>/EmailServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerificationEmailSender</servlet-name>
+        <url-pattern>/VerificationEmailSender</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyEmail</servlet-name>
+        <url-pattern>/VerifyEmail</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -8,7 +8,16 @@ public class User {
     
     private String userName;
     private byte[] hash;
-    private Long id;    
+    private Long id;  
+    private String hashVer;
+
+    public String getHashVer() {
+        return hashVer;
+    }
+
+    public void setHashVer(String hashVer) {
+        this.hashVer = hashVer;
+    }
 
     public Long getId() {
         return id;
