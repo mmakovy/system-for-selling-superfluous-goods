@@ -15,7 +15,7 @@
        
         <form method="post" name='login' action="/WebThesisMaven/Login" ><!--onsubmit="return submit_company()">-->
             Username: <input type="text" name="userName"/><br/>
-            Password: <input type="text" name="pwd"/><br/>
+            Password: <input type="password" name="pwd"/><br/>
             <input type="submit" value="Log-in"/>
             
         </form>    

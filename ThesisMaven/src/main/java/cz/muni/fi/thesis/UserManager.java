@@ -17,5 +17,6 @@ public interface UserManager {
     User getUser(Long id) throws DatabaseException;
     void verifyEmail(String code)throws DatabaseException, UserException;
     boolean isVerified(User user)throws DatabaseException, UserException;
+    boolean isInDatabase(String table, String column, String searchText) throws DatabaseException;
     
 }

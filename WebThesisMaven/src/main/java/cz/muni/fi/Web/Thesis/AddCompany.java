@@ -4,10 +4,7 @@ package cz.muni.fi.Web.Thesis;
  * To change this template, choose Tools | Templates and open the template in
  * the editor.
  */
-import cz.muni.fi.thesis.Company;
-import cz.muni.fi.thesis.CompanyManager;
-import cz.muni.fi.thesis.CompanyManagerImpl;
-import cz.muni.fi.thesis.DatabaseException;
+import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -15,17 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
-import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -52,6 +38,7 @@ public class AddCompany extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         CompanyManager companyMng = new CompanyManagerImpl();
+        UserManager userManager = new UserManagerImpl();
 
         Company company = new Company();
         String name = request.getParameter("name");
@@ -68,23 +55,27 @@ public class AddCompany extends HttpServlet {
 
 
 
+        try {
+            if (!pwd.equals(pwdVer)) {
+                request.getSession().setAttribute("error", "password");
+                response.sendRedirect("addcompany.jsp");
+            } else if (userManager.isInDatabase("users","username", usrname)) {
+                request.getSession().setAttribute("error", "username");
+                response.sendRedirect("addcompany.jsp");
+            } else if (userManager.isInDatabase("company","email", email)) {
+                request.getSession().setAttribute("error", "email");
+                response.sendRedirect("addcompany.jsp");
+            } else {
 
-        if (!pwd.equals(pwdVer)) {
-            request.getSession().setAttribute("password", "error");
-            response.sendRedirect("addcompany.jsp");
-        } else {
-
-
-            try {
                 out.println("<html>");
                 out.println("<head>");
                 out.println("<title>Servlet AddCompany</title>");
                 out.println("</head>");
                 out.println("<body>");
 
-                if ((name != null && name.length() != 0)
-                        && (email != null && email.length() != 0)
-                        && (phoneNumber != null && phoneNumber.length() != 0)) {
+                if ((name != null && name.length() != 0) && (email
+                        != null && email.length() != 0) && (phoneNumber != null
+                        && phoneNumber.length() != 0)) {
                     company.setName(name);
                     company.setEmail(email);
                     company.setPhoneNumber(phoneNumber);
@@ -95,18 +86,13 @@ public class AddCompany extends HttpServlet {
                     company.setPsc(psc);
 
                     Company added = null;
-
-                    try {
-                        added = companyMng.addCompany(company, usrname, pwd);
-                        if (added != null) {
-                            response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
-                        } 
-                        
-                    } catch (DatabaseException ex) {
-                        out.println(ex.getMessage());
-                        log.error(ex.getMessage());
+                    added = companyMng.addCompany(company, usrname, pwd);
+                    if (added != null) {
+                        response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
+                    } else {
+                        out.println("Company wasnt added(returned null)");
                     }
-        
+
                 } else {
                     out.println("Company wasnt added, because one of fields was left blank<br/>");
                 }
@@ -115,14 +101,15 @@ public class AddCompany extends HttpServlet {
                 out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
                 out.println("</body>");
                 out.println("</html>");
-
-            } finally {
-                out.close();
             }
+
+        } catch (DatabaseException ex) {
+            out.println(ex.getMessage());
+            out.println("Database error");
+        } finally {
+            out.close();
         }
     }
-
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

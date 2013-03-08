@@ -283,7 +283,7 @@ public class OfferManagerImpl implements OfferManager {
                     offers.add(offer);
                 }
                 
-                st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity FROM offer WHERE description LIKE CONCAT('%',?,'%')");
+                st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,purchase_date,minimal_buy_quantity,category FROM offer WHERE description LIKE CONCAT('%',?,'%')");
                 st.setString(1, expression);
                 offerDB = st.executeQuery();
                 
@@ -296,6 +296,9 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setId(offerDB.getLong("id_offer"));
                     offer.setPrice(offerDB.getBigDecimal("price"));
                     offer.setQuantity(offerDB.getInt("quantity"));
+                    offer.setCategory(Category.valueOf(offerDB.getString("category")));
+                    offer.setPurchaseDate(offerDB.getDate("purchase_date"));
+                    offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
                     
                     if (!offers.contains(offer)) {
                         offers.add(offer);
