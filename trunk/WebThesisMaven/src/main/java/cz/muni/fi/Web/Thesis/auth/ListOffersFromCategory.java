@@ -7,22 +7,21 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matus
  */
-public class FindOffer extends HttpServlet {
-
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+public class ListOffersFromCategory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -37,92 +36,28 @@ public class FindOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
         OfferManager offerManager = new OfferManagerImpl();
-        List<Offer> offers = null;
-
-        String expression = request.getParameter("expression");
-        String minQuantity = request.getParameter("min-quantity");
-        String maxQuantity = request.getParameter("max-quantity");
-        String minQuantityToBuy = request.getParameter("min-quantity-to-buy");
-        String maxQuantityToBuy = request.getParameter("max-quantity-to-buy");
-        String minPrice = request.getParameter("min-price");
-        String maxPrice = request.getParameter("max-price");
-        String categoryString = request.getParameter("category");
-        int minQuantityInt;
-        int maxQuantityInt;
-        int minQuantityToBuyInt;
-        int maxQuantityToBuyInt;
-        BigDecimal minPriceInt;
-        BigDecimal maxPriceInt;
-
-
+        List<Offer> offers = new ArrayList<Offer>();
         HttpSession session = request.getSession();
-        Object userID = session.getAttribute("userID");
+        Object userId = session.getAttribute("userID");
+        Long id = (Long) userId;
 
         try {
-
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FindOffer</title>");
-            out.println("</head>");
-            out.println("<body>");
+            String categoryString = request.getParameter("category");
+            Category category = null;
 
             try {
-                offers = offerManager.findOffer(expression);
+                category = Category.valueOf(categoryString.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                out.println("System doesnt have " + categoryString + " category");
+            }
 
-                if (minQuantity.length() > 0 && maxQuantity.length() > 0) {
-                    minQuantityInt = Integer.parseInt(minQuantity);
-                    maxQuantityInt = Integer.parseInt(maxQuantity);
-                    offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
-                } else if (minQuantity.length() > 0 && maxQuantity.length() <= 0) {
-                    minQuantityInt = Integer.parseInt(minQuantity);
-                    maxQuantityInt = Integer.MAX_VALUE;
-                    offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
-                } else if (minQuantity.length() <= 0 && maxQuantity.length() > 0) {
-                    minQuantityInt = 0;
-                    maxQuantityInt = Integer.parseInt(maxQuantity);
-                    offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
-                }
-
-                if (minQuantityToBuy.length() > 0 && maxQuantityToBuy.length() > 0) {
-                    minQuantityToBuyInt = Integer.parseInt(minQuantityToBuy);
-                    maxQuantityToBuyInt = Integer.parseInt(maxQuantityToBuy);
-                    offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
-                } else if (minQuantityToBuy.length() > 0 && maxQuantityToBuy.length() <= 0) {
-                    minQuantityToBuyInt = Integer.parseInt(minQuantityToBuy);
-                    maxQuantityToBuyInt = Integer.MAX_VALUE;
-                    offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
-                } else if (minQuantityToBuy.length() <= 0 && maxQuantityToBuy.length() > 0) {
-                    minQuantityToBuyInt = 0;
-                    maxQuantityToBuyInt = Integer.parseInt(maxQuantityToBuy);
-                    offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
-                }
-                
-
-                
-                if (minPrice.length() > 0 && maxPrice.length() > 0) {
-                    minPriceInt = new BigDecimal(minPrice);
-                    maxPriceInt = new BigDecimal(maxPrice);
-                    offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
-                } else if (minPrice.length() > 0 && maxPrice.length() <= 0) {
-                    minPriceInt = new BigDecimal(minPrice);
-                    maxPriceInt = new BigDecimal("1000000");
-                    offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
-                } else if (minPrice.length() <= 0 && maxPrice.length() > 0) {
-                    minPriceInt = BigDecimal.ZERO;
-                    maxPriceInt = new BigDecimal(maxPrice);
-                    offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
-                }
-
-                if (!categoryString.equals("----")) {
-                    Category category = Category.valueOf(categoryString.toUpperCase());
-                    offers = offerManager.filterCategory(offers, category);
-                }
+            try {
+                offers = offerManager.getOffersFromCategory(category);
 
                 if (offers.isEmpty()) {
-                    out.println("No search results");
+                    out.println("No offers from this category in database");
                 } else {
                     out.println("OFFERS");
                     out.println("<table>");
@@ -136,12 +71,11 @@ public class FindOffer extends HttpServlet {
                     out.println("<th> Purchase Date </th>");
                     out.println("<th> Category </th>");
 
-
                     for (int i = 0; i < offers.size(); i++) {
                         out.println("<tr>");
                         out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
                         out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
-                        out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/ShowOffer?id=" + offers.get(i).getId() + "'>" + offers.get(i).getName() + "</a></td>");
+                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getName() + "</td>");
                         out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
                         out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
                         out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
@@ -152,6 +86,7 @@ public class FindOffer extends HttpServlet {
                             out.println("<td style='border: 1px solid black;'>" + offers.get(i).getMinimalBuyQuantity() + "</td>");
                         }
 
+
                         if (offers.get(i).getPurchaseDate() == null) {
                             out.println("<td style='border: 1px solid black;'> Not specified</td>");
                         } else {
@@ -159,27 +94,30 @@ public class FindOffer extends HttpServlet {
                         }
 
                         out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCategory() + "</td>");
-
-                        if (offers.get(i).getCompany_id().equals(userID)) {
+                        if (offers.get(i).getCompany_id().equals(id)) {
                             out.println("<td><a href='/WebThesisMaven/auth/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
                             out.println("<td><a href='/WebThesisMaven/auth/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
                         }
-
                         out.println("</tr>");
                     }
+                    out.println("</table>");
+
                 }
             } catch (DatabaseException ex) {
-                log.error(ex.getMessage());
-                out.println(ex.getMessage());
+                Logger.getLogger(ListOffersFromCategory.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet ListOffersFromCategory</title>");
+            out.println("</head>");
+            out.println("<body>");
+
             out.println("</body>");
             out.println("</html>");
         } finally {
             out.close();
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
