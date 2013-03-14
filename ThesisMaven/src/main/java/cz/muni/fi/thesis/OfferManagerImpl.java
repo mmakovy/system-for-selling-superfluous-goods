@@ -1,5 +1,6 @@
 package cz.muni.fi.thesis;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -314,5 +315,119 @@ public class OfferManagerImpl implements OfferManager {
             }
         }
         return null;
+    }
+    
+    public List<Offer> getOffersFromCategory(Category category) throws DatabaseException{
+        
+        if (category == null) {
+            throw new IllegalArgumentException("category");
+        }
+        
+        Connection con = DatabaseConnection.getConnection();
+        List<Offer> offers = new ArrayList<Offer>();
+        
+        if (con == null) {
+            throw new DatabaseException("Connection wasnt established");
+        } else {
+            try {
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity FROM offer WHERE category=?;");
+                st.setString(1,category.toString());
+                ResultSet offerDB = st.executeQuery();
+                while (offerDB.next()) {
+                    Offer offer = new Offer();
+                    offer.setCompany_id(offerDB.getLong("id_company"));
+                    offer.setName(offerDB.getString("name"));
+                    offer.setDescription(offerDB.getString("description"));
+                    offer.setId(offerDB.getLong("id_offer"));
+                    offer.setPrice(offerDB.getBigDecimal("price"));
+                    offer.setQuantity(offerDB.getInt("quantity"));
+                    offer.setCategory(Category.valueOf(offerDB.getString("category")));
+                    offer.setPurchaseDate(offerDB.getDate("purchase_date"));
+                    offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offers.add(offer);
+                }
+                return offers;
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(con);
+            }
+        }
+        return null;
+        
+    }
+    
+    @Override
+    public List<Offer> filterQuantity(List<Offer> offers ,int min , int max){
+        
+        List<Offer> returnOffers = new ArrayList<Offer>();
+        
+        if (offers == null) {
+            throw new IllegalArgumentException("offers");
+        }
+        
+        
+        for (Offer offer: offers) {
+            if (offer.getQuantity() <= max && offer.getQuantity() >= min) {
+                returnOffers.add(offer);
+            }
+        }
+        
+        return returnOffers;
+    }
+    
+    @Override
+    public List<Offer> filterQuantityToBuy(List<Offer> offers ,int min , int max){
+        
+        List<Offer> returnOffers = new ArrayList<Offer>();
+        
+        if (offers == null) {
+            throw new IllegalArgumentException("offers");
+        }
+
+        for (Offer offer: offers) {
+            if (offer.getMinimalBuyQuantity() <= max && offer.getMinimalBuyQuantity() >= min) {
+                returnOffers.add(offer);
+            }
+        }
+        
+        return returnOffers;
+    }
+        
+    @Override
+    public List<Offer> filterPrice(List<Offer> offers , BigDecimal min , BigDecimal max){
+        
+        List<Offer> returnOffers = new ArrayList<Offer>();
+        
+        if (offers == null) {
+            throw new IllegalArgumentException("offers");
+        }
+
+        for (Offer offer: offers) {
+            BigDecimal price = offer.getPrice();
+            if ((price.compareTo(max) == -1 || price.compareTo(max) == 0 )  && (price.compareTo(min) == 1 || price.compareTo(min) == 0 )) {
+                returnOffers.add(offer);
+            }
+        }
+        
+        return returnOffers;
+    }
+    
+    @Override
+    public List<Offer> filterCategory(List<Offer> offers ,Category category){
+        
+        List<Offer> returnOffers = new ArrayList<Offer>();
+        
+        if (offers == null) {
+            throw new IllegalArgumentException("offers");
+        }
+
+        for (Offer offer: offers) {
+            if (offer.getCategory().equals(category)) {
+                returnOffers.add(offer);
+            }
+        }
+        
+        return returnOffers;
     }
 }

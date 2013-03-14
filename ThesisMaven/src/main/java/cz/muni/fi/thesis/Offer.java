@@ -1,4 +1,4 @@
-package cz.muni.fi.thesis;
+    package cz.muni.fi.thesis;
 
 import java.math.BigDecimal;
 import java.sql.Date;

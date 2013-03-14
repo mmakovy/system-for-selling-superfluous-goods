@@ -85,6 +85,10 @@
         <servlet-name>VerifyEmail</servlet-name>
         <servlet-class>cz.muni.fi.Web.Thesis.VerifyEmail</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ListOffersFromCategory</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.ListOffersFromCategory</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
         <url-pattern>/auth/ListCompanies</url-pattern>
@@ -160,6 +164,10 @@
     <servlet-mapping>
         <servlet-name>VerifyEmail</servlet-name>
         <url-pattern>/VerifyEmail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListOffersFromCategory</servlet-name>
+        <url-pattern>/auth/ListOffersFromCategory</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
