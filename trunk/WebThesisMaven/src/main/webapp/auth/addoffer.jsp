@@ -52,6 +52,9 @@
 
                 <input type='submit' value='Add offer'><br/>  
             </form>  
+            
+            
+
 
             <a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>  
         </body>  
