@@ -7,6 +7,8 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +47,7 @@ public class ShowOffer extends HttpServlet {
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
+        Long userIDLong = (Long) userID;
 
         try {
 
@@ -92,7 +95,18 @@ public class ShowOffer extends HttpServlet {
                 out.println("<u>Address:</u> <br/>");
                 out.println(company.getStreet() + " " + company.getPsc() +"<br/>");
                 out.println(company.getCity() + "<br/>");
-                out.println(company.getCountry() + "<br/>");
+                out.println(company.getCountry() + "<br/></br>");
+                
+                out.println("<form method='post' name='form2' action='/WebThesisMaven/auth/ContactFormEmailSender?offerId=" + offer.getId() + "'>");
+                out.println("Send e-mail:<br/>");
+                try {
+                    out.println("Your e-mail address:" + companyManager.getCompany(userIDLong).getEmail() + "<br/>");
+                } catch (DatabaseException ex) {
+                    Logger.getLogger(ShowOffer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                out.println("Text of message:<br/>");
+                out.println("<input type='text' name='text'>");
+                out.println("<input type='submit' value='send'>");
 
             }
 
