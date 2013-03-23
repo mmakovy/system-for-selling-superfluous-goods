@@ -29,15 +29,37 @@ function submit_offer() {
 
 function submit_company() {
     
-    var name = document.form2.name;
-    var email = document.form2.email;
-    var phone = document.form2.phone;
+    var name = document.add_company.name;
+    var email = document.add_company.email;
+    var phone = document.add_company.phone;
+    var emailVer = document.add_company.emailVer;
+    var password = document.add_company.pwd;
+    var passwordVer = document.add_company.pwdVer;
+    var username = document.add_company.usrname;
     
-    if (name.value == "" || email.value == "" || phone.value == ""){
-        alert('One of fields is blank');
+    if (name.value == ""){
+        alert('Name field is blank');
         return false;
+    } else if (email.value == "") {
+        alert('Email field is blank');
+        return false;   
+    } else if (phone.value == "") {
+        alert('Phone number field is blank');
+        return false;   
     } else if (isNaN(phone.value)) {
         alert('Phone number must be a number');
+        return false;   
+    } else if (email.value !== emailVer.value) {
+        alert('Emails dont match');
+        return false;   
+    }  else if (password.value !== passwordVer.value ) {
+        alert('Passwords dont match');
+        return false;   
+    }  else if (username.value == "") {
+        alert('Username is blank');
+        return false;   
+    } else if (password.value == "") {
+        alert('Password field is blank');
         return false;   
     } else {
         return true;

@@ -93,6 +93,10 @@
         <servlet-name>ContactFormEmailSender</servlet-name>
         <servlet-class>cz.muni.fi.Web.Thesis.auth.ContactFormEmailSender</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ForgotPassword</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.ForgotPassword</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
         <url-pattern>/auth/ListCompanies</url-pattern>
@@ -177,6 +181,10 @@
         <servlet-name>ContactFormEmailSender</servlet-name>
         <url-pattern>/auth/ContactFormEmailSender</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ForgotPassword</servlet-name>
+        <url-pattern>/ForgotPassword</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
@@ -185,4 +193,10 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
 </web-app>

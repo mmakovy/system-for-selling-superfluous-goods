@@ -56,7 +56,7 @@ public class updateCompany extends HttpServlet {
             out.println("<body>");
 
             try {
-                company = manager.getCompany(id);
+                company = manager.getCompanyById(id);
                 if (company == null) {
                     out.println("Company wasnt found in database");
                 } else {
@@ -65,7 +65,7 @@ public class updateCompany extends HttpServlet {
                     out.println("Name:");
                     out.println("<input type='text' name='name' value='" + company.getName() + "'><br/>");
                     out.println("Email:");
-                    out.println("<input type='text' name='email' value='" + company.getEmail() + "'><br/>");
+                    out.println(company.getEmail() + "<br/>");
                     out.println("Phone Number:");
                     out.println("<input type='text' name='phone' value='" + company.getPhoneNumber() + "'><br/><br/>");
                     out.println("Other:");

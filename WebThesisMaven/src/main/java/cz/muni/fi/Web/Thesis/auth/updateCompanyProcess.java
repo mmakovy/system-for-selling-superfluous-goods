@@ -7,6 +7,8 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +42,6 @@ public class updateCompanyProcess extends HttpServlet {
 
         Company company = new Company();
         String name = request.getParameter("name");
-        String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phone");
         String street = request.getParameter("street");
         String city = request.getParameter("city");
@@ -49,6 +50,16 @@ public class updateCompanyProcess extends HttpServlet {
         String other = request.getParameter("other");
 
         Long id = Long.parseLong(request.getParameter("id"));
+
+        String email = null;
+
+        try {
+            email = manager.getCompanyById(id).getEmail();
+        } catch (DatabaseException ex) {
+            Logger.getLogger(updateCompanyProcess.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
@@ -68,7 +79,6 @@ public class updateCompanyProcess extends HttpServlet {
                 out.println("<body>");
 
                 if ((name != null && name.length() != 0)
-                        && (email != null && email.length() != 0)
                         && (phoneNumber != null && phoneNumber.length() != 0)) {
                     company.setName(name);
                     company.setEmail(email);
@@ -104,21 +114,22 @@ public class updateCompanyProcess extends HttpServlet {
             } finally {
                 out.close();
             }
-        
+
+        }
     }
-}
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-/**
- * Handles the HTTP
- * <code>GET</code> method.
- *
- * @param request servlet request
- * @param response servlet response
- * @throws ServletException if a servlet-specific error occurs
- * @throws IOException if an I/O error occurs
- */
-@Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+
+    /**
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -133,7 +144,7 @@ public class updateCompanyProcess extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -144,7 +155,7 @@ public class updateCompanyProcess extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-        public String getServletInfo() {
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 }

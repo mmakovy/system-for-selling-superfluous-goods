@@ -38,14 +38,20 @@ public class ListCompanies extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         response.setContentType("text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        
         PrintWriter out = response.getWriter();
+        
         CompanyManager companyMng = new CompanyManagerImpl();
 
         List<Company> companies = null;
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
+        
+        
 
             try {
                 companies = companyMng.getAllCompanies();
@@ -57,6 +63,7 @@ public class ListCompanies extends HttpServlet {
             try {
                 out.println("<html>");
                 out.println("<head>");
+                out.println("<meta charset='UTF-8'>");
                 out.println("<title>Servlet servletTest</title>");
                 out.println("</head>");
                 out.println("<body>");
@@ -87,6 +94,7 @@ public class ListCompanies extends HttpServlet {
                         out.println("<td style='border: 1px solid black;'>" + companies.get(i).getCity() + "</td>");
                         out.println("<td style='border: 1px solid black;'>" + companies.get(i).getCountry() + "</td>");
                         out.println("<td style='border: 1px solid black;'>" + companies.get(i).getPsc() + "</td>");
+                        String other = companies.get(i).getOther();
                         out.println("<td style='border: 1px solid black;'>" + companies.get(i).getOther() + "</td>");
 
                         out.println("</tr>");

@@ -35,6 +35,7 @@ public class AddCompany extends HttpServlet {
             throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
 
         PrintWriter out = response.getWriter();
         CompanyManager companyMng = new CompanyManagerImpl();
@@ -46,7 +47,6 @@ public class AddCompany extends HttpServlet {
         String phoneNumber = request.getParameter("phone");
         String usrname = request.getParameter("usrname");
         String pwd = request.getParameter("pwd");
-        String pwdVer = request.getParameter("pwd-ver");
         String street = request.getParameter("street");
         String city = request.getParameter("city");
         String country = request.getParameter("country");
@@ -56,13 +56,10 @@ public class AddCompany extends HttpServlet {
 
 
         try {
-            if (!pwd.equals(pwdVer)) {
-                request.getSession().setAttribute("error", "password");
-                response.sendRedirect("addcompany.jsp");
-            } else if (userManager.isInDatabase("users","username", usrname)) {
+            if (userManager.isUsernameInDatabase(usrname)) {
                 request.getSession().setAttribute("error", "username");
                 response.sendRedirect("addcompany.jsp");
-            } else if (userManager.isInDatabase("company","email", email)) {
+            } else if (companyMng.isEmailInDatabase(email)) {
                 request.getSession().setAttribute("error", "email");
                 response.sendRedirect("addcompany.jsp");
             } else {
@@ -75,7 +72,8 @@ public class AddCompany extends HttpServlet {
 
                 if ((name != null && name.length() != 0) && (email
                         != null && email.length() != 0) && (phoneNumber != null
-                        && phoneNumber.length() != 0)) {
+                        && phoneNumber.length() != 0) && (pwd
+                        != null && pwd.length() != 0)) {
                     company.setName(name);
                     company.setEmail(email);
                     company.setPhoneNumber(phoneNumber);

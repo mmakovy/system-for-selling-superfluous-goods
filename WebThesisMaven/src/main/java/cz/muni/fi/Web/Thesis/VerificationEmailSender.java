@@ -32,7 +32,7 @@ public class VerificationEmailSender extends HttpServlet {
         Company company = null;
         User user = null;
         try {
-            company = companyManager.getCompany(id);
+            company = companyManager.getCompanyById(id);
             user = userManager.getUser(id);
         } catch (DatabaseException ex) {
             Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
