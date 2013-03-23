@@ -114,7 +114,7 @@ public class AddOffer extends HttpServlet {
 
                     try {
 
-                        Company company = companyManager.getCompany(userId);
+                        Company company = companyManager.getCompanyById(userId);
 
                         if (company == null) {
                             out.println("Company wasnt found in database");

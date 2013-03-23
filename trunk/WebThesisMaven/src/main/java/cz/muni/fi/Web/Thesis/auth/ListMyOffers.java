@@ -56,7 +56,7 @@ public class ListMyOffers extends HttpServlet {
                 out.println("<body>");
 
                 try {
-                    company = companyManager.getCompany(id);
+                    company = companyManager.getCompanyById(id);
                     if (company == null) {
                         out.println("Your company wasnt found in database");
                     } else {

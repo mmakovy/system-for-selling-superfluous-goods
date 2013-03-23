@@ -26,12 +26,11 @@ public class CompanyManagerImpl implements CompanyManager {
     public Company addCompany(Company company, String username, String password) throws DatabaseException {
 
         UserManager usrManager = new UserManagerImpl();
-        
+
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
-
         }
         try {
             md.update(password.getBytes("UTF-8"));
@@ -39,9 +38,9 @@ public class CompanyManagerImpl implements CompanyManager {
             java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         byte[] digest = md.digest();
-        
+
         Blob blobHash = null;
-        
+
         try {
             blobHash = new SerialBlob(digest);
         } catch (SerialException ex) {
@@ -245,7 +244,7 @@ public class CompanyManagerImpl implements CompanyManager {
     }
 
     @Override
-    public Company getCompany(Long id) throws DatabaseException {
+    public Company getCompanyById(Long id) throws DatabaseException {
         if (id == null) {
             throw new IllegalArgumentException("id");
         }
@@ -282,5 +281,76 @@ public class CompanyManagerImpl implements CompanyManager {
         }
         return null;
 
+    }
+
+    @Override
+    public boolean isEmailInDatabase(String email) throws DatabaseException {
+        if (email == null) {
+            throw new IllegalArgumentException("email");
+        }
+
+        Connection con = DatabaseConnection.getConnection();
+
+        if (con == null) {
+            throw new DatabaseException("Conection to database wasnt established");
+        } else {
+            try {
+                PreparedStatement st = con.prepareStatement("SELECT email FROM company WHERE email=?;");
+                st.setString(1, email);
+
+                ResultSet usersDB = st.executeQuery();
+
+                if (usersDB.next()) {
+                    return true;
+                }
+
+                return false;
+
+            } catch (SQLException ex) {
+                log.error(ex.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(con);
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public Company getCompanyByEmail(String email) throws DatabaseException {
+        if (email == null) {
+            throw new IllegalArgumentException("email");
+        }
+
+        Connection con = DatabaseConnection.getConnection();
+
+        if (con == null) {
+            throw new DatabaseException("Conection to database wasnt established");
+        } else {
+            try {
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number,street,city,country,psc,other FROM company WHERE email=?");
+                st.setString(1, email);
+                ResultSet companyDB = st.executeQuery();
+                Company company = null;
+                while (companyDB.next()) {
+                    company = new Company();
+                    company.setId(companyDB.getLong("id_company"));
+                    company.setName(companyDB.getString("name"));
+                    company.setEmail(companyDB.getString("email"));
+                    company.setPhoneNumber(companyDB.getString("phone_number"));
+                    company.setCity(companyDB.getString("city"));
+                    company.setCountry(companyDB.getString("country"));
+                    company.setPsc(companyDB.getString("psc"));
+                    company.setStreet(companyDB.getString("street"));
+                    company.setOther(companyDB.getString("other"));
+                }
+                return company;
+
+            } catch (SQLException ex) {
+                log.error(ex.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(con);
+            }
+        }
+        return null;
     }
 }

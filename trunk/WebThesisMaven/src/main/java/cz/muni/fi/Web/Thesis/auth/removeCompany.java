@@ -47,7 +47,7 @@ public class removeCompany extends HttpServlet {
                 out.println("<body>");
 
                 try {
-                    company = manager.getCompany(id);
+                    company = manager.getCompanyById(id);
 
                     if (company == null) {
                         out.println("Company wasnt found in database");

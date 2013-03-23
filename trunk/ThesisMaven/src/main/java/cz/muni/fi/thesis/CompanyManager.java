@@ -51,5 +51,10 @@ public interface CompanyManager {
      * @return company with specific ID
      * @throws DatabaseException if connection wasnt established
      */
-    Company getCompany(Long id) throws DatabaseException;
+    Company getCompanyById(Long id) throws DatabaseException;
+    
+    boolean isEmailInDatabase(String email) throws DatabaseException;
+    
+    Company getCompanyByEmail(String email) throws DatabaseException;
+     
 }

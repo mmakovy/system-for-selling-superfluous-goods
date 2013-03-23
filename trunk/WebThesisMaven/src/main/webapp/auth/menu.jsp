@@ -8,7 +8,7 @@
 <%@page import="cz.muni.fi.thesis.UserManager"%>
 <%@page import="cz.muni.fi.thesis.UserManagerImpl"%>
 <%@page import="cz.muni.fi.thesis.DatabaseConnection"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,7 +27,8 @@
 
             <tr>
                 <td>
-                    <a href="ListMyOffers">List My Offers</a>
+                    <a href="ListMyOffers">List My Offers</a> 
+                    ľščťžýáíéúôňäřď
                 </td>
                 <td>
                     <a href="updateCompany">My profile</a>

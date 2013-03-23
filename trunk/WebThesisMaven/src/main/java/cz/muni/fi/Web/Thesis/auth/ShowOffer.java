@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
 
 /**
  *
@@ -40,6 +42,7 @@ public class ShowOffer extends HttpServlet {
         PrintWriter out = response.getWriter();
         OfferManager offerManager = new OfferManagerImpl();
         CompanyManager companyManager = new CompanyManagerImpl();
+        ReCaptcha c = ReCaptchaFactory.newReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
 
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer = null;
@@ -60,7 +63,7 @@ public class ShowOffer extends HttpServlet {
             try {
                 offer = offerManager.getOffer(id);
                 Long id_company = offer.getCompany_id();
-                company = companyManager.getCompany(id_company);
+                company = companyManager.getCompanyById(id_company);
             } catch (DatabaseException ex) {
                 log.error(ex.getMessage());
                 out.println(ex.getMessage());
@@ -100,12 +103,13 @@ public class ShowOffer extends HttpServlet {
                 out.println("<form method='post' name='form2' action='/WebThesisMaven/auth/ContactFormEmailSender?offerId=" + offer.getId() + "'>");
                 out.println("Send e-mail:<br/>");
                 try {
-                    out.println("Your e-mail address:" + companyManager.getCompany(userIDLong).getEmail() + "<br/>");
+                    out.println("Your e-mail address:" + companyManager.getCompanyById(userIDLong).getEmail() + "<br/>");
                 } catch (DatabaseException ex) {
                     Logger.getLogger(ShowOffer.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 out.println("Text of message:<br/>");
                 out.println("<input type='text' name='text'>");
+                out.println(c.createRecaptchaHtml(null, null));
                 out.println("<input type='submit' value='send'>");
 
             }

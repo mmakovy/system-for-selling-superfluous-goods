@@ -19,6 +19,8 @@
             <input type="submit" value="Log-in"/>
             
         </form>    
+        <br/>
+        <a href="forgotPassword.jsp">Forgot your password?</a><br/>
         <a href="index.jsp"> Go to Home Page </a>
     </body>
 </html>

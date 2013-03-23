@@ -16,7 +16,7 @@ public final class DatabaseConnection {
         
         try {
             Class.forName("com.mysql.jdbc.Driver");  
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thesis", "root", "pavot");             
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/thesis?characterEncoding=UTF-8", "root", "pavot");             
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         } 

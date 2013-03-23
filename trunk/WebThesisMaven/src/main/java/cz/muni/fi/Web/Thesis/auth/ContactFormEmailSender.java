@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 
 /**
  *
@@ -50,53 +52,69 @@ public class ContactFormEmailSender extends HttpServlet {
         String text = request.getParameter("text");
         String offerId = request.getParameter("offerId");
         Long offerIdLong = Long.parseLong(offerId);
-        
+
         HttpSession httpSession = request.getSession();
         Long userIdLong = (Long) httpSession.getAttribute("userID");
-        
+
         String to = null;
         Offer offer = null;
         Company companyFrom = null;
 
-        try {
-            offer = offerManager.getOffer(offerIdLong);
-            Long companyId = offer.getCompany_id();
-            to = companyManager.getCompany(companyId).getEmail();
-            companyFrom = companyManager.getCompany(userIdLong);
-        } catch (DatabaseException ex) {
-            Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
+        String remoteAddr = request.getRemoteAddr();
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+        reCaptcha.setPrivateKey("6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr");
+
+        String challenge = request.getParameter("recaptcha_challenge_field");
+        String uresponse = request.getParameter("recaptcha_response_field");
+        ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
+
+        if (reCaptchaResponse.isValid()) {
+            out.print("Answer was entered correctly!");
+            try {
+                offer = offerManager.getOffer(offerIdLong);
+                Long companyId = offer.getCompany_id();
+                to = companyManager.getCompanyById(companyId).getEmail();
+                companyFrom = companyManager.getCompanyById(userIdLong);
+            } catch (DatabaseException ex) {
+                Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String host = "smtp.gmail.com";
+            String pass = "epson123";
+            String from = "no.reply.sssg@gmail.com";
+            Properties props = System.getProperties();
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", host);
+            props.put("mail.smtp.user", "no.reply.sssg@gmail.com");
+            props.put("mail.smtp.password", pass);
+            props.put("mail.smtp.port", "587");
+            props.put("mail.smtp.auth", "true");
+
+            Session session = Session.getDefaultInstance(props, null);
+            MimeMessage message = new MimeMessage(session);
+
+            try {
+                message.setFrom(new InternetAddress(from));
+                message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+                message.setSubject("Reply to offer " + offer.getName());
+                String messageText = "Company " + companyFrom.toString() + " has sent you this message:" + text;
+                message.setText(messageText);
+                Transport transport = session.getTransport("smtp");
+                transport.connect(host, from, pass);
+                transport.sendMessage(message, message.getAllRecipients());
+                transport.close();
+            } catch (MessagingException ex) {
+                Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            out.println("Your email has been sent<br/>");
+            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Home</a>");
+
+        } else {
+            out.print("Answer is wrong");
         }
-        
-        String host = "smtp.gmail.com";
-        String pass = "epson123";
-        String from = "no.reply.sssg@gmail.com";
-        Properties props = System.getProperties();
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.user", "no.reply.sssg@gmail.com");
-        props.put("mail.smtp.password", pass);
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.auth", "true");
 
-        Session session = Session.getDefaultInstance(props, null);
-        MimeMessage message = new MimeMessage(session);
 
-        try {
-            message.setFrom(new InternetAddress(from));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("Reply to offer " + offer.getName());
-            String messageText = "Company "+companyFrom.toString()+" has sent you this message:" + text;
-            message.setText(messageText);
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, from, pass);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-        } catch (MessagingException ex) {
-            Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        out.println("Your email has been sent<br/>");
-        out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Home</a>");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
