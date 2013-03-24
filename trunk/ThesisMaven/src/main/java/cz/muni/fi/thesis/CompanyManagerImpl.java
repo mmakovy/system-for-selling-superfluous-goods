@@ -27,27 +27,7 @@ public class CompanyManagerImpl implements CompanyManager {
 
         UserManager usrManager = new UserManagerImpl();
 
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException ex) {
-        }
-        try {
-            md.update(password.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        byte[] digest = md.digest();
-
-        Blob blobHash = null;
-
-        try {
-            blobHash = new SerialBlob(digest);
-        } catch (SerialException ex) {
-            java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Blob blobHash = usrManager.hashPassword(password);
 
         if (company == null) {
             throw new IllegalArgumentException("company");

@@ -97,6 +97,10 @@
         <servlet-name>ForgotPassword</servlet-name>
         <servlet-class>cz.muni.fi.Web.Thesis.ForgotPassword</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ChangePassword</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.ChangePassword</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
         <url-pattern>/auth/ListCompanies</url-pattern>
@@ -184,6 +188,10 @@
     <servlet-mapping>
         <servlet-name>ForgotPassword</servlet-name>
         <url-pattern>/ForgotPassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChangePassword</servlet-name>
+        <url-pattern>/auth/ChangePassword</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
