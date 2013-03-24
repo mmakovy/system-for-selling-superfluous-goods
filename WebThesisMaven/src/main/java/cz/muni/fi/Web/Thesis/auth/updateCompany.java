@@ -88,6 +88,7 @@ public class updateCompany extends HttpServlet {
                 log.error(ex.getMessage());
             }
             out.println("<a href='removeCompany'>Remove my company from system</a><br/>");
+            out.println("<a href='changePassword.jsp'>Change password</a><br/>");
             out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
             out.println("</body>");
             out.println("</html>");

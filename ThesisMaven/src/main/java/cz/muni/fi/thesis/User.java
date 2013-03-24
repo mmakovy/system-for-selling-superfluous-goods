@@ -51,6 +51,42 @@ public class User {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if ((this.userName == null) ? (other.userName != null) : !this.userName.equals(other.userName)) {
+            return false;
+        }
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        if ((this.hashVer == null) ? (other.hashVer != null) : !this.hashVer.equals(other.hashVer)) {
+            return false;
+        }
+        if (this.active != other.active) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + (this.userName != null ? this.userName.hashCode() : 0);
+        hash = 41 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 41 * hash + (this.hashVer != null ? this.hashVer.hashCode() : 0);
+        hash = 41 * hash + this.active;
+        return hash;
+    }
+    
+    
     
     
 }
