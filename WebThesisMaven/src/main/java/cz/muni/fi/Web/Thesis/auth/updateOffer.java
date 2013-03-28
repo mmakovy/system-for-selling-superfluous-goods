@@ -81,7 +81,7 @@ public class updateOffer extends HttpServlet {
                             int month = calendar.get(Calendar.MONTH) + 1;
                             int year = calendar.get(Calendar.YEAR);
 
-                            out.println("<form method='post' name='form1' onsubmit='return submit_offer()' action='/WebThesisMaven/auth/updateOfferProcess?id=" + id + "&id_company=" + offer.getCompany_id() + "'>");
+                            out.println("<form method='post' name='form1' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='/WebThesisMaven/auth/updateOfferProcess?id=" + id + "&id_company=" + offer.getCompany_id() + "'>");
                             out.println("Name:");
                             out.println("<input type='text' name='name'  value='" + offer.getName() + "'><br/>");
                             out.println("Price:");
@@ -139,6 +139,11 @@ public class updateOffer extends HttpServlet {
 
                             out.println("Description:");
                             out.println("<input type='text' name='description' value='" + offer.getDescription() + "'><br/>");
+                            
+                            out.println("Image:<br/>");
+                            out.println("<img width='300' src='/WebThesisMaven/uploads/" + offer.getPhotoUrl() + "'><br/>");
+                            out.println("Update image:<br/>");
+                            out.println("<input type='file' name='image'><br/>");
 
                             out.println("<input type='submit' name='submit' value='Update'>");
                             out.println("</form>");

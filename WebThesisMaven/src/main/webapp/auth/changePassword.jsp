@@ -12,7 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form name="change_password" action="ChangePassword" >
+        <form method="post" name="change_password" action="ChangePassword" >
 
             Old password:<br/>
             <input type="password" name="old_password"/><br/>

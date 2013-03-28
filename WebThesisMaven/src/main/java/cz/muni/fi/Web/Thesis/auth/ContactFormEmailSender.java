@@ -69,7 +69,7 @@ public class ContactFormEmailSender extends HttpServlet {
         ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
 
         if (reCaptchaResponse.isValid()) {
-            out.print("Answer was entered correctly!");
+            /** out.print("Answer was entered correctly!"); */
             try {
                 offer = offerManager.getOffer(offerIdLong);
                 Long companyId = offer.getCompany_id();

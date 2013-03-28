@@ -5,16 +5,28 @@
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.Normalizer;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.sf.jmimemagic.*;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -40,111 +52,202 @@ public class AddOffer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
+
         CompanyManager companyManager = new CompanyManagerImpl();
         OfferManager offerManager = new OfferManagerImpl();
         Calendar calendar = Calendar.getInstance();
 
         HttpSession session = request.getSession();
         Object userIdObject = session.getAttribute("userID");
+        String photoUrl = null;
 
-            /**
-             * Processing parameters from request
-             */
-            String name = request.getParameter("name");
-            String description = request.getParameter("description");
-            String quantityString = request.getParameter("quantity");
-            String priceString = request.getParameter("price");
-            String minimalBuyString = request.getParameter("minimal_buy");
-            String categoryString = request.getParameter("category");
-            String dayString = request.getParameter("dob_day");
-            String monthString = request.getParameter("dob_month");
-            String yearString = request.getParameter("dob_year");
-            /**
-             * end
-             */
-            
-            /**
-             * converting String to integer
-             */
-            int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
-            int quantity = Integer.parseInt(quantityString);
+        String name = null;
+        String description = null;
+        String quantityString = null;
+        String priceString = null;
+        String minimalBuyString = null;
+        String categoryString = null;
+        String dayString = null;
+        String monthString = null;
+        String yearString = null;
+        boolean fileIsImage = true;
 
-            /**
-             * end
-             */
-            
-            Date date;
-            if (yearString.length() == 0|| monthString.length() == 0 || dayString.length() == 0 ) {
-                date = null;
-            } else {
-                int YearInt = Integer.parseInt(yearString);
-                int MonthInt = Integer.parseInt(monthString) - 1;
-                int DayInt = Integer.parseInt(dayString);
-                calendar.set(YearInt, MonthInt, DayInt);
-                date = new Date(calendar.getTimeInMillis());
-            }
+        if (ServletFileUpload.isMultipartContent(request)) {
+
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            List items = null;
 
             try {
+                items = upload.parseRequest(request);
+            } catch (FileUploadException ex) {
+                Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet AddOffer</title>");
-                out.println("</head>");
-                out.println("<body>");
+            Iterator iter = items.iterator();
+            while (iter.hasNext()) {
+                FileItem item = (FileItem) iter.next();
 
+                if (!item.isFormField()) {
 
-                if (name.length() != 0 && description.length() != 0
-                        && userIdObject != null && priceString.length() != 0
-                        && quantityString.length() != 0) {
+                    String fileName = item.getName();
+                    String root = getServletContext().getRealPath("/");
+                    File path = new File(root + "/uploads");
+                    if (!path.exists()) {
+                        boolean status = path.mkdirs();
+                    }
 
-                    Long userId = (Long) userIdObject;
-                    BigDecimal price = new BigDecimal(priceString);
-
-                    Offer offer = new Offer();
-                    offer.setCompany_id(userId);
-                    offer.setDescription(description);
-                    offer.setName(name);
-                    offer.setPrice(price);
-                    offer.setQuantity(quantity);
-                    offer.setPurchaseDate(date);
-                    offer.setCategory(Category.valueOf(categoryString));
-                    offer.setMinimalBuyQuantity(minimalBuyQuantity);
-
-
+                    photoUrl = Normalizer.normalize(fileName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+                    File uploadedFile = new File(path + "/" + photoUrl);
+                    
 
                     try {
-
-                        Company company = companyManager.getCompanyById(userId);
-
-                        if (company == null) {
-                            out.println("Company wasnt found in database");
-                        } else {
-                            Offer added = offerManager.addOffer(company, offer);
-                            if (added == null) {
-                                out.println("Offer wasnt added");
-                            } else {
-                                out.println("Offer was sucessfuly added");
-                            }
-                        }
-
-                    } catch (DatabaseException ex) {
-                        log.error(ex.getMessage());
-                        out.println(ex.getMessage());
+                        item.write(uploadedFile);
+                    } catch (Exception ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
+                    Magic parser = new Magic();
+                    MagicMatch match = null;
+                    try {
+                        match = parser.getMagicMatch(uploadedFile, false);
+                    } catch (MagicParseException ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (MagicMatchNotFoundException ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (MagicException ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    if (match != null) {
+                        String mimeType = match.getMimeType();
+                        if (!mimeType.startsWith("image")) {
+                        fileIsImage = false;
+                        uploadedFile.delete();
+                    }
+                    }
+                    
+
+                    
+
+
                 } else {
-                    out.println("Offer wasnt added because one of text fields was left blank or you didn choose company");
+
+                    if ("name".equals(item.getFieldName())) {
+                        name = item.getString();
+                    } else if ("description".equals(item.getFieldName())) {
+                        description = item.getString();
+                    } else if ("quantity".equals(item.getFieldName())) {
+                        quantityString = item.getString();
+                    } else if ("minimal_buy".equals(item.getFieldName())) {
+                        minimalBuyString = item.getString();
+                    } else if ("category".equals(item.getFieldName())) {
+                        categoryString = item.getString();
+                    } else if ("price".equals(item.getFieldName())) {
+                        priceString = item.getString();
+                    } else if ("dob_day".equals(item.getFieldName())) {
+                        dayString = item.getString();
+                    } else if ("dob_month".equals(item.getFieldName())) {
+                        monthString = item.getString();
+                    } else if ("dob_year".equals(item.getFieldName())) {
+                        yearString = item.getString();
+                    }
+
+
                 }
-
-
-                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-
-
-            } finally {
-                out.close();
             }
-       /* }*/
+
+        }
+
+        /**
+         * converting String to integer
+         */
+        int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
+        int quantity = Integer.parseInt(quantityString);
+
+        /**
+         * end
+         */
+        Date date;
+        if (yearString.length() == 0 || monthString.length() == 0 || dayString.length() == 0) {
+            date = null;
+        } else {
+            int YearInt = Integer.parseInt(yearString);
+            int MonthInt = Integer.parseInt(monthString) - 1;
+            int DayInt = Integer.parseInt(dayString);
+            calendar.set(YearInt, MonthInt, DayInt);
+            date = new Date(calendar.getTimeInMillis());
+        }
+
+        try {
+
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet AddOffer</title>");
+            out.println("</head>");
+            out.println("<body>");
+
+
+            if (name.length() != 0 && description.length() != 0
+                    && userIdObject != null && priceString.length() != 0
+                    && quantityString.length() != 0) {
+
+                Long userId = (Long) userIdObject;
+                BigDecimal price = new BigDecimal(priceString);
+
+                Offer offer = new Offer();
+                offer.setCompany_id(userId);
+                offer.setDescription(description);
+                offer.setName(name);
+                offer.setPrice(price);
+                offer.setQuantity(quantity);
+                offer.setPurchaseDate(date);
+                offer.setCategory(Category.valueOf(categoryString));
+                offer.setMinimalBuyQuantity(minimalBuyQuantity);
+                offer.setPhotoUrl(photoUrl);
+
+
+
+                try {
+
+                    Company company = companyManager.getCompanyById(userId);
+
+                    if (company == null) {
+                        out.println("Company wasnt found in database");
+                    } else if (fileIsImage) {
+                        Offer added = offerManager.addOffer(company, offer);
+                        if (added == null) {
+                            out.println("Offer wasnt added");
+                        } else {
+                            out.println("Offer was sucessfuly added");
+                        }
+                    } else {
+                        out.println("Offer wasnt added because of file");
+                    }
+
+
+                } catch (DatabaseException ex) {
+                    log.error(ex.getMessage());
+                    out.println(ex.getMessage());
+                }
+            } else {
+                out.println("Offer wasnt added because one of text fields was left blank or you didn choose company");
+            }
+
+            out.println(
+                    "<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
+            out.println(
+                    "</body>");
+            out.println(
+                    "</html>");
+
+
+        } finally {
+            out.close();
+        }
+        /*
+         * }
+         */
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

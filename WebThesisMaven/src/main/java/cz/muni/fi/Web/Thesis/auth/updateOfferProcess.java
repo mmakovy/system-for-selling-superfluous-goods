@@ -5,11 +5,16 @@
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.Normalizer;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -17,6 +22,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.sf.jmimemagic.*;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -46,27 +56,118 @@ public class updateOfferProcess extends HttpServlet {
         Offer offer = null;
         Calendar calendar = Calendar.getInstance();
 
-        String name = request.getParameter("name");
-        String description = request.getParameter("description");
-        String quantityString = request.getParameter("quantity");
-        String priceString = request.getParameter("price");
-        String minimalBuyString = request.getParameter("minimal_buy");
-        String category = request.getParameter("category");
-        String day = request.getParameter("dob_day");
-        String month = request.getParameter("dob_month");
-        String year = request.getParameter("dob_year");
+        String photoUrl = null;
+
+        String name = null;
+        String description = null;
+        String quantityString = null;
+        String priceString = null;
+        String minimalBuyString = null;
+        String categoryString = null;
+        String dayString = null;
+        String monthString = null;
+        String yearString = null;
+        boolean fileIsImage = true;
+
+        if (ServletFileUpload.isMultipartContent(request)) {
+
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            List items = null;
+
+            try {
+                items = upload.parseRequest(request);
+            } catch (FileUploadException ex) {
+                Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            Iterator iter = items.iterator();
+            while (iter.hasNext()) {
+                FileItem item = (FileItem) iter.next();
+
+                if (!item.isFormField()) {
+
+                    String fileName = item.getName();
+                    String root = getServletContext().getRealPath("/");
+                    File path = new File(root + "/uploads");
+                    if (!path.exists()) {
+                        boolean status = path.mkdirs();
+                    }
+
+                    photoUrl = Normalizer.normalize(fileName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+
+                    File uploadedFile = new File(path + "/" + photoUrl);
+
+
+                    try {
+                        item.write(uploadedFile);
+                    } catch (Exception ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    Magic parser = new Magic();
+                    MagicMatch match = null;
+                    try {
+                        match = parser.getMagicMatch(uploadedFile, false);
+                    } catch (MagicParseException ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (MagicMatchNotFoundException ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (MagicException ex) {
+                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    if (match != null) {
+                        String mimeType = match.getMimeType();
+                        if (!mimeType.startsWith("image")) {
+                            fileIsImage = false;
+                            uploadedFile.delete();
+                        }
+                    }
+
+
+
+
+
+                } else {
+
+                    if ("name".equals(item.getFieldName())) {
+                        name = item.getString();
+                    } else if ("description".equals(item.getFieldName())) {
+                        description = item.getString();
+                    } else if ("quantity".equals(item.getFieldName())) {
+                        quantityString = item.getString();
+                    } else if ("minimal_buy".equals(item.getFieldName())) {
+                        minimalBuyString = item.getString();
+                    } else if ("category".equals(item.getFieldName())) {
+                        categoryString = item.getString();
+                    } else if ("price".equals(item.getFieldName())) {
+                        priceString = item.getString();
+                    } else if ("dob_day".equals(item.getFieldName())) {
+                        dayString = item.getString();
+                    } else if ("dob_month".equals(item.getFieldName())) {
+                        monthString = item.getString();
+                    } else if ("dob_year".equals(item.getFieldName())) {
+                        yearString = item.getString();
+                    }
+
+
+                }
+            }
+
+        }
 
         Long id = Long.parseLong(request.getParameter("id"));
 
         /**
          * converting String to integer
          */
-        int YearInt = Integer.parseInt(year);
-        int MonthInt = Integer.parseInt(month) - 1;
+        int YearInt = Integer.parseInt(yearString);
+        int MonthInt = Integer.parseInt(monthString) - 1;
         /**
          * corection
          */
-        int DayInt = Integer.parseInt(day);
+        int DayInt = Integer.parseInt(dayString);
         int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
         int quantity = Integer.parseInt(quantityString);
 
@@ -116,7 +217,11 @@ public class updateOfferProcess extends HttpServlet {
                         updatedOffer.setCompany_id(offer.getCompany_id());
                         updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
                         updatedOffer.setPurchaseDate(date);
-                        updatedOffer.setCategory(Category.valueOf(category));
+                        updatedOffer.setCategory(Category.valueOf(categoryString));
+                        if (photoUrl.length() == 0 || photoUrl == null) {
+                            photoUrl = offer.getPhotoUrl();
+                        }
+                        updatedOffer.setPhotoUrl(photoUrl);
 
 
                         try {
