@@ -73,6 +73,8 @@ public class ShowOffer extends HttpServlet {
                 out.println("Error when searching for company or offer in database");
             } else {
                 out.println("<h1>OFFER</h1> <br/>");
+                out.println("<u>Image:</u>");
+                out.println("<img width='500' src='/WebThesisMaven/uploads/" + offer.getPhotoUrl() + "'></br>");
                 out.println("<u>Name:</u>");
                 out.println(offer.getName() + "</br>");
                 out.println("<u>Price:</u>");

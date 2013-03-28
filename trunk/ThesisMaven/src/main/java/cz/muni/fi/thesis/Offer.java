@@ -19,6 +19,15 @@ public class Offer {
     private int minimalBuyQuantity;
     private Long id;
     private Long company_id;
+    private String photoUrl;
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
     public Category getCategory() {
         return category;

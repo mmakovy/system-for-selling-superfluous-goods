@@ -36,6 +36,7 @@ public class ListOffers extends HttpServlet {
 
         OfferManager offerMng = new OfferManagerImpl();
         List<Offer> offers = null;
+        OffersLister offersLister = new OffersLister();
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
@@ -58,57 +59,8 @@ public class ListOffers extends HttpServlet {
             out.println("</head>");
 
             out.println("<body>");
+            offersLister.OffersToTable(offers, out, id);
 
-            if (offers.isEmpty()) {
-                out.println("No offers in database");
-            } else {
-                out.println("OFFERS");
-                out.println("<table>");
-                out.println("<th> ID </th>");
-                out.println("<th> Company ID </th>");
-                out.println("<th> Name </th>");
-                out.println("<th> Description </th>");
-                out.println("<th> Price </th>");
-                out.println("<th> Quantity </th>");
-                out.println("<th> Minimal Buy Quantity </th>");
-                out.println("<th> Purchase Date </th>");
-                out.println("<th> Category </th>");
-
-
-                for (int i = 0; i < offers.size(); i++) {
-                    out.println("<tr>");
-                    out.println("<td style='border: 1px solid black;'>" + offers.get(i).getId() + "</td>");
-                    out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCompany_id() + "</td>");
-                    out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/auth/ShowOffer?id=" + offers.get(i).getId() + "'>" + offers.get(i).getName() + "</a></td>");
-                    out.println("<td style='border: 1px solid black;'>" + offers.get(i).getDescription() + "</td>");
-                    out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPrice() + "</td>");
-                    out.println("<td style='border: 1px solid black;'>" + offers.get(i).getQuantity() + "</td>");
-
-                    if (offers.get(i).getMinimalBuyQuantity() == 0) {
-                        out.println("<td style='border: 1px solid black;'> Not specified</td>");
-                    } else {
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getMinimalBuyQuantity() + "</td>");
-                    }
-
-
-                    if (offers.get(i).getPurchaseDate() == null) {
-                        out.println("<td style='border: 1px solid black;'> Not specified</td>");
-                    } else {
-                        out.println("<td style='border: 1px solid black;'>" + offers.get(i).getPurchaseDate() + "</td>");
-                    }
-
-                    out.println("<td style='border: 1px solid black;'>" + offers.get(i).getCategory() + "</td>");
-
-                    if (offers.get(i).getCompany_id().equals(id)) {
-                        out.println("<td><a href='/WebThesisMaven/removeOffer?id=" + offers.get(i).getId() + "'>Remove</a></td>");
-                        out.println("<td><a href='/WebThesisMaven/updateOffer?id=" + offers.get(i).getId() + "'>Update</a></td>");
-                    }
-
-                    out.println("</tr>");
-                }
-
-                out.println("</table>");
-            }
             out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
             out.println("</body>");
             out.println("</html>");

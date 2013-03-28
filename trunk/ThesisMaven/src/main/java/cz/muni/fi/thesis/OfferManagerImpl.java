@@ -36,7 +36,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("INSERT INTO offer (name,description,quantity,id_company,price,category,purchase_date,minimal_buy_quantity) VALUES (?,?,?,?,?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement st = con.prepareStatement("INSERT INTO offer (name,description,quantity,id_company,price,category,purchase_date,minimal_buy_quantity,photo_url) VALUES (?,?,?,?,?,?,?,?,?);", Statement.RETURN_GENERATED_KEYS);
                 st.setString(1, offer.getName());
                 st.setString(2, offer.getDescription());
                 st.setInt(3, offer.getQuantity());
@@ -45,6 +45,7 @@ public class OfferManagerImpl implements OfferManager {
                 st.setString(6,offer.getCategory().toString());
                 st.setDate(7, offer.getPurchaseDate());
                 st.setInt(8,offer.getMinimalBuyQuantity());
+                st.setString(9,offer.getPhotoUrl());
                 
                 if (st.executeUpdate() == 0) {
                     log.error("Error when adding offer to database");
@@ -113,7 +114,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("UPDATE offer SET name=?, description=?, id_company=?, price=?, quantity=?, category=?, purchase_date=?, minimal_buy_quantity=? WHERE id_offer=?;");
+                PreparedStatement st = con.prepareStatement("UPDATE offer SET name=?, description=?, id_company=?, price=?, quantity=?, category=?, purchase_date=?, minimal_buy_quantity=?, photo_url=? WHERE id_offer=?;");
                 st.setString(1, offer.getName());
                 st.setString(2, offer.getDescription());
                 st.setLong(3, offer.getCompany_id());
@@ -122,7 +123,8 @@ public class OfferManagerImpl implements OfferManager {
                 st.setString(6,offer.getCategory().toString());
                 st.setDate(7, offer.getPurchaseDate());
                 st.setInt(8,offer.getMinimalBuyQuantity());
-                st.setLong(9, offer.getId());
+                st.setLong(10, offer.getId());
+                st.setString(9,offer.getPhotoUrl());
                 
                 
                 if (st.executeUpdate() == 0) {
@@ -147,7 +149,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity FROM offer;");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity,photo_url FROM offer;");
                 ResultSet offerDB = st.executeQuery();
                 while (offerDB.next()) {
                     Offer offer = new Offer();
@@ -160,6 +162,7 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setCategory(Category.valueOf(offerDB.getString("category")));
                     offer.setPurchaseDate(offerDB.getDate("purchase_date"));
                     offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                     offers.add(offer);
                 }
                 return offers;
@@ -187,7 +190,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity FROM offer WHERE id_company=?;");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity,photo_url FROM offer WHERE id_company=?;");
                 st.setLong(1, company.getId());
                 ResultSet offerDB = st.executeQuery();
                 while (offerDB.next()) {
@@ -201,6 +204,7 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setCategory(Category.valueOf(offerDB.getString("category")));
                     offer.setPurchaseDate(offerDB.getDate("purchase_date"));
                     offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                     offers.add(offer);
                 }
                 return offers;
@@ -225,7 +229,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity FROM offer WHERE id_offer=?");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity,photo_url FROM offer WHERE id_offer=?");
                 st.setLong(1, id);
                 ResultSet offerDB = st.executeQuery();
                 Offer offer = null;
@@ -240,6 +244,7 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setCategory(Category.valueOf(offerDB.getString("category")));
                     offer.setPurchaseDate(offerDB.getDate("purchase_date"));
                     offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                 }
                 return offer;
             } catch (SQLException ex) {
@@ -265,7 +270,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,purchase_date,minimal_buy_quantity,category FROM offer WHERE name LIKE CONCAT('%',?,'%')");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,purchase_date,minimal_buy_quantity,category,photo_url FROM offer WHERE name LIKE CONCAT('%',?,'%')");
                 st.setString(1, expression);
                 ResultSet offerDB = st.executeQuery();
                 Offer offer = null;
@@ -281,10 +286,11 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setCategory(Category.valueOf(offerDB.getString("category")));
                     offer.setPurchaseDate(offerDB.getDate("purchase_date"));
                     offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                     offers.add(offer);
                 }
                 
-                st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,purchase_date,minimal_buy_quantity,category FROM offer WHERE description LIKE CONCAT('%',?,'%')");
+                st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,purchase_date,minimal_buy_quantity,category,photo_url FROM offer WHERE description LIKE CONCAT('%',?,'%')");
                 st.setString(1, expression);
                 offerDB = st.executeQuery();
                 
@@ -300,6 +306,7 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setCategory(Category.valueOf(offerDB.getString("category")));
                     offer.setPurchaseDate(offerDB.getDate("purchase_date"));
                     offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                     
                     if (!offers.contains(offer)) {
                         offers.add(offer);
@@ -330,7 +337,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity FROM offer WHERE category=?;");
+                PreparedStatement st = con.prepareStatement("SELECT id_company,name,description,id_offer,price,quantity,category,purchase_date,minimal_buy_quantity,photo_url FROM offer WHERE category=?;");
                 st.setString(1,category.toString());
                 ResultSet offerDB = st.executeQuery();
                 while (offerDB.next()) {
@@ -344,6 +351,7 @@ public class OfferManagerImpl implements OfferManager {
                     offer.setCategory(Category.valueOf(offerDB.getString("category")));
                     offer.setPurchaseDate(offerDB.getDate("purchase_date"));
                     offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                     offers.add(offer);
                 }
                 return offers;
@@ -430,4 +438,5 @@ public class OfferManagerImpl implements OfferManager {
         
         return returnOffers;
     }
+    
 }

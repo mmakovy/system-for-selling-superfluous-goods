@@ -62,6 +62,21 @@
             <version>0.0.7</version>
         </dependency>
         <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>jmimemagic</groupId>
+            <artifactId>jmimemagic</artifactId>
+            <version>0.1.2</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ThesisMaven</artifactId>
             <version>${project.version}</version>

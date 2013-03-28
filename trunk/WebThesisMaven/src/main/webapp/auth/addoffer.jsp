@@ -16,13 +16,13 @@
         <script src='myjs.js'>  
         </script>  
         <body>  
-            <form name='form1' method='post' action='/WebThesisMaven/auth/AddOffer'  onsubmit='return submit_offer()'>  
+            <form ENCTYPE="multipart/form-data" name='form1' method='post' action='/WebThesisMaven/auth/AddOffer'  onsubmit='return submit_offer()'>  
                 Name:  
                 <input type='text' name='name'><br/>  
                 Price:  
                 <input type='text' name='price'><br/>  
                 Quantity:  
-                <input type='text' name='quantity'><br/>  
+                <input type='text' name='quantity'><br/>  en
                 MINIMAL Quantity to Buy:  
                 <input type='text' name='minimal_buy' value="0"><br/>  
                 Description:  
@@ -49,7 +49,7 @@
                 Year:
                 <input type="text" name="dob_year" />
                     <br/>
-
+                    <input type="file" name="image" />
                 <input type='submit' value='Add offer'><br/>  
             </form>  
             
