@@ -41,6 +41,7 @@ public class FindOffer extends HttpServlet {
         PrintWriter out = response.getWriter();
         OfferManager offerManager = new OfferManagerImpl();
         List<Offer> offers = null;
+        OffersLister offersLister = new OffersLister();
 
         String expression = request.getParameter("expression");
         String minQuantity = request.getParameter("min-quantity");
@@ -60,6 +61,7 @@ public class FindOffer extends HttpServlet {
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
+        Long id = (Long) userID;
 
         try {
 
@@ -121,8 +123,7 @@ public class FindOffer extends HttpServlet {
                     offers = offerManager.filterCategory(offers, category);
                 }
 
-                session.setAttribute("offersToList", offers);
-                out.println("<iframe width='1000' height='1000' src='ListCollectionOfOffers'></iframe>");
+                offersLister.OffersToTable(offers, out, id);
                 
             } catch (DatabaseException ex) {
                 log.error(ex.getMessage());

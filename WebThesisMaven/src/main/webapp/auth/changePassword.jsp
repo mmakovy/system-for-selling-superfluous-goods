@@ -11,8 +11,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
     </head>
+    <script src='../myjs.js'>  
+    </script>
     <body>
-        <form method="post" name="change_password" action="ChangePassword" >
+        <form method="post" name="change_password" action="ChangePassword" onsubmit='return change_password()'>
 
             Old password:<br/>
             <input type="password" name="old_password"/><br/>

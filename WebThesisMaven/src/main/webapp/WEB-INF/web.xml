@@ -105,6 +105,10 @@
         <servlet-name>ListCollectionOfOffers</servlet-name>
         <servlet-class>cz.muni.fi.Web.Thesis.auth.ListCollectionOfOffers</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FollowOffer</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.FollowOffer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
         <url-pattern>/auth/ListCompanies</url-pattern>
@@ -200,6 +204,10 @@
     <servlet-mapping>
         <servlet-name>ListCollectionOfOffers</servlet-name>
         <url-pattern>/auth/ListCollectionOfOffers</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FollowOffer</servlet-name>
+        <url-pattern>/auth/FollowOffer</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

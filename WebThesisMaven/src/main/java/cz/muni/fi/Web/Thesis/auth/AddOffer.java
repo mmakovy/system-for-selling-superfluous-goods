@@ -88,7 +88,7 @@ public class AddOffer extends HttpServlet {
             while (iter.hasNext()) {
                 FileItem item = (FileItem) iter.next();
 
-                if (!item.isFormField()) {
+                if (!item.isFormField() && item.getName().length() != 0) {
 
                     String fileName = item.getName();
                     String root = getServletContext().getRealPath("/");
@@ -99,7 +99,7 @@ public class AddOffer extends HttpServlet {
 
                     photoUrl = Normalizer.normalize(fileName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
                     File uploadedFile = new File(path + "/" + photoUrl);
-                    
+
 
                     try {
                         item.write(uploadedFile);
@@ -118,17 +118,17 @@ public class AddOffer extends HttpServlet {
                     } catch (MagicException ex) {
                         Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     if (match != null) {
                         String mimeType = match.getMimeType();
                         if (!mimeType.startsWith("image")) {
-                        fileIsImage = false;
-                        uploadedFile.delete();
+                            fileIsImage = false;
+                            uploadedFile.delete();
+                        }
                     }
-                    }
-                    
 
-                    
+
+
 
 
                 } else {
@@ -188,9 +188,7 @@ public class AddOffer extends HttpServlet {
             out.println("<body>");
 
 
-            if (name.length() != 0 && description.length() != 0
-                    && userIdObject != null && priceString.length() != 0
-                    && quantityString.length() != 0) {
+            if (name.length() != 0 && priceString.length() != 0 && quantityString.length() != 0) {
 
                 Long userId = (Long) userIdObject;
                 BigDecimal price = new BigDecimal(priceString);
@@ -231,7 +229,7 @@ public class AddOffer extends HttpServlet {
                     out.println(ex.getMessage());
                 }
             } else {
-                out.println("Offer wasnt added because one of text fields was left blank or you didn choose company");
+                out.println("Offer wasnt added because one of text fields was left blank");
             }
 
             out.println(

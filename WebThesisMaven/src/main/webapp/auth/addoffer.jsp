@@ -13,10 +13,10 @@
         <head>  
             <title>Servlet addOffer</title>  
         </head>  
-        <script src='myjs.js'>  
+        <script src='../myjs.js'>  
         </script>  
         <body>  
-            <form ENCTYPE="multipart/form-data" name='form1' method='post' action='/WebThesisMaven/auth/AddOffer'  onsubmit='return submit_offer()'>  
+            <form ENCTYPE="multipart/form-data" name='add_offer' method='post' action='/WebThesisMaven/auth/AddOffer'  onsubmit='return submit_offer()'>  
                 Name:  
                 <input type='text' name='name'><br/>  
                 Price:  
@@ -30,7 +30,7 @@
 
                 Category:  
                 <select name="category">
-                    <option selected>OTHER</option>
+                    <option selected>OTHERS</option>
                     <option>BUILDING</option>
                     <option>FURNITURE</option>
                     <option>ELECTROTECHNICS</option>

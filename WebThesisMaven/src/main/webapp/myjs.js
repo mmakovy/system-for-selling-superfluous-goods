@@ -1,13 +1,18 @@
 function submit_offer() {
     
-    var name = document.form1.name;
-    var description = document.form1.description;
-    var price = document.form1.price;
-    var quantity = document.form1.quantity;
-    var id_company = document.form1.id_company;
+    var name = document.add_offer.name;
+    var price = document.add_offer.price;
+    var quantity = document.add_offer.quantity;
+    var minBuyQuantity = document.add_offer.minimal_buy;
     
-    if (name.value == "" || description.value == "" || price.value == "" || quantity.value == ""){
-        alert('One of fields is blank');
+    if (name.value == ""){
+        alert('Name field is blank');
+        return false;
+    } else if (quantity.value == "") {
+        alert('Quantity field is blank');
+        return false;
+    } else  if (price.value == "") {
+        alert('Price field is blank');
         return false;
     } else if (isNaN(price.value)) {
         alert('Price must be a number');
@@ -21,7 +26,11 @@ function submit_offer() {
     } else if (quantity.value <= 0) {
         alert('Quantity must be positive');
         return false;
-    } else {
+    }else if (minBuyQuantity.value > quantity.value) {
+        alert('Minimal buy quantity should be less ten quantity');
+        return false;
+    } else
+{
         return true;
     }
 }
@@ -52,10 +61,10 @@ function submit_company() {
     } else if (email.value !== emailVer.value) {
         alert('Emails dont match');
         return false;   
-    }  else if (password.value !== passwordVer.value ) {
+    } else if (password.value !== passwordVer.value ) {
         alert('Passwords dont match');
         return false;   
-    }  else if (username.value == "") {
+    } else if (username.value == "") {
         alert('Username is blank');
         return false;   
     } else if (password.value == "") {
@@ -64,6 +73,30 @@ function submit_company() {
     } else {
         return true;
     }
+}
+
+function change_password() {
+    
+    var oldPassword = document.change_password.old_password;
+    var newPassword = document.change_password.new_password;
+    var newPasswordVer = document.change_password.new_password_ver;
+    
+    if (oldPassword.value == "") {
+        alert ("Old password field is blank");
+        return false;
+    } else if (newPassword.value == "") {
+        alert ("New password field is blank");
+        return false;
+    } else if (newPasswordVer.value == "") {
+        alert("New password verification field is blank");
+        return false;       
+    } else if (newPassword.value !== newPasswordVer.value) {
+        alert ("New password fields dont match");
+        return false;
+    } else {
+        return true;       
+    }
+
 }
     
 
