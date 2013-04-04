@@ -101,6 +101,7 @@ public class ShowOffer extends HttpServlet {
                 out.println(company.getStreet() + " " + company.getPsc() +"<br/>");
                 out.println(company.getCity() + "<br/>");
                 out.println(company.getCountry() + "<br/></br>");
+                out.println("<a href='FollowOffer?id="+ offer.getId() +"'>Follow this offer </a>");
                 
                 out.println("<form method='post' name='form2' action='/WebThesisMaven/auth/ContactFormEmailSender?offerId=" + offer.getId() + "'>");
                 out.println("Send e-mail:<br/>");

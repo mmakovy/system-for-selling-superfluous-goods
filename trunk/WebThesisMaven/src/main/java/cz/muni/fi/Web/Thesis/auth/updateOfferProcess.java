@@ -4,6 +4,7 @@
  */
 package cz.muni.fi.Web.Thesis.auth;
 
+import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -55,6 +55,9 @@ public class updateOfferProcess extends HttpServlet {
         OfferManager manager = new OfferManagerImpl();
         Offer offer = null;
         Calendar calendar = Calendar.getInstance();
+        MailSender mailSender = new MailSender();
+        MailingListManager mailingListManager = new MailingListManagerImpl();
+        String newline = System.getProperty("line.separator");
 
         String photoUrl = null;
 
@@ -68,6 +71,7 @@ public class updateOfferProcess extends HttpServlet {
         String monthString = null;
         String yearString = null;
         boolean fileIsImage = true;
+        
 
         if (ServletFileUpload.isMultipartContent(request)) {
 
@@ -85,7 +89,7 @@ public class updateOfferProcess extends HttpServlet {
             while (iter.hasNext()) {
                 FileItem item = (FileItem) iter.next();
 
-                if (!item.isFormField()) {
+                if (!item.isFormField() && item.getName().length() != 0) {
 
                     String fileName = item.getName();
                     String root = getServletContext().getRealPath("/");
@@ -198,6 +202,7 @@ public class updateOfferProcess extends HttpServlet {
             if (offer == null) {
                 out.println("Offer wasnt found in database");
             } else {
+                String messageText = "Offer " + offer.getName() + " was updated" + newline;
 
                 if (name.length() != 0 && description.length() != 0
                         && priceString.length() != 0
@@ -218,11 +223,14 @@ public class updateOfferProcess extends HttpServlet {
                         updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
                         updatedOffer.setPurchaseDate(date);
                         updatedOffer.setCategory(Category.valueOf(categoryString));
-                        if (photoUrl.length() == 0 || photoUrl == null) {
+                        if (photoUrl == null || photoUrl.length() == 0 ) {
                             photoUrl = offer.getPhotoUrl();
                         }
                         updatedOffer.setPhotoUrl(photoUrl);
 
+                        
+                        
+                        messageText = messageText + "Before update: "+ newline + offer.toString() + newline;
 
                         try {
                             manager.updateOffer(updatedOffer);
@@ -233,6 +241,20 @@ public class updateOfferProcess extends HttpServlet {
                             out.println(ex.getMessage());
                             log.error(ex.getMessage());
                         }
+                        
+                        messageText = messageText + "After update: "+ newline + updatedOffer.toString() + newline;
+                        String messageSubject = "Offer " + offer.getName() + " was updated";
+                        
+                        List<String> recipients;
+                        try {
+                            recipients = mailingListManager.getEmails(id);
+                            log.error(Calendar.getInstance().getTime().toString());
+                            mailSender.sendMoreEmails(recipients, messageSubject, messageText);
+                            log.error(Calendar.getInstance().getTime().toString());
+                        } catch (DatabaseException ex) {
+                            Logger.getLogger(updateOfferProcess.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
 
                         out.println("Offer was succesfully updated");
                         out.println("<form method = 'POST' action = '/WebThesisMaven/auth/ListOffers'> <input type = 'submit' value = 'List all offers' name = 'option' /> </form >");

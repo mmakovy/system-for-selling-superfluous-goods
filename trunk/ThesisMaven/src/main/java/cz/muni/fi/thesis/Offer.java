@@ -155,6 +155,21 @@ public class Offer {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        
+        String newline = System.getProperty("line.separator");
+        
+        return "Offer" + newline
+                + "Name:" + name + newline
+                + "Price=" + price + newline
+                + "Quantity=" + quantity + newline
+                + "Description=" + description + newline
+                + "Purchase Date=" + purchaseDate + newline
+                + "Category=" + category + newline
+                + "Minimal Buy Quantity=" + minimalBuyQuantity + newline;
+    }
+
     
     
     
