@@ -18,13 +18,9 @@ public class OffersLister {
         if (offersList.isEmpty()) {
                 out.println("No offers in database");
             } else {
-                out.println("OFFERS");
                 out.println("<table>");
                 out.println("<th> Image </th>");
-                out.println("<th> ID </th>");
-                out.println("<th> Company ID </th>");
                 out.println("<th> Name </th>");
-                out.println("<th> Description </th>");
                 out.println("<th> Price </th>");
                 out.println("<th> Quantity </th>");
                 out.println("<th> Minimal Buy Quantity </th>");
@@ -39,10 +35,7 @@ public class OffersLister {
                     } else {
                         out.println("<td style='border: 1px solid black;'><img width='100' src='/WebThesisMaven/uploads/" + offersList.get(i).getPhotoUrl() + "'></td>");
                     }
-                    out.println("<td style='border: 1px solid black;'>" + offersList.get(i).getId() + "</td>");
-                    out.println("<td style='border: 1px solid black;'>" + offersList.get(i).getCompany_id() + "</td>");
                     out.println("<td style='border: 1px solid black;'><a href='/WebThesisMaven/auth/ShowOffer?id=" + offersList.get(i).getId() + "'>" + offersList.get(i).getName() + "</a></td>");
-                    out.println("<td style='border: 1px solid black;'>" + offersList.get(i).getDescription() + "</td>");
                     out.println("<td style='border: 1px solid black;'>" + offersList.get(i).getPrice() + "</td>");
                     out.println("<td style='border: 1px solid black;'>" + offersList.get(i).getQuantity() + "</td>");
 

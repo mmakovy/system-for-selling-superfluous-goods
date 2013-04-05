@@ -1,0 +1,286 @@
+/* 
+    Document   : style
+    Created on : 5.4.2013, 10:02:12
+    Author     : User
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    padding:0;
+    margin: 0;
+    font-family: 'Istok Web', sans-serif;
+    font-size: 14px;
+}
+
+#wrapper { 
+    width: 891px;
+    background-color: #d3d3d3;
+    margin:0 auto;
+    padding:0;
+    height: 100%;
+}
+
+#page {
+    width: 90%;
+    margin: 0 auto;    
+}
+
+#logo {
+    font-size: 70px;
+    line-height: 75px;
+    text-align: center;
+    color: #0d8ed0;
+    background-color: transparent;
+    background-image: url("images/logo.png");
+    width: 313px;
+    height: 83px;
+    font-family: 'Days One', sans-serif;
+    margin-bottom: 50px;
+}
+
+#menu {
+    width: 100%;
+    height: 50px;
+}
+
+#menu-left {
+    background: url("images/menu-left.png") no-repeat;
+    width:11px;
+    height:50px;   
+    display: inline-block;
+    margin:0;
+}
+
+#menu-right {
+    background: url("images/menu-right.png") no-repeat;
+    width:11px;
+    height:50px;
+    display:inline-block;
+    margin: 0;
+}
+
+#menu-middle {
+    display: inline-block;
+    width: 97%;
+    height: 50px;
+    background-color: #35b2f2;
+    margin-left: -5px;
+    margin-right: -5px;
+}
+
+#content {
+    min-height: 500px;
+    overflow: auto;
+}
+
+#log-in-form {
+    width: 180px;
+    float: left;
+}
+
+#log-in-form-top {
+    background-image: url("images/login-form-top.png");
+    width: 180px;
+    height: 10px;
+}
+#log-in-form-bottom{
+    background-image: url("images/login-form-bottom.png");
+    width: 180px;
+    height: 10px;
+}
+#log-in-form-middle {
+    background-color: #35b2f2;
+    width: 160px;
+    height: 95%;
+    padding: 10px;
+}
+
+#header {
+    margin-bottom: 20px;    
+}
+
+.log-in {
+    margin-top: -10px;
+    color: white;
+    font-size: 133%;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    color: black;
+}
+
+input {
+    margin-left: -1px;
+}
+
+#index-content {
+    width: 580px;
+    min-height: 500px;
+    float: right;
+}
+
+#index-content-top {
+    width: 580px;
+    height: 10px;
+    background-image:  url("images/content-top.png");
+}
+
+#index-content-middle {
+    width: 540px;
+    min-height: 400px;
+    background-color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#index-content-bottom {
+    width: 580px;
+    height: 10px;
+    background-image:  url("images/content-bottom.png");
+}
+
+
+#registration-content {
+    width: 100%;
+    min-height: 500px;
+    float: right;
+}
+
+#registration-content-top {
+    width: 801px;
+    height: 10px;
+    background-image:  url("images/registration-content-top.png");
+}
+
+#registration-content-middle {
+    width: 761px;
+    min-height: 400px;
+    background-color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#registration-content-bottom {
+    width: 801px;
+    height: 10px;
+    background-image:  url("images/registration-content-bottom.png");
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.last-p {
+    margin-bottom: 0;
+}
+
+#footer {
+    min-height: 50px;
+    line-height: 50px;
+    color: gray;
+    text-align: center;
+}
+
+.menu-item {
+    width: 90px;
+    float: left;
+    line-height: 53px;
+    color: black !important;
+    display: inline-block;
+    font-size: 125%;
+    text-align: center;
+}
+
+form[name='add_company'] {
+    line-height:    33px;
+
+}
+
+form[name='add_company'] input[type='text'], form[name='add_company'] input[type='password'] {
+    float: right;
+    margin-bottom: 8px;
+    margin-right: 441px;
+}
+
+#submenu {
+    height: 23px;
+    width: 97%;
+    margin: auto;
+}
+
+#submenu-left {
+    background-image: url("images/submenu-left.png");
+    height: 23px;
+    width: 10px;
+    display: inline-block;
+}
+
+#submenu-middle{
+    background-color: white;
+    height: 23px;
+    width: 34%;
+    display: inline-block;
+    margin-left: -5px;
+    margin-right: -5px;
+    vertical-align: top;
+
+}
+
+#submenu-right {
+    background-image: url("images/submenu-right.png");
+    height: 23px;
+    width: 10px;
+    display: inline-block;
+
+}
+
+.submenu-item {
+    display: inline-block;
+    margin-top: 0;
+    vertical-align: top;
+    margin-left: 10px;
+
+}
+
+.submenu-item a {
+    color: black;
+}
+
+.submenu-item a:hover {
+    color: #35b2f2;
+}
+
+.logout {
+    float: right;
+}
+
+.logout a:hover {
+    color: red;
+    
+}
+
+.offers-table {
+    
+    
+}
+
+.offers-table a {
+    color: #35b2f2;
+    
+}
+
+form[name='login'] input[type='text'], form[name='login'] input[type='password'] {
+    padding-left: 5px;
+    width: 120px;
+    
+}
+
+
+
