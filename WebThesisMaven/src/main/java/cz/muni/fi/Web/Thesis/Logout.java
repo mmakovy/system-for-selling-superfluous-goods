@@ -5,7 +5,6 @@
 package cz.muni.fi.Web.Thesis;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,37 +30,14 @@ public class Logout extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-        if (userID == null) {
-            session.invalidate();
-            out.println("Already logged out.");
-            out.println("<a href='index.jsp'>Home</a>");
-        } else {
-            session.removeAttribute("userID");
-            session.invalidate();
-            response.sendRedirect("index.jsp");
+        session.removeAttribute("userID");
+        session.invalidate();
+        response.sendRedirect("index.jsp");
 
-            try {
-                /*
-                 * TODO output your page here. You may use following sample
-                 * code.
-                 */
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet Logout</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Servlet Logout at " + request.getContextPath() + "</h1>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
-            }
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

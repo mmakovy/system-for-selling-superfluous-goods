@@ -4,32 +4,26 @@
  */
 package cz.muni.fi.Web.Thesis;
 
+import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.DatabaseException;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matus
  */
 public class ForgotPassword extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -43,9 +37,10 @@ public class ForgotPassword extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         UserManager userManager = new UserManagerImpl();
+        MailSender mailSender = new MailSender();
 
         String email = request.getParameter("email");
         String password = null;
@@ -62,63 +57,27 @@ public class ForgotPassword extends HttpServlet {
             try {
                 password = userManager.forgotPassword(email);
             } catch (DatabaseException ex) {
-                Logger.getLogger(ForgotPassword.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex.getMessage());
+                String message = ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/error.jsp").forward(request, response);
             }
 
-            try {
-                /*
-                 * TODO output your page here. You may use following sample
-                 * code.
-                 */
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet ForgotPassword</title>");
-                out.println("</head>");
-                out.println("<body>");
+            if (password == null) {
+                String message = "E-mail wasnt found in our database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
+            } else {
+                mailSender.sendOneEmail(email, "New password from SSSG", "Your new password is:" + password);
 
-                if (password == null) {
-                    out.println("E-mail wasnt found in our database");
-                } else {
-
-                    String host = "smtp.gmail.com";
-                    String pass = "epson123";
-                    String from = "no.reply.sssg@gmail.com";
-                    Properties props = System.getProperties();
-                    props.put("mail.smtp.starttls.enable", "true");
-                    props.put("mail.smtp.host", host);
-                    props.put("mail.smtp.user", "no.reply.sssg@gmail.com");
-                    props.put("mail.smtp.password", pass);
-                    props.put("mail.smtp.port", "587");
-                    props.put("mail.smtp.auth", "true");
-
-                    Session session = Session.getDefaultInstance(props, null);
-                    MimeMessage message = new MimeMessage(session);
-
-                    try {
-                        message.setFrom(new InternetAddress(from));
-                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
-                        message.setSubject("New password from SSSG");
-                        String messageText = "Your new password is:" + password;
-                        message.setText(messageText);
-                        Transport transport = session.getTransport("smtp");
-                        transport.connect(host, from, pass);
-                        transport.sendMessage(message, message.getAllRecipients());
-                        transport.close();
-                    } catch (MessagingException ex) {
-                        Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    out.println("New password has been sent to your e-mail<br/>");
-                    out.println("You can <a href='login.jsp'>log-in</a> now <br/>");
-                }
-
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
+                String message = "New password has been sent to your e-mail<br/> You can login now <br/>";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/response.jsp").forward(request, response);
             }
         } else {
-            out.print("Answer is wrong");
+            String message = "Your reCaptcha answer wasnt correct";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
         }
     }
 

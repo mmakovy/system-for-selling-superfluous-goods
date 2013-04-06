@@ -4,9 +4,11 @@
  */
 package cz.muni.fi.Web.Thesis;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.DatabaseException;
+import cz.muni.fi.thesis.UserException;
+import cz.muni.fi.thesis.UserManager;
+import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,40 +33,26 @@ public class VerifyEmail extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        UserManager userManager = new UserManagerImpl();
 
+        
+        UserManager userManager = new UserManagerImpl();
         String code = request.getParameter("code");
 
         try {
             userManager.verifyEmail(code);
+            String message = "Your account was successfully activated <br/> You can login now";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/response.jsp").forward(request, response);
         } catch (DatabaseException ex) {
+            String message = ex.getMessage() ;
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);          
         } catch (UserException ex) {
-            out.println("Account wasnt activated, because verification code wasnt found in DB");
-            out.println(ex.getMessage());
+            String message = "Account wasnt activated, because verification code wasnt found in DB<br/>" + ex.getMessage() ;
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
-        out.println("Your account was activated");
-        out.println("You can <a href='login.jsp'>Log-in</a> now");
 
-
-
-
-
-        try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet VerifyEmail</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet VerifyEmail at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

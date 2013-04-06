@@ -25,19 +25,22 @@
     <body>
         <div id="wrapper">
             <div id ="page">
-                <jsp:include page="../menu.jsp"/> 
+                <jsp:include page="menu.jsp"/> 
                 <div id="content">
                     <div id="registration-content">
                         <div id="registration-content-top">
                         </div>
                         <div id="registration-content-middle">
+                            <div class="error">
+                                ${message}
+                            </div>
                         </div>
                         <div id="registration-content-bottom">
                         </div>
                     </div>
 
                 </div>
-                <jsp:include page="../footer.jsp"/>
+                <jsp:include page="footer.jsp"/>
             </div>
     </body>
 

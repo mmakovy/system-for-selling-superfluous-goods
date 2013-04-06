@@ -5,17 +5,13 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
-        <title>JSP Page</title>
-    </head>
+
+
     <%
         session = request.getSession();
         Long id = (Long) session.getAttribute("userID");
     %>
-    <body>
+
         <div id="header">
             <div id="logo">SSSG</div>   
             <div id="menu">
@@ -76,5 +72,3 @@
     <%                        }
     %>
 
-</body>
-</html>

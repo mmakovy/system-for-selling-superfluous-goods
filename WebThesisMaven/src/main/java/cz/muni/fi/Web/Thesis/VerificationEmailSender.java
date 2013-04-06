@@ -2,15 +2,15 @@ package cz.muni.fi.Web.Thesis;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.LoggerFactory;
 
 public class VerificationEmailSender extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     protected void processRequest(HttpServletRequest request,
             HttpServletResponse response)
@@ -20,29 +20,33 @@ public class VerificationEmailSender extends HttpServlet {
 
         CompanyManager companyManager = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
-        PrintWriter out = response.getWriter();
         MailSender mailSender = new MailSender();
 
         String userID = request.getParameter("id");
         Long id = Long.parseLong(userID);
         Company company = null;
         User user = null;
+
         try {
             company = companyManager.getCompanyById(id);
             user = userManager.getUser(id);
         } catch (DatabaseException ex) {
-            Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+
         }
-        
+
         String to = company.getEmail();
-        String text = "Verify your e-mail: http://localhost:8090/WebThesisMaven/VerifyEmail?code=" + user.getHashVer()+"";
-        
+        String text = "Verify your e-mail: http://localhost:8090/WebThesisMaven/VerifyEmail?code=" + user.getHashVer() + "";
+
         mailSender.sendOneEmail(to, "SSSG - E-mail Verification", text);
-        
-        out.println("Your registration is complete <br/>");
-        out.println("Please verify your e-mail address " + company.getEmail() + " , you should recieve an e-mail<br/>");
-        out.println("<a href='index.jsp'>Home</a>");
-    }   
+
+        String message = "Your registration is complete <br/>Please verify your e-mail address " + company.getEmail() + " , you should recieve an e-mail<br/>";
+        request.setAttribute("message", message);
+        request.getRequestDispatcher("/response.jsp").forward(request, response);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request,

@@ -31,6 +31,7 @@
                         <div id="registration-content-top">
                         </div>
                         <div id="registration-content-middle">
+                           <jsp:include page="updateCompany"/> 
                         </div>
                         <div id="registration-content-bottom">
                         </div>

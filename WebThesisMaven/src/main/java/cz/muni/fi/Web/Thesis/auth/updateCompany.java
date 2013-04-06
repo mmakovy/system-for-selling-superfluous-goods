@@ -47,13 +47,10 @@ public class updateCompany extends HttpServlet {
 
         try {
 
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet updateCompany</title>");
-            out.println("</head>");
+
             out.println("<script src='myjs.js'>");
             out.println("</script>");
-            out.println("<body>");
+
 
             try {
                 company = manager.getCompanyById(id);
@@ -90,8 +87,7 @@ public class updateCompany extends HttpServlet {
             out.println("<a href='removeCompany'>Remove my company from system</a><br/>");
             out.println("<a href='changePassword.jsp'>Change password</a><br/>");
             out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
+
         } finally {
             out.close();
         }

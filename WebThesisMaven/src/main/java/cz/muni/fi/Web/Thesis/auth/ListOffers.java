@@ -47,27 +47,19 @@ public class ListOffers extends HttpServlet {
             offers = offerMng.getAllOffers();
         } catch (DatabaseException ex) {
             log.error(ex.getMessage());
-            out.println(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
 
-
-
-        try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet servletTest</title>");
-            out.println("</head>");
-
-            out.println("<body>");
-            offersLister.OffersToTable(offers, out, id);
-
-            out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+        if (offers == null) {
+            String message = "No offers in database";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../response.jsp").forward(request, response);
+        } else {
+            request.setAttribute("offers", offers);
+            request.getRequestDispatcher("listOffers.jsp").forward(request, response);
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

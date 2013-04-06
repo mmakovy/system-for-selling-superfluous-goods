@@ -6,7 +6,6 @@ package cz.muni.fi.Web.Thesis;
  */
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,6 @@ public class AddCompany extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
 
-        PrintWriter out = response.getWriter();
         CompanyManager companyMng = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
 
@@ -53,22 +51,16 @@ public class AddCompany extends HttpServlet {
         String psc = request.getParameter("psc");
         String other = request.getParameter("other");
 
-
-
         try {
             if (userManager.isUsernameInDatabase(usrname)) {
-                request.getSession().setAttribute("error", "username");
-                response.sendRedirect("addcompany.jsp");
+                String message = "Username is already in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
             } else if (companyMng.isEmailInDatabase(email)) {
-                request.getSession().setAttribute("error", "email");
-                response.sendRedirect("addcompany.jsp");
+                String message = "Email is already in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
             } else {
-
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet AddCompany</title>");
-                out.println("</head>");
-                out.println("<body>");
 
                 if ((name != null && name.length() != 0) && (email
                         != null && email.length() != 0) && (phoneNumber != null
@@ -88,24 +80,22 @@ public class AddCompany extends HttpServlet {
                     if (added != null) {
                         response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
                     } else {
-                        out.println("Company wasnt added(returned null)");
+                        log.error("addCompany() returned null");
+                        String message = "Sorry, we are experiencing some problems, please try again";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("/error.jsp").forward(request, response);
                     }
-
                 } else {
-                    out.println("Company wasnt added, because one of fields was left blank<br/>");
+                    String message = "Company wasnt added, because one required of fields was left blank<br/>";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
                 }
-
-
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
             }
-
         } catch (DatabaseException ex) {
-            out.println(ex.getMessage());
-            out.println("Database error");
-        } finally {
-            out.close();
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }
 
