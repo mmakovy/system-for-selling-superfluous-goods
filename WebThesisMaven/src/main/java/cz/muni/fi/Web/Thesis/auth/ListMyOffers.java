@@ -6,10 +6,7 @@ package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,44 +35,47 @@ public class ListMyOffers extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         OfferManager offerManager = new OfferManagerImpl();
         CompanyManager companyManager = new CompanyManagerImpl();
-        List<Offer> offers = null;
-        Company company = null;
-        OffersLister offersLister = new OffersLister();
+        List<Offer> offers;
+        Company company;
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
-            Long id = (Long) userID;
-            try {
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet ListOffersCompanyProcess</title>");
-                out.println("</head>");
-                out.println("<body>");
+        Long id = (Long) userID;
 
-                try {
-                    company = companyManager.getCompanyById(id);
-                    if (company == null) {
-                        out.println("Your company wasnt found in database");
-                    } else {
-                        offers = offerManager.getOffersByCompany(company);
-                        offersLister.OffersToTable(offers, out, id);
-                    }
+        try {
+            company = companyManager.getCompanyById(id);
+            if (company == null) {
+                String message = "Your company wasn't found in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else {
+                offers = offerManager.getOffersByCompany(company);
 
-                } catch (DatabaseException ex) {
-                    Logger.getLogger(ListMyOffers.class.getName()).log(Level.SEVERE, null, ex);
+                if (offers == null) {
+                    log.error("getOffersByCompany() returned null");
+                    String message = "We have some internal problems. Please, try again later";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                } else if (offers.isEmpty()) {
+                    String message = "You have no offers in database";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("offers", offers);
+                    request.getRequestDispatcher("listOffers.jsp").forward(request, response);
                 }
-
-                out.println("<a href='/WebThesisMaven/index.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
             }
-        
+
+        } catch (DatabaseException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

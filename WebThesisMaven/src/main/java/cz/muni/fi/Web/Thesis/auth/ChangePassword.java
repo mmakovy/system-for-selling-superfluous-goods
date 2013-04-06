@@ -9,17 +9,21 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matus
  */
 public class ChangePassword extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -34,53 +38,49 @@ public class ChangePassword extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         UserManager userManager = new UserManagerImpl();
 
         HttpSession session = request.getSession();
         Long id = (Long) session.getAttribute("userID");
         User user = null;
-        
+
         String oldPassword = request.getParameter("old_password");
         String newPassword = request.getParameter("new_password");
 
         try {
             user = userManager.getUser(id);
         } catch (DatabaseException ex) {
-            Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
 
-
-
-        try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ChangePassword</title>");
-            out.println("</head>");
-            out.println("<body>");
-
-            if (user == null) {
-                out.println("User wasnt found in database");
-            } else {
-                try {
-                    userManager.changePassword(user,oldPassword,newPassword);
-                } catch (DatabaseException ex) {
-                    Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UserException ex) {
-                    Logger.getLogger(ChangePassword.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                out.println("Hotovo");
-                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
+        if (user == null) {
+            log.error("getUser() returned null");
+            String message = "We have some internal problems. Please, try again later";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        } else {
+            try {
+                userManager.changePassword(user, oldPassword, newPassword);
+                String message = "Your password was succesfully changed";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../response.jsp").forward(request, response);
+            } catch (DatabaseException ex) {
+                log.error(ex.getMessage());
+                String message = ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } catch (UserException ex) {
+                log.error(ex.getMessage());
+                String message = ex.getMessage();
+                request.setAttribute("message", message);
+                RequestDispatcher rd = request.getRequestDispatcher("../error.jsp");
+                rd.forward(request, response);
             }
-
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  * @author matus
  */
 public class removeOffer extends HttpServlet {
-
+    
     final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
@@ -36,67 +36,50 @@ public class removeOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        
         OfferManager offerManager = new OfferManagerImpl();
         Long id = Long.parseLong(request.getParameter("id"));
-        Offer offer = null;
-
-
+        Offer offer;
+        
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
-
-
-            try {
-
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet removeOffer</title>");
-                out.println("</head>");
-                out.println("<body>");
-                try {
-                    offer = offerManager.getOffer(id);
-
-                    if (offer == null) {
-                        out.println("Offer wasnt found in database");
-                    } else 
-                        /**
-                     * testing if user has permission for this action
-                     */
-                    if (!userID.equals(offer.getCompany_id())) {
-                        response.sendRedirect("denied.jsp");
-
-                    } else {
-                        /**
-                         * end
-                         */
-                        if (offer == null) {
-                            out.println("Offer wasnt found in database");
-                        } else {
-                            offerManager.removeOffer(offer);
-                            out.println(offer.toString() + " was deleted");
-                        }
-                    }
-                
-
-            } catch (DatabaseException ex) {
-                log.error(ex.getMessage());
-                out.println(ex.getMessage());
-            } catch (OfferException ex) {
-                log.error(ex.getMessage());
-                out.println(ex.getMessage());
+        
+        
+        try {
+            offer = offerManager.getOffer(id);
+            
+            if (offer == null) {
+                log.error("getOffer()  returned null");
+                String message = "Offer wasnt found in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else if (!userID.equals(offer.getCompany_id())) {
+                log.error("Access denied");
+                String message = "You don't have permission to do this";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else {               
+                offerManager.removeOffer(offer);
+                String message = "Offer was deleted from database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../response.jsp").forward(request, response);         
             }
-
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } 
-
-    
-        finally {
-                out.close();
+                    
+        } catch (DatabaseException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        } catch (OfferException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        }
+        
+        
+        
     }
-
-}
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -109,7 +92,7 @@ public class removeOffer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -124,7 +107,7 @@ public class removeOffer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -135,7 +118,7 @@ public class removeOffer extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-        public String getServletInfo() {
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 }

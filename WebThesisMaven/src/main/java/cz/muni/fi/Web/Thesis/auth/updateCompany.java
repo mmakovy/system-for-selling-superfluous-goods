@@ -5,7 +5,8 @@ import cz.muni.fi.thesis.CompanyManager;
 import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.DatabaseException;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,66 +36,46 @@ public class updateCompany extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
+        Map companyMap = new HashMap();
 
         Long id = (Long) userID;
-        Company company = null;
-
+        Company company;
 
         try {
+            company = manager.getCompanyById(id);
+            if (company == null) {
+                log.error("getCompanyById() returned null");
+                String message = "Your company wasn't found in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else {
 
+                companyMap.put("name", company.getName());
+                companyMap.put("email", company.getEmail());
+                companyMap.put("phoneNumber", company.getPhoneNumber());
+                companyMap.put("other", company.getOther());
+                companyMap.put("street", company.getStreet());
+                companyMap.put("city", company.getCity());
+                companyMap.put("psc", company.getPsc());
+                companyMap.put("country", company.getCountry());
+                
+                request.setAttribute("companyMap", companyMap);
+                request.getRequestDispatcher("myProfile.jsp").forward(request, response);
 
-            out.println("<script src='myjs.js'>");
-            out.println("</script>");
-
-
-            try {
-                company = manager.getCompanyById(id);
-                if (company == null) {
-                    out.println("Company wasnt found in database");
-                } else {
-
-                    out.println("<form method='post' name='form2' onsubmit='return submit_company()' action='/WebThesisMaven/auth/updateCompanyProcess?id=" + id + "'>");
-                    out.println("Name:");
-                    out.println("<input type='text' name='name' value='" + company.getName() + "'><br/>");
-                    out.println("Email:");
-                    out.println(company.getEmail() + "<br/>");
-                    out.println("Phone Number:");
-                    out.println("<input type='text' name='phone' value='" + company.getPhoneNumber() + "'><br/><br/>");
-                    out.println("Other:");
-                    out.println("<input type='text' name='other' value='" + company.getOther() + "'><br/><br/>");
-                    out.println("Address: <br/>");
-                    out.println("Street:");
-                    out.println("<input type='text' name='street' value='" + company.getStreet() + "'><br/>");
-                    out.println("City:");
-                    out.println("<input type='text' name='city' value='" + company.getCity() + "'><br/>");
-                    out.println("PSC:");
-                    out.println("<input type='text' name='psc' value='" + company.getPsc() + "'><br/>");
-                    out.println("Country:");
-                    out.println("<input type='text' name='country' value='" + company.getCountry() + "'><br/>");
-
-                    out.println("<input type='submit' name='submit' value='Update'>");
-                    out.println("</form>");
-                }
-            } catch (DatabaseException ex) {
-                out.println(ex.getMessage());
-                log.error(ex.getMessage());
             }
-            out.println("<a href='removeCompany'>Remove my company from system</a><br/>");
-            out.println("<a href='changePassword.jsp'>Change password</a><br/>");
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-
-        } finally {
-            out.close();
+        } catch (DatabaseException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
-
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

@@ -36,7 +36,6 @@ public class ListOffers extends HttpServlet {
 
         OfferManager offerMng = new OfferManagerImpl();
         List<Offer> offers = null;
-        OffersLister offersLister = new OffersLister();
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
@@ -53,9 +52,14 @@ public class ListOffers extends HttpServlet {
         }
 
         if (offers == null) {
+            log.error("getAllOffers() returned null");
+            String message = "We have some internal problems. Please, try again later";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        } else if (offers.isEmpty()){
             String message = "No offers in database";
             request.setAttribute("message", message);
-            request.getRequestDispatcher("../response.jsp").forward(request, response);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         } else {
             request.setAttribute("offers", offers);
             request.getRequestDispatcher("listOffers.jsp").forward(request, response);

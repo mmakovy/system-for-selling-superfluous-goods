@@ -6,7 +6,6 @@ package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -38,10 +37,8 @@ public class FindOffer extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out = response.getWriter();
         OfferManager offerManager = new OfferManagerImpl();
-        List<Offer> offers = null;
-        OffersLister offersLister = new OffersLister();
+        List<Offer> offers;
 
         String expression = request.getParameter("expression");
         String minQuantity = request.getParameter("min-quantity");
@@ -64,78 +61,76 @@ public class FindOffer extends HttpServlet {
         Long id = (Long) userID;
 
         try {
+            offers = offerManager.findOffer(expression);
 
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FindOffer</title>");
-            out.println("</head>");
-            out.println("<body>");
-
-            try {
-                offers = offerManager.findOffer(expression);
-
-                if (minQuantity.length() > 0 && maxQuantity.length() > 0) {
-                    minQuantityInt = Integer.parseInt(minQuantity);
-                    maxQuantityInt = Integer.parseInt(maxQuantity);
-                    offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
-                } else if (minQuantity.length() > 0 && maxQuantity.length() <= 0) {
-                    minQuantityInt = Integer.parseInt(minQuantity);
-                    maxQuantityInt = Integer.MAX_VALUE;
-                    offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
-                } else if (minQuantity.length() <= 0 && maxQuantity.length() > 0) {
-                    minQuantityInt = 0;
-                    maxQuantityInt = Integer.parseInt(maxQuantity);
-                    offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
-                }
-
-                if (minQuantityToBuy.length() > 0 && maxQuantityToBuy.length() > 0) {
-                    minQuantityToBuyInt = Integer.parseInt(minQuantityToBuy);
-                    maxQuantityToBuyInt = Integer.parseInt(maxQuantityToBuy);
-                    offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
-                } else if (minQuantityToBuy.length() > 0 && maxQuantityToBuy.length() <= 0) {
-                    minQuantityToBuyInt = Integer.parseInt(minQuantityToBuy);
-                    maxQuantityToBuyInt = Integer.MAX_VALUE;
-                    offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
-                } else if (minQuantityToBuy.length() <= 0 && maxQuantityToBuy.length() > 0) {
-                    minQuantityToBuyInt = 0;
-                    maxQuantityToBuyInt = Integer.parseInt(maxQuantityToBuy);
-                    offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
-                }
-
-
-
-                if (minPrice.length() > 0 && maxPrice.length() > 0) {
-                    minPriceInt = new BigDecimal(minPrice);
-                    maxPriceInt = new BigDecimal(maxPrice);
-                    offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
-                } else if (minPrice.length() > 0 && maxPrice.length() <= 0) {
-                    minPriceInt = new BigDecimal(minPrice);
-                    maxPriceInt = new BigDecimal("1000000");
-                    offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
-                } else if (minPrice.length() <= 0 && maxPrice.length() > 0) {
-                    minPriceInt = BigDecimal.ZERO;
-                    maxPriceInt = new BigDecimal(maxPrice);
-                    offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
-                }
-
-                if (!categoryString.equals("----")) {
-                    Category category = Category.valueOf(categoryString.toUpperCase());
-                    offers = offerManager.filterCategory(offers, category);
-                }
-
-                offersLister.OffersToTable(offers, out, id);
-                
-            } catch (DatabaseException ex) {
-                log.error(ex.getMessage());
-                out.println(ex.getMessage());
+            if (minQuantity.length() > 0 && maxQuantity.length() > 0) {
+                minQuantityInt = Integer.parseInt(minQuantity);
+                maxQuantityInt = Integer.parseInt(maxQuantity);
+                offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
+            } else if (minQuantity.length() > 0 && maxQuantity.length() <= 0) {
+                minQuantityInt = Integer.parseInt(minQuantity);
+                maxQuantityInt = Integer.MAX_VALUE;
+                offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
+            } else if (minQuantity.length() <= 0 && maxQuantity.length() > 0) {
+                minQuantityInt = 0;
+                maxQuantityInt = Integer.parseInt(maxQuantity);
+                offers = offerManager.filterQuantity(offers, minQuantityInt, maxQuantityInt);
             }
 
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+            if (minQuantityToBuy.length() > 0 && maxQuantityToBuy.length() > 0) {
+                minQuantityToBuyInt = Integer.parseInt(minQuantityToBuy);
+                maxQuantityToBuyInt = Integer.parseInt(maxQuantityToBuy);
+                offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
+            } else if (minQuantityToBuy.length() > 0 && maxQuantityToBuy.length() <= 0) {
+                minQuantityToBuyInt = Integer.parseInt(minQuantityToBuy);
+                maxQuantityToBuyInt = Integer.MAX_VALUE;
+                offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
+            } else if (minQuantityToBuy.length() <= 0 && maxQuantityToBuy.length() > 0) {
+                minQuantityToBuyInt = 0;
+                maxQuantityToBuyInt = Integer.parseInt(maxQuantityToBuy);
+                offers = offerManager.filterQuantityToBuy(offers, minQuantityToBuyInt, maxQuantityToBuyInt);
+            }
+
+            if (minPrice.length() > 0 && maxPrice.length() > 0) {
+                minPriceInt = new BigDecimal(minPrice);
+                maxPriceInt = new BigDecimal(maxPrice);
+                offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
+            } else if (minPrice.length() > 0 && maxPrice.length() <= 0) {
+                minPriceInt = new BigDecimal(minPrice);
+                maxPriceInt = new BigDecimal("1000000");
+                offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
+            } else if (minPrice.length() <= 0 && maxPrice.length() > 0) {
+                minPriceInt = BigDecimal.ZERO;
+                maxPriceInt = new BigDecimal(maxPrice);
+                offers = offerManager.filterPrice(offers, minPriceInt, maxPriceInt);
+            }
+
+            if (!categoryString.equals("----")) {
+                Category category = Category.valueOf(categoryString.toUpperCase());
+                offers = offerManager.filterCategory(offers, category);
+            }
+
+            if (offers == null) {
+                log.error("findOffer() or one of filters returned null");
+                String message = "We have some internal problems, please try again later";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else if (offers.isEmpty()){
+                String message = "No results for your querry";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("findOffer.jsp").forward(request, response);
+            } else {
+                request.setAttribute("offers", offers);
+                request.getRequestDispatcher("listOffers.jsp").forward(request, response);
+            }
+
+        } catch (DatabaseException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
+
 
     }
 

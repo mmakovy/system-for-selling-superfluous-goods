@@ -41,7 +41,6 @@ public class ListOffersFromCategory extends HttpServlet {
         List<Offer> offers = new ArrayList<Offer>();
         HttpSession session = request.getSession();
         Object userId = session.getAttribute("userID");
-        OffersLister offersLister = new OffersLister();
         Long id = (Long) userId;
 
         try {
@@ -56,7 +55,6 @@ public class ListOffersFromCategory extends HttpServlet {
 
             try {
                 offers = offerManager.getOffersFromCategory(category);
-                offersLister.OffersToTable(offers, out, id);
             } catch (DatabaseException ex) {
                 Logger.getLogger(ListOffersFromCategory.class.getName()).log(Level.SEVERE, null, ex);
             }

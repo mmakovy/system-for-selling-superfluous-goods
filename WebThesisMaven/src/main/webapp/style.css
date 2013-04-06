@@ -198,15 +198,22 @@ h1 {
     text-align: center;
 }
 
-form[name='add_company'] {
+form[name='add_company'],
+form[name='add_offer'],
+form[name='find_offer']{
     line-height:    33px;
 
 }
 
-form[name='add_company'] input[type='text'], form[name='add_company'] input[type='password'] {
+form[name='add_company'] input[type='text'], 
+form[name='add_company'] input[type='password'],
+form[name='add_offer'] input[type='text'],
+form[name='add_offer'] input[type='password'],
+form[name='add_offer'] select[name='category'] {
+    
     float: right;
     margin-bottom: 8px;
-    margin-right: 441px;
+    margin-right: 360px;
 }
 
 #submenu {
