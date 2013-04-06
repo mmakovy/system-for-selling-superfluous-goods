@@ -6,9 +6,6 @@ package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * @author matus
  */
 public class updateCompanyProcess extends HttpServlet {
-
+    
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
@@ -37,9 +34,8 @@ public class updateCompanyProcess extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        
         CompanyManager manager = new CompanyManagerImpl();
-
         Company company = new Company();
         String name = request.getParameter("name");
         String phoneNumber = request.getParameter("phone");
@@ -48,73 +44,68 @@ public class updateCompanyProcess extends HttpServlet {
         String country = request.getParameter("country");
         String psc = request.getParameter("psc");
         String other = request.getParameter("other");
-
+        
         Long id = Long.parseLong(request.getParameter("id"));
-
+        
         String email = null;
-
+        
         try {
             email = manager.getCompanyById(id).getEmail();
         } catch (DatabaseException ex) {
-            Logger.getLogger(updateCompanyProcess.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
-
-
-
+        
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
-
+        
         Long userIdLong = (Long) userID;
-
-
+        
+        
         if (!id.equals(userIdLong)) {
-            response.sendRedirect("denied.jsp");
+            log.error("Access denied");
+            String message = "You have not permission to do this";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         } else {
-
-            try {
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet updateCompanyProcess</title>");
-                out.println("</head>");
-                out.println("<body>");
-
-                if ((name != null && name.length() != 0)
-                        && (phoneNumber != null && phoneNumber.length() != 0)) {
-                    company.setName(name);
-                    company.setEmail(email);
-                    company.setPhoneNumber(phoneNumber);
-                    company.setId(id);
-                    company.setPsc(psc);
-                    company.setCity(city);
-                    company.setCountry(country);
-                    company.setStreet(street);
-                    company.setOther(other);
-
-                    try {
-                        manager.updateCompany(company);
-                    } catch (DatabaseException ex) {
-                        out.println(ex.getMessage());
-                        log.error(ex.getMessage());
-                    } catch (CompanyException ex) {
-                        out.println(ex.getMessage());
-                        log.error(ex.getMessage());
-                    }
-
-                    out.println("Company was succesfully updated");
-                    out.println("<form method = 'POST' action = '/WebThesisMaven/auth/ListCompanies'> <input type = 'submit' value = 'List all companies' name = 'option' /> </form >");
-
-                } else {
-                    out.println("Company wasnt updated, because one of fields was left blank<br/>");
-                }
-
-
-                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
+            
+            if ((name != null && name.length() != 0)
+                    && (phoneNumber != null && phoneNumber.length() != 0)) {
+                company.setName(name);
+                company.setEmail(email);
+                company.setPhoneNumber(phoneNumber);
+                company.setId(id);
+                company.setPsc(psc);
+                company.setCity(city);
+                company.setCountry(country);
+                company.setStreet(street);
+                company.setOther(other);
+                
+                try {
+                    manager.updateCompany(company);
+                    String message = "Company was succesfully updated";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../response.jsp").forward(request, response);
+                } catch (DatabaseException ex) {
+                    log.error(ex.getMessage());
+                    String message = ex.getMessage();
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                } catch (CompanyException ex) {
+                    log.error(ex.getMessage());
+                    String message = ex.getMessage();
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                }                
+                
+            } else {
+                String message = "Company wasnt updated, because one of fields was left blank<br/>";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
-
+                       
         }
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

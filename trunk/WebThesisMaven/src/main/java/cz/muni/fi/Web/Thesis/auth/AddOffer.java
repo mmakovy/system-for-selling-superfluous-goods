@@ -7,16 +7,12 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +47,6 @@ public class AddOffer extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out = response.getWriter();
-
         CompanyManager companyManager = new CompanyManagerImpl();
         OfferManager offerManager = new OfferManagerImpl();
         Calendar calendar = Calendar.getInstance();
@@ -81,7 +75,10 @@ public class AddOffer extends HttpServlet {
             try {
                 items = upload.parseRequest(request);
             } catch (FileUploadException ex) {
-                Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex.getMessage());
+                String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
 
             Iterator iter = items.iterator();
@@ -104,7 +101,10 @@ public class AddOffer extends HttpServlet {
                     try {
                         item.write(uploadedFile);
                     } catch (Exception ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(ex.getMessage());
+                        String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
                     Magic parser = new Magic();
@@ -112,11 +112,20 @@ public class AddOffer extends HttpServlet {
                     try {
                         match = parser.getMagicMatch(uploadedFile, false);
                     } catch (MagicParseException ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(ex.getMessage());
+                        String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     } catch (MagicMatchNotFoundException ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(ex.getMessage());
+                        String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     } catch (MagicException ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(ex.getMessage());
+                        String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
                     if (match != null) {
@@ -124,13 +133,12 @@ public class AddOffer extends HttpServlet {
                         if (!mimeType.startsWith("image")) {
                             fileIsImage = false;
                             uploadedFile.delete();
+                            log.error("File wasnt image");
+                            String message = "File wasnt image";
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("../error.jsp").forward(request, response);
                         }
                     }
-
-
-
-
-
                 } else {
 
                     if ("name".equals(item.getFieldName())) {
@@ -152,11 +160,8 @@ public class AddOffer extends HttpServlet {
                     } else if ("dob_year".equals(item.getFieldName())) {
                         yearString = item.getString();
                     }
-
-
                 }
             }
-
         }
 
         /**
@@ -179,14 +184,6 @@ public class AddOffer extends HttpServlet {
             date = new Date(calendar.getTimeInMillis());
         }
 
-        try {
-
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AddOffer</title>");
-            out.println("</head>");
-            out.println("<body>");
-
 
             if (name.length() != 0 && priceString.length() != 0 && quantityString.length() != 0) {
 
@@ -204,88 +201,92 @@ public class AddOffer extends HttpServlet {
                 offer.setMinimalBuyQuantity(minimalBuyQuantity);
                 offer.setPhotoUrl(photoUrl);
 
-
-
                 try {
 
                     Company company = companyManager.getCompanyById(userId);
 
                     if (company == null) {
-                        out.println("Company wasnt found in database");
+                        String message = "Your company wasn't found in database";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("addoffer.jsp").forward(request, response);
                     } else if (fileIsImage) {
                         Offer added = offerManager.addOffer(company, offer);
                         if (added == null) {
-                            out.println("Offer wasnt added");
+                            log.error("addOffer() returned null");
+                            String message = "Offer wasnt added because of some problems on our side, sorry. Please try again later.";
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("../error.jsp").forward(request, response);
                         } else {
-                            out.println("Offer was sucessfuly added");
+                            String message = "Offer was successfully added";
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("../response.jsp").forward(request, response);
                         }
                     } else {
-                        out.println("Offer wasnt added because of file");
+                        String message = "Offer wasn't added because of file (File wasn't image)";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
 
                 } catch (DatabaseException ex) {
                     log.error(ex.getMessage());
-                    out.println(ex.getMessage());
+                    String message = ex.getMessage();
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
                 }
             } else {
-                out.println("Offer wasnt added because one of text fields was left blank");
+                String message = "Your offer wasn't added because one of required fields was left blank";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("addoffer.jsp").forward(request, response);
             }
-
-            out.println(
-                    "<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-            out.println(
-                    "</body>");
-            out.println(
-                    "</html>");
-
-
-        } finally {
-            out.close();
         }
-        /*
-         * }
+
+        // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+        /**
+         * Handles the HTTP
+         * <code>GET</code> method.
+         *
+         * @param request servlet request
+         * @param response servlet response
+         * @throws ServletException if a servlet-specific error occurs
+         * @throws IOException if an I/O error occurs
          */
-    }
+        @Override
+        protected void doGet
+        (HttpServletRequest request, HttpServletResponse response
+        )
+            throws ServletException
+        , IOException {
+            processRequest(request, response);
+        }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP
-     * <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+        /**
+         * Handles the HTTP
+         * <code>POST</code> method.
+         *
+         * @param request servlet request
+         * @param response servlet response
+         * @throws ServletException if a servlet-specific error occurs
+         * @throws IOException if an I/O error occurs
+         */
+        @Override
+        protected void doPost
+        (HttpServletRequest request, HttpServletResponse response
+        )
+            throws ServletException
+        , IOException {
+            processRequest(request, response);
+        }
 
-    /**
-     * Handles the HTTP
-     * <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
+        /**
+         * Returns a short description of the servlet.
+         *
+         * @return a String containing servlet description
+         */
+        @Override
+        public String getServletInfo
+        
+            () {
         return "Short description";
-    }// </editor-fold>
-}
+        }// </editor-fold>
+    }

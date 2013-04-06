@@ -49,7 +49,7 @@ public class Login extends HttpServlet {
             if (user == null) {
                 String message = "Wrong username or password";
                 request.setAttribute("message", message);
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                request.getRequestDispatcher("index.jsp").forward(request, response);
             } else if (!userManager.isVerified(user)) {
                 String message = "Your email address hasn't been verified yet, look in your mailbox for email from our system";
                 request.setAttribute("message", message);

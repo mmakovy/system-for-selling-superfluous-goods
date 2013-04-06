@@ -40,6 +40,11 @@
                         <div id="index-content-top">
                         </div>
                         <div id="index-content-middle">
+                            <% if (request.getAttribute("message") != null) {
+                                %>
+                                <div class="error">${message}</div>
+                            <%
+                                }%>
                             <h1> What is SSSG ? </h1>
                             <p>Lorem ipsum dolor sit amet, prima ubique corrumpit ei ius. Agam scriptorem intellegebat 
                                 eum ea, velit labitur at quo, ei idque homero ceteros eum. Tale congue semper ea est. 

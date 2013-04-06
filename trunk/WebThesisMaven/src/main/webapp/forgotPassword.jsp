@@ -42,9 +42,9 @@
                         <div id="index-content-top">
                         </div>
                         <div id="index-content-middle">
-                            <% if (request.getAttribute("message") == "recaptcha") {
+                            <% if (request.getAttribute("message") != null) {
                                 %>
-                                <div class="error">Your reCaptcha answer wasn't correct</div>
+                                <div class="error">${message}</div>
                             <%
                                 }%>
 
