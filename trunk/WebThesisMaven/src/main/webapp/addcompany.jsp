@@ -27,6 +27,11 @@
                         <div id="registration-content-top">
                         </div>
                         <div id="registration-content-middle">
+                            <% if (request.getAttribute("message")!=null) {
+                                %>
+                                <div class="error">${message}</div>
+                            <%
+                                }%>
                             <h1>New user registration</h1>
                             <form method="post" name='add_company' action="/WebThesisMaven/AddCompany" onsubmit="return submit_company()">    
                                 <%
@@ -48,7 +53,7 @@
                                 Username*: <input type="text" name="usrname"><br/>
                                 Password*: <input type="password" name="pwd" alt=":)"><br/>
                                 Password(verification)*: <input type="password" name="pwdVer" alt=":)"><br/> 
-                                Name*: <input type="text" name="name"><br/>
+                                Company name*: <input type="text" name="name"><br/>
                                 Email*: <input type="text" name="email"><br/>
                                 Email(verification)*: <input type="text" name="emailVer"><br/>
                                 PhoneNumber*: <input type="text" name="phone"><br/>   <br/>

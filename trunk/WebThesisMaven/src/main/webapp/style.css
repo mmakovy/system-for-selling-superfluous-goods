@@ -263,23 +263,41 @@ form[name='add_company'] input[type='text'], form[name='add_company'] input[type
 
 .logout a:hover {
     color: red;
-    
+
 }
 
 .offers-table {
-    
-    
+
+
 }
 
 .offers-table a {
     color: #35b2f2;
-    
+
 }
 
 form[name='login'] input[type='text'], form[name='login'] input[type='password'] {
     padding-left: 5px;
     width: 120px;
-    
+
+}
+
+.error {
+    border: 1px solid red;
+    width: 100%;
+    min-height: 52px;
+    line-height: 53px;
+    text-align: center;
+    background-color: lightcoral;
+}
+
+.success {
+    border: 1px solid green;
+    width: 100%;
+    min-height: 52px;
+    line-height: 53px;
+    text-align: center;
+    background-color: lightgreen;
 }
 
 

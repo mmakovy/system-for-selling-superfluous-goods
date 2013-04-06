@@ -6,20 +6,20 @@ package cz.muni.fi.Web.Thesis;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author matus
  */
 public class Login extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -35,8 +35,7 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out = response.getWriter();
-        CompanyManager manager = new CompanyManagerImpl();
+        CompanyManager companyManager = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
         User user;
         HttpSession session;
@@ -44,50 +43,38 @@ public class Login extends HttpServlet {
         String userName = request.getParameter("userName");
         String pwd = request.getParameter("pwd");
 
-
-
-
         try {
+            user = userManager.findUser(userName, pwd);
 
-
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Login</title>");
-            out.println("</head>");
-            out.println("<body>");
-            try {
-
-                user = userManager.findUser(userName, pwd);
-
-                if (user == null) {
-                    out.println("Wrong username or password");
-                } else {
-
-                    if (!userManager.isVerified(user)) {
-                        response.sendRedirect("notverified.jsp");
-                    } else {
-
-                        session = request.getSession(true);
-                        session.setAttribute("userID", user.getId());
-
-                        response.sendRedirect("auth/index.jsp");
-                    }
-
-                }
-
-            } catch (DatabaseException ex) {
-                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UserException ex) {
+            if (user == null) {
+                String message = "Wrong username or password";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+            } else if (!userManager.isVerified(user)) {
+                String message = "Your email address hasn't been verified yet, look in your mailbox for email from our system";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/error.jsp").forward(request, response);
+            } else {
+                session = request.getSession(true);
+                session.setAttribute("userID", user.getId());
+                response.sendRedirect("auth/index.jsp");
             }
 
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+        } catch (DatabaseException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        } catch (UserException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
-    }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    }
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
