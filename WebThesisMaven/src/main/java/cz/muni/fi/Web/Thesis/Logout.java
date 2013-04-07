@@ -1,22 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis;
 
+import cz.muni.fi.thesis.CompanyManagerImpl;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class Logout extends HttpServlet {
 
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -36,6 +35,7 @@ public class Logout extends HttpServlet {
 
         session.removeAttribute("userID");
         session.invalidate();
+        log.info("Logged out");
         response.sendRedirect("index.jsp");
 
     }

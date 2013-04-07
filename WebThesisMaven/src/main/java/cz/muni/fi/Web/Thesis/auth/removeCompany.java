@@ -1,8 +1,9 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.Company;
+import cz.muni.fi.thesis.CompanyManager;
+import cz.muni.fi.thesis.CompanyManagerImpl;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class removeCompany extends HttpServlet {
 
@@ -32,51 +33,38 @@ public class removeCompany extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         CompanyManager manager = new CompanyManagerImpl();
-        Company company = null;
+        Company company;
 
         HttpSession session = request.getSession();
         Long id = (Long) session.getAttribute("userID");
 
-            try {
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet removeCompany</title>");
-                out.println("</head>");
-                out.println("<body>");
 
-                try {
-                    company = manager.getCompanyById(id);
+        try {
+            company = manager.getCompanyById(id);
 
-                    if (company == null) {
-                        out.println("Company wasnt found in database");
-                    } else {
-                        manager.removeCompany(company);
-                        out.println(company.toString() + " was deleted<br/>");
-                    }
-
-                } catch (DatabaseException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                } catch (CompanyException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                } catch (OfferException ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                } catch (Exception ex) {
-                    out.println(ex.getMessage());
-                    log.error(ex.getMessage());
-                }
-
-                out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-                out.println("</body>");
-                out.println("</html>");
-            } finally {
-                out.close();
+            if (company == null) {
+                log.error("Company wasnt found in database - getCompanyById returned null");
+                String message = "Company wasnt found in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else {
+                manager.removeCompany(company);
+                String message = "Your company was deleted";              
+                request.setAttribute("message", message);
+                session.removeAttribute("userID");
+                session.invalidate();
+                request.getRequestDispatcher("../response.jsp").forward(request, response);
             }
-        
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        }
+
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

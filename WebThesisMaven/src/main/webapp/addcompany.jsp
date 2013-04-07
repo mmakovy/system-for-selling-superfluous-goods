@@ -1,7 +1,6 @@
 <%-- 
     Document   : addcompany
-    Created on : 23.11.2012, 13:23:55
-    Author     : matus
+    Author     : Matus Makovy
 --%>
 
 <%@page import="javax.print.attribute.standard.OutputDeviceAssigned"%>

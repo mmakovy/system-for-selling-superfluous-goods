@@ -1,8 +1,7 @@
 
 <%-- 
     Document   : findOffer
-    Created on : 29.11.2012, 16:12:05
-    Author     : matus
+    Author     : Matus Makovy
 --%>
 
 <%@page import="cz.muni.fi.thesis.User"%>

@@ -1,7 +1,6 @@
 <%-- 
     Document   : index
-    Created on : 11.2.2013, 10:54:17
-    Author     : matus
+    Author     : Matus Makovy
 --%>
 
 <%@page import="java.util.UUID"%>

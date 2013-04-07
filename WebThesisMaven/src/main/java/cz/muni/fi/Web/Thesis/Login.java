@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis;
 
 import cz.muni.fi.thesis.*;
@@ -15,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class Login extends HttpServlet {
 
@@ -60,18 +56,12 @@ public class Login extends HttpServlet {
                 response.sendRedirect("auth/index.jsp");
             }
 
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("/error.jsp").forward(request, response);
-        } catch (UserException ex) {
-            log.error(ex.getMessage());
-            String message = ex.getMessage();
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
-        }
-
+        } 
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 

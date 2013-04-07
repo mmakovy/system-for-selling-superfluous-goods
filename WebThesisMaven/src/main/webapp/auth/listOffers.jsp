@@ -1,7 +1,6 @@
 <%-- 
-    Document   : index
-    Created on : 23.11.2012, 12:16:10
-    Author     : matus
+    Document   : listOffers
+    Author     : Matus Makovy
 --%>
 
 <%@page import="java.util.List"%>

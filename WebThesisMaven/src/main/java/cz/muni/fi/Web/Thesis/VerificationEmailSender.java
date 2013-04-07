@@ -2,12 +2,17 @@ package cz.muni.fi.Web.Thesis;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 
+/**
+ *
+ * @author Matus Makovy
+ */
 public class VerificationEmailSender extends HttpServlet {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
@@ -35,13 +40,19 @@ public class VerificationEmailSender extends HttpServlet {
             String message = ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("/error.jsp").forward(request, response);
-
         }
 
         String to = company.getEmail();
         String text = "Verify your e-mail: http://localhost:8090/WebThesisMaven/VerifyEmail?code=" + user.getHashVer() + "";
-
-        mailSender.sendOneEmail(to, "SSSG - E-mail Verification", text);
+        
+        try {
+            mailSender.sendOneEmail(to, "SSSG - E-mail Verification", text);
+        } catch (MessagingException ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        }
 
         String message = "Your registration is complete <br/>Please verify your e-mail address " + company.getEmail() + " , you should recieve an e-mail<br/>";
         request.setAttribute("message", message);

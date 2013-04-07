@@ -1,28 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import net.sf.jmimemagic.*;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicMatch;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -31,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class updateOfferProcess extends HttpServlet {
 
@@ -51,7 +45,6 @@ public class updateOfferProcess extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out = response.getWriter();
         OfferManager manager = new OfferManagerImpl();
         Offer offer = null;
         Calendar calendar = Calendar.getInstance();
@@ -71,7 +64,7 @@ public class updateOfferProcess extends HttpServlet {
         String monthString = null;
         String yearString = null;
         boolean fileIsImage = true;
-        
+
 
         if (ServletFileUpload.isMultipartContent(request)) {
 
@@ -82,7 +75,10 @@ public class updateOfferProcess extends HttpServlet {
             try {
                 items = upload.parseRequest(request);
             } catch (FileUploadException ex) {
-                Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex.getMessage());
+                String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
 
             Iterator iter = items.iterator();
@@ -99,26 +95,27 @@ public class updateOfferProcess extends HttpServlet {
                     }
 
                     photoUrl = Normalizer.normalize(fileName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-
                     File uploadedFile = new File(path + "/" + photoUrl);
 
 
                     try {
                         item.write(uploadedFile);
                     } catch (Exception ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                        log.error(ex.getMessage());
+                        String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
                     Magic parser = new Magic();
                     MagicMatch match = null;
                     try {
                         match = parser.getMagicMatch(uploadedFile, false);
-                    } catch (MagicParseException ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (MagicMatchNotFoundException ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (MagicException ex) {
-                        Logger.getLogger(AddOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
+                        log.error(ex.getMessage());
+                        String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
                     if (match != null) {
@@ -126,13 +123,12 @@ public class updateOfferProcess extends HttpServlet {
                         if (!mimeType.startsWith("image")) {
                             fileIsImage = false;
                             uploadedFile.delete();
+                            log.error("File wasnt image");
+                            String message = "File wasnt image";
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("../error.jsp").forward(request, response);
                         }
                     }
-
-
-
-
-
                 } else {
 
                     if ("name".equals(item.getFieldName())) {
@@ -154,11 +150,8 @@ public class updateOfferProcess extends HttpServlet {
                     } else if ("dob_year".equals(item.getFieldName())) {
                         yearString = item.getString();
                     }
-
-
                 }
             }
-
         }
 
         Long id = Long.parseLong(request.getParameter("id"));
@@ -187,90 +180,88 @@ public class updateOfferProcess extends HttpServlet {
         Long userIdLong = (Long) userID;
 
         try {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet updateCompanyProcess</title>");
-            out.println("</head>");
-            out.println("<body>");
-
-            try {
-                offer = manager.getOffer(id);
-            } catch (DatabaseException ex) {
-                Logger.getLogger(updateOfferProcess.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            if (offer == null) {
-                out.println("Offer wasnt found in database");
-            } else {
-                String messageText = "Offer " + offer.getName() + " was updated" + newline;
-
-                if (name.length() != 0 && description.length() != 0
-                        && priceString.length() != 0
-                        && quantityString.length() != 0) {
-
-                    BigDecimal price = new BigDecimal(priceString);
-
-                    if (!userIdLong.equals(offer.getCompany_id())) {
-                        response.sendRedirect("denied.jsp");
-                    } else {
-                        Offer updatedOffer = new Offer();
-                        updatedOffer.setDescription(description);
-                        updatedOffer.setName(name);
-                        updatedOffer.setPrice(price);
-                        updatedOffer.setQuantity(quantity);
-                        updatedOffer.setId(id);
-                        updatedOffer.setCompany_id(offer.getCompany_id());
-                        updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
-                        updatedOffer.setPurchaseDate(date);
-                        updatedOffer.setCategory(Category.valueOf(categoryString));
-                        if (photoUrl == null || photoUrl.length() == 0 ) {
-                            photoUrl = offer.getPhotoUrl();
-                        }
-                        updatedOffer.setPhotoUrl(photoUrl);
-
-                        
-                        
-                        messageText = messageText + "Before update: "+ newline + offer.toString() + newline;
-
-                        try {
-                            manager.updateOffer(updatedOffer);
-                        } catch (DatabaseException ex) {
-                            out.println(ex.getMessage());
-                            log.error(ex.getMessage());
-                        } catch (OfferException ex) {
-                            out.println(ex.getMessage());
-                            log.error(ex.getMessage());
-                        }
-                        
-                        messageText = messageText + "After update: "+ newline + updatedOffer.toString() + newline;
-                        String messageSubject = "Offer " + offer.getName() + " was updated";
-                        
-                        List<String> recipients;
-                        try {
-                            recipients = mailingListManager.getEmails(id);
-                            log.error(Calendar.getInstance().getTime().toString());
-                            mailSender.sendMoreEmails(recipients, messageSubject, messageText);
-                            log.error(Calendar.getInstance().getTime().toString());
-                        } catch (DatabaseException ex) {
-                            Logger.getLogger(updateOfferProcess.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
-
-                        out.println("Offer was succesfully updated");
-                        out.println("<form method = 'POST' action = '/WebThesisMaven/auth/ListOffers'> <input type = 'submit' value = 'List all offers' name = 'option' /> </form >");
-                    }
-                } else {
-                    out.println("Company wasnt updated, because one of fields was left blank<br/>");
-                }
-            }
-
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+            offer = manager.getOffer(id);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            String message = ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
 
+        if (offer == null) {
+            String message = "Offer wasnt found in database";
+            log.error(message);
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        } else {
+
+            if (name.length() != 0 && description.length() != 0
+                    && priceString.length() != 0
+                    && quantityString.length() != 0) {
+
+                BigDecimal price = new BigDecimal(priceString);
+
+                if (!userIdLong.equals(offer.getCompany_id())) {
+                    log.error("Access denied");
+                    String message = "You don't have permission to do this";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                } else {
+                    Offer updatedOffer = new Offer();
+                    updatedOffer.setDescription(description);
+                    updatedOffer.setName(name);
+                    updatedOffer.setPrice(price);
+                    updatedOffer.setQuantity(quantity);
+                    updatedOffer.setId(id);
+                    updatedOffer.setCompany_id(offer.getCompany_id());
+                    updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
+                    updatedOffer.setPurchaseDate(date);
+                    updatedOffer.setCategory(Category.valueOf(categoryString));
+                    if (photoUrl == null || photoUrl.length() == 0) {
+                        photoUrl = offer.getPhotoUrl();
+                    }
+                    updatedOffer.setPhotoUrl(photoUrl);
+
+                    String messageText = "Offer " + offer.getName() + " was updated" + newline;
+
+                    messageText = messageText + "Before update: " + newline + offer.toString() + newline;
+
+                    try {
+                        manager.updateOffer(updatedOffer);
+                    } catch (Exception ex) {
+                        log.error(ex.getMessage());
+                        String message = ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
+                    }
+
+                    messageText = messageText + "After update: " + newline + updatedOffer.toString() + newline;
+                    String messageSubject = "Offer " + offer.getName() + " was updated";
+
+                    List<String> recipients;
+
+                    try {
+                        recipients = mailingListManager.getEmails(id);
+                        mailSender.sendMoreEmails(recipients, messageSubject, messageText);
+                    } catch (Exception ex) {
+                        log.error(ex.getMessage());
+                        String message = ex.getMessage();
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
+                    }
+
+                    String message = "Offer was succesfully updated";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../response.jsp").forward(request, response);
+
+                }
+            } else {
+                String message = "Company wasnt updated, because one of fields was left blank<br/>";
+                log.error(message);
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            }
+        }
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 

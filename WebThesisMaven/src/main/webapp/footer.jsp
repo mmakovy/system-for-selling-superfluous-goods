@@ -1,7 +1,6 @@
 <%-- 
     Document   : footer
-    Created on : 5.4.2013, 12:09:05
-    Author     : User
+    Author     : Matus Makovy
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>

@@ -1,14 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis;
 
 import cz.muni.fi.thesis.CompanyManagerImpl;
-import cz.muni.fi.thesis.DatabaseException;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ForgotPassword extends HttpServlet {
 
@@ -56,7 +54,7 @@ public class ForgotPassword extends HttpServlet {
         if (reCaptchaResponse.isValid()) {
             try {
                 password = userManager.forgotPassword(email);
-            } catch (DatabaseException ex) {
+            } catch (Exception ex) {
                 log.error(ex.getMessage());
                 String message = ex.getMessage();
                 request.setAttribute("message", message);
@@ -68,7 +66,14 @@ public class ForgotPassword extends HttpServlet {
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
             } else {
-                mailSender.sendOneEmail(email, "New password from SSSG", "Your new password is:" + password);
+                try {
+                    mailSender.sendOneEmail(email, "New password from SSSG", "Your new password is:" + password);
+                } catch (MessagingException ex) {
+                    log.error(ex.getMessage());
+                    String message = ex.getMessage();
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                }
 
                 String message = "New password has been sent to your e-mail<br/> You can login now <br/>";
                 request.setAttribute("message", message);
