@@ -1,6 +1,9 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.CompanyManagerImpl;
+import cz.muni.fi.thesis.Offer;
+import cz.muni.fi.thesis.OfferManager;
+import cz.muni.fi.thesis.OfferManagerImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -13,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ListOffers extends HttpServlet {
 
@@ -44,26 +47,29 @@ public class ListOffers extends HttpServlet {
 
         try {
             offers = offerMng.getAllOffers();
-        } catch (DatabaseException ex) {
+
+            if (offers == null) {
+                log.error("getAllOffers() returned null");
+                String message = "We have some internal problems. Please, try again later";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else if (offers.isEmpty()) {
+                String message = "No offers in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else {
+                request.setAttribute("offers", offers);
+                request.getRequestDispatcher("listOffers.jsp").forward(request, response);
+            }
+            
+        } catch (Exception ex) {
             log.error(ex.getMessage());
-            String message = ex.getMessage();
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
 
-        if (offers == null) {
-            log.error("getAllOffers() returned null");
-            String message = "We have some internal problems. Please, try again later";
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("../error.jsp").forward(request, response);
-        } else if (offers.isEmpty()){
-            String message = "No offers in database";
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("../error.jsp").forward(request, response);
-        } else {
-            request.setAttribute("offers", offers);
-            request.getRequestDispatcher("listOffers.jsp").forward(request, response);
-        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

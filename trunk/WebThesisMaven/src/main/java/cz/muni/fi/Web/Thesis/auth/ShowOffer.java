@@ -1,26 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.slf4j.LoggerFactory;
 import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ShowOffer extends HttpServlet {
 
@@ -39,89 +35,82 @@ public class ShowOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+
         OfferManager offerManager = new OfferManagerImpl();
         CompanyManager companyManager = new CompanyManagerImpl();
         ReCaptcha c = ReCaptchaFactory.newReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
 
         Long id = Long.parseLong(request.getParameter("id"));
-        Offer offer = null;
-        Company company = null;
+        Offer offer;
+        Company company;
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
         Long userIDLong = (Long) userID;
+        Map<String, String> offerData = new HashMap<String, String>();
+
 
         try {
-
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ShowOffer</title>");
-            out.println("</head>");
-            out.println("<body>");
-
-            try {
-                offer = offerManager.getOffer(id);
+            offer = offerManager.getOffer(id);
+            
+            if (offer != null) {
                 Long id_company = offer.getCompany_id();
-                company = companyManager.getCompanyById(id_company);
-            } catch (DatabaseException ex) {
-                log.error(ex.getMessage());
-                out.println(ex.getMessage());
-            }
 
-            if (offer == null || company == null) {
-                out.println("Error when searching for company or offer in database");
-            } else {
-                out.println("<h1>OFFER</h1> <br/>");
-                out.println("<u>Image:</u>");
-                out.println("<img width='500' src='/WebThesisMaven/uploads/" + offer.getPhotoUrl() + "'></br>");
-                out.println("<u>Name:</u>");
-                out.println(offer.getName() + "</br>");
-                out.println("<u>Price:</u>");
-                out.println(offer.getPrice() + "</br>");
-                out.println("<u>Quantity:</u>");
-                out.println(offer.getQuantity() + "</br>");
-                out.println("<u>Minimal buy quantity:</u>");
-                out.println(offer.getMinimalBuyQuantity() + "</br>");
-                out.println("<u>Purchase Date:</u>");
-                out.println(offer.getPurchaseDate() + "</br>");
-                out.println("<u>Category:</u>");
-                out.println(offer.getCategory() + "</br>");
-                out.println("<u>Description:</u>");
-                out.println(offer.getDescription() + "</br></br>");
+                if (id_company != null) {
+                    company = companyManager.getCompanyById(id_company);
 
-                out.println("is offered by COMPANY<br/></br>");
-                out.println("<u>Name:</u>");
-                out.println(company.getName() + "</br>");
-                out.println("<u>E-mail address:</u>");
-                out.println(company.getEmail() + "</br>");
-                out.println("<u>Phone number:</u>");
-                out.println(company.getPhoneNumber() + "</br></br>");
-                out.println("<u>Address:</u> <br/>");
-                out.println(company.getStreet() + " " + company.getPsc() +"<br/>");
-                out.println(company.getCity() + "<br/>");
-                out.println(company.getCountry() + "<br/></br>");
-                out.println("<a href='FollowOffer?id="+ offer.getId() +"'>Follow this offer </a>");
-                
-                out.println("<form method='post' name='form2' action='/WebThesisMaven/auth/ContactFormEmailSender?offerId=" + offer.getId() + "'>");
-                out.println("Send e-mail:<br/>");
-                try {
-                    out.println("Your e-mail address:" + companyManager.getCompanyById(userIDLong).getEmail() + "<br/>");
-                } catch (DatabaseException ex) {
-                    Logger.getLogger(ShowOffer.class.getName()).log(Level.SEVERE, null, ex);
+                    if (company == null) {
+                        String message = "Coresponding company for this offer wasn't found in database";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
+                    } else {
+                        offerData.put("photoUrl", offer.getPhotoUrl());
+                        offerData.put("name", offer.getName());
+                        offerData.put("price", offer.getPrice().toString());
+                        offerData.put("quantity", Integer.toString(offer.getQuantity()));
+                        offerData.put("minimalQuantity", Integer.toString(offer.getMinimalBuyQuantity()));
+                        Date purchaseDate = offer.getPurchaseDate();
+                        if (purchaseDate != null) {
+                            offerData.put("purchaseDate", purchaseDate.toString());
+                        }
+                        offerData.put("category", offer.getCategory().toString());
+                        offerData.put("description", offer.getDescription());
+                        offerData.put("id", offer.getId().toString());
+
+                        offerData.put("companyName", company.getName());
+                        offerData.put("companyEmail", company.getEmail());
+                        offerData.put("companyPhone", company.getPhoneNumber());
+                        offerData.put("companyStreet", company.getStreet());
+                        offerData.put("companyPsc", company.getPsc());
+                        offerData.put("companyCity", company.getCity());
+                        offerData.put("companyCountry", company.getCountry());
+
+                        String myEmail = companyManager.getCompanyById(userIDLong).getEmail();
+
+                        offerData.put("myEmail", myEmail);
+
+                        request.setAttribute("offerData", offerData);
+                        request.getRequestDispatcher("showOffer.jsp").forward(request, response);
+
+                    }
+                } else {
+                    log.error("Company id in offer " + offer.getId() + " is null");
+                    String message = "Internal error, please try again later";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
                 }
-                out.println("Text of message:<br/>");
-                out.println("<input type='text' name='text'>");
-                out.println(c.createRecaptchaHtml(null, null));
-                out.println("<input type='submit' value='send'>");
 
+            } else {
+                String message = "Offer wasn't found in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
 
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Go to Home Page</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
 
     }

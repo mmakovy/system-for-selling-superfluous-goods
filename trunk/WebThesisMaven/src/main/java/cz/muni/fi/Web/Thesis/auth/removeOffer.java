@@ -1,12 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.CompanyManagerImpl;
+import cz.muni.fi.thesis.Offer;
+import cz.muni.fi.thesis.OfferManager;
+import cz.muni.fi.thesis.OfferManagerImpl;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class removeOffer extends HttpServlet {
     
@@ -49,7 +47,7 @@ public class removeOffer extends HttpServlet {
             offer = offerManager.getOffer(id);
             
             if (offer == null) {
-                log.error("getOffer()  returned null");
+                log.error("getOffer() returned null");
                 String message = "Offer wasnt found in database";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
@@ -65,19 +63,12 @@ public class removeOffer extends HttpServlet {
                 request.getRequestDispatcher("../response.jsp").forward(request, response);         
             }
                     
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
-            String message = ex.getMessage();
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
-        } catch (OfferException ex) {
-            log.error(ex.getMessage());
-            String message = ex.getMessage();
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("../error.jsp").forward(request, response);
-        }
-        
-        
+        }               
         
     }
 

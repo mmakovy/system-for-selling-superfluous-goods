@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
@@ -16,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ListMyOffers extends HttpServlet {
 
@@ -69,13 +65,12 @@ public class ListMyOffers extends HttpServlet {
                 }
             }
 
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
-            String message = ex.getMessage();
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

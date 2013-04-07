@@ -1,7 +1,6 @@
 <%-- 
     Document   : menu
-    Created on : 5.4.2013, 11:43:09
-    Author     : User
+    Author     : Matus Makovy
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>

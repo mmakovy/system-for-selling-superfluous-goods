@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
@@ -17,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class FindOffer extends HttpServlet {
 
@@ -124,7 +120,7 @@ public class FindOffer extends HttpServlet {
                 request.getRequestDispatcher("listOffers.jsp").forward(request, response);
             }
 
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = ex.getMessage();
             request.setAttribute("message", message);

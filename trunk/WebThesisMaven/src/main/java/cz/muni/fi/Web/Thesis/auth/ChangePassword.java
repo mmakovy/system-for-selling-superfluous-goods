@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.CompanyManagerImpl;
+import cz.muni.fi.thesis.User;
+import cz.muni.fi.thesis.UserManager;
+import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ChangePassword extends HttpServlet {
 
@@ -49,7 +44,7 @@ public class ChangePassword extends HttpServlet {
 
         try {
             user = userManager.getUser(id);
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = ex.getMessage();
             request.setAttribute("message", message);
@@ -67,18 +62,12 @@ public class ChangePassword extends HttpServlet {
                 String message = "Your password was succesfully changed";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../response.jsp").forward(request, response);
-            } catch (DatabaseException ex) {
+            } catch (Exception ex) {
                 log.error(ex.getMessage());
                 String message = ex.getMessage();
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
-            } catch (UserException ex) {
-                log.error(ex.getMessage());
-                String message = ex.getMessage();
-                request.setAttribute("message", message);
-                RequestDispatcher rd = request.getRequestDispatcher("../error.jsp");
-                rd.forward(request, response);
-            }
+            } 
         }
 
     }

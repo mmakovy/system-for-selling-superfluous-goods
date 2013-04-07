@@ -3,7 +3,6 @@ package cz.muni.fi.Web.Thesis.auth;
 import cz.muni.fi.thesis.Company;
 import cz.muni.fi.thesis.CompanyManager;
 import cz.muni.fi.thesis.CompanyManagerImpl;
-import cz.muni.fi.thesis.DatabaseException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class updateCompany extends HttpServlet {
 
@@ -40,7 +39,7 @@ public class updateCompany extends HttpServlet {
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
-        Map companyMap = new HashMap();
+        Map<String,String> companyMap = new HashMap<String,String>();
 
         Long id = (Long) userID;
         Company company;
@@ -67,9 +66,9 @@ public class updateCompany extends HttpServlet {
                 request.getRequestDispatcher("myProfile.jsp").forward(request, response);
 
             }
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
-            String message = ex.getMessage();
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
         }

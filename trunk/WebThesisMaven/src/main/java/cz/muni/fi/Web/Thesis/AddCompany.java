@@ -1,9 +1,5 @@
 package cz.muni.fi.Web.Thesis;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -14,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class AddCompany extends HttpServlet {
 
@@ -75,9 +71,10 @@ public class AddCompany extends HttpServlet {
                     company.setOther(other);
                     company.setPsc(psc);
 
-                    Company added = null;
+                    Company added;
                     added = companyMng.addCompany(company, usrname, pwd);
                     if (added != null) {
+                        log.info("Company was added");
                         response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
                     } else {
                         log.error("addCompany() returned null");
@@ -86,12 +83,13 @@ public class AddCompany extends HttpServlet {
                         request.getRequestDispatcher("/error.jsp").forward(request, response);
                     }
                 } else {
+                    log.info("Company wasnt added, because one required of fields was left blank");
                     String message = "Company wasnt added, because one required of fields was left blank<br/>";
                     request.setAttribute("message", message);
                     request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
                 }
             }
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = ex.getMessage();
             request.setAttribute("message", message);

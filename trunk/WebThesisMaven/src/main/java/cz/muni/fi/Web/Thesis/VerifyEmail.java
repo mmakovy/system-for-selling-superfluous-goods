@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis;
 
-import cz.muni.fi.thesis.DatabaseException;
+import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.UserException;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
@@ -13,12 +9,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class VerifyEmail extends HttpServlet {
+    
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -43,14 +42,15 @@ public class VerifyEmail extends HttpServlet {
             String message = "Your account was successfully activated <br/> You can login now";
             request.setAttribute("message", message);
             request.getRequestDispatcher("/response.jsp").forward(request, response);
-        } catch (DatabaseException ex) {
-            String message = ex.getMessage() ;
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);          
         } catch (UserException ex) {
+            log.error("Acc not verified - code not found interface DB");
             String message = "Account wasnt activated, because verification code wasnt found in DB<br/>" + ex.getMessage() ;
             request.setAttribute("message", message);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);                    
+        } catch (Exception ex) {
+            String message = ex.getMessage() ;
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("/error.jsp").forward(request, response);            
         }
 
     }

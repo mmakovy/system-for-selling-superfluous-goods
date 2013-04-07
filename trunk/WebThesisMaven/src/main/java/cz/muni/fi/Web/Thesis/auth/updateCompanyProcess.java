@@ -1,10 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.Company;
+import cz.muni.fi.thesis.CompanyManager;
+import cz.muni.fi.thesis.CompanyManagerImpl;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,10 +13,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class updateCompanyProcess extends HttpServlet {
-    
+
     final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
@@ -34,7 +32,7 @@ public class updateCompanyProcess extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         CompanyManager manager = new CompanyManagerImpl();
         Company company = new Company();
         String name = request.getParameter("name");
@@ -44,33 +42,33 @@ public class updateCompanyProcess extends HttpServlet {
         String country = request.getParameter("country");
         String psc = request.getParameter("psc");
         String other = request.getParameter("other");
-        
+
         Long id = Long.parseLong(request.getParameter("id"));
-        
+
         String email = null;
-        
+
         try {
             email = manager.getCompanyById(id).getEmail();
-        } catch (DatabaseException ex) {
+        } catch (Exception ex) {
             log.error(ex.getMessage());
-            String message = ex.getMessage();
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
-        
+
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
-        
+
         Long userIdLong = (Long) userID;
-        
-        
+
+
         if (!id.equals(userIdLong)) {
             log.error("Access denied");
             String message = "You have not permission to do this";
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
         } else {
-            
+
             if ((name != null && name.length() != 0)
                     && (phoneNumber != null && phoneNumber.length() != 0)) {
                 company.setName(name);
@@ -82,30 +80,25 @@ public class updateCompanyProcess extends HttpServlet {
                 company.setCountry(country);
                 company.setStreet(street);
                 company.setOther(other);
-                
+
                 try {
                     manager.updateCompany(company);
                     String message = "Company was succesfully updated";
                     request.setAttribute("message", message);
                     request.getRequestDispatcher("../response.jsp").forward(request, response);
-                } catch (DatabaseException ex) {
+                } catch (Exception ex) {
                     log.error(ex.getMessage());
-                    String message = ex.getMessage();
+                    String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
                     request.setAttribute("message", message);
                     request.getRequestDispatcher("../error.jsp").forward(request, response);
-                } catch (CompanyException ex) {
-                    log.error(ex.getMessage());
-                    String message = ex.getMessage();
-                    request.setAttribute("message", message);
-                    request.getRequestDispatcher("../error.jsp").forward(request, response);
-                }                
-                
+                }
+
             } else {
                 String message = "Company wasnt updated, because one of fields was left blank<br/>";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
-                       
+
         }
     }
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

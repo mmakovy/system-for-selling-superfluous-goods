@@ -1,24 +1,20 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class FollowOffer extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -33,41 +29,29 @@ public class FollowOffer extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+
         CompanyManager companyManager = new CompanyManagerImpl();
         MailingListManager mailingListManager = new MailingListManagerImpl();
-        
-        Long idOffer = Long.parseLong(request.getParameter("id"));        
+
+        Long idOffer = Long.parseLong(request.getParameter("id"));
         Long idUser = (Long) request.getSession().getAttribute("userID");
-        
+
         try {
             Company company = companyManager.getCompanyById(idUser);
             String userEmail = company.getEmail();
             mailingListManager.addEmail(userEmail, idOffer);
-        } catch (DatabaseException ex) {
-            Logger.getLogger(FollowOffer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-        
-        try {
-            /*
-             * TODO output your page here. You may use following sample code.
-             */
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet FollowOffer</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("Your email was added to mailing list, you will be notified on change of offer");
-            out.println("</body>");
-            out.println("</html>");
-        } finally {            
-            out.close();
+            String message = "Your email was added to mailing list, you will be notified on change of offer";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../response.jsp").forward(request, response);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.

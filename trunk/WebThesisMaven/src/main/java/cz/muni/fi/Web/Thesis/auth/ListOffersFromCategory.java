@@ -1,27 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ListOffersFromCategory extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -36,43 +31,52 @@ public class ListOffersFromCategory extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+
+
         OfferManager offerManager = new OfferManagerImpl();
-        List<Offer> offers = new ArrayList<Offer>();
+        List<Offer> offers;
         HttpSession session = request.getSession();
         Object userId = session.getAttribute("userID");
         Long id = (Long) userId;
 
+        String categoryString = request.getParameter("category");
+        Category category = null;
+
         try {
-            String categoryString = request.getParameter("category");
-            Category category = null;
-
-            try {
-                category = Category.valueOf(categoryString.toUpperCase());
-            } catch (IllegalArgumentException ex) {
-                out.println("System doesnt have " + categoryString + " category");
-            }
-
-            try {
-                offers = offerManager.getOffersFromCategory(category);
-            } catch (DatabaseException ex) {
-                Logger.getLogger(ListOffersFromCategory.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ListOffersFromCategory</title>");
-            out.println("</head>");
-            out.println("<body>");
-
-            out.println("</body>");
-            out.println("</html>");
-        } finally {
-            out.close();
+            category = Category.valueOf(categoryString.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            log.error(ex.getMessage());
+            String message = "System doesn't have category " + categoryString;
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
+
+        try {
+            offers = offerManager.getOffersFromCategory(category);
+
+            if (offers == null) {
+                log.error("getOffersFromCategory() returned null");
+                String message = "We have some internal problems. Please, try again later";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else if (offers.isEmpty()) {
+                String message = "No offers from category " + categoryString + " in database";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            } else {
+                request.setAttribute("offers", offers);
+                request.getRequestDispatcher("listOffers.jsp").forward(request, response);
+            }
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
+        }
+
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

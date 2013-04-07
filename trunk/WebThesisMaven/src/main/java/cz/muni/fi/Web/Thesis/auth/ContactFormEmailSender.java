@@ -1,16 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.Web.Thesis.MailSender;
-import cz.muni.fi.Web.Thesis.VerificationEmailSender;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class ContactFormEmailSender extends HttpServlet {
+
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
 
     /**
      * Processes requests for both HTTP
@@ -41,7 +36,6 @@ public class ContactFormEmailSender extends HttpServlet {
 
         CompanyManager companyManager = new CompanyManagerImpl();
         OfferManager offerManager = new OfferManagerImpl();
-        PrintWriter out = response.getWriter();
         MailSender mailSender = new MailSender();
 
         String text = request.getParameter("text");
@@ -69,20 +63,32 @@ public class ContactFormEmailSender extends HttpServlet {
                 Long companyId = offer.getCompany_id();
                 to = companyManager.getCompanyById(companyId).getEmail();
                 companyFrom = companyManager.getCompanyById(userIdLong);
-            } catch (DatabaseException ex) {
-                Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
+                String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
-            
+
             String subject = "Reply to offer " + offer.getName();
             String messageText = "Company " + companyFrom.toString() + " has sent you this message:" + text;
-            
-            mailSender.sendOneEmail(to, subject, messageText);
 
-            out.println("Your email has been sent<br/>");
-            out.println("<a href='/WebThesisMaven/auth/menu.jsp'>Home</a>");
-
+            try {
+                mailSender.sendOneEmail(to, subject, messageText);
+                String message = "Your email has been sent<br/>";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../response.jsp").forward(request, response);
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
+                String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            }
         } else {
-            out.print("Answer is wrong");
+            log.error("reCaptcha - wrong answer");
+            String message = "Your reCaptcha answer was wrong";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("../error.jsp").forward(request, response);
         }
 
 

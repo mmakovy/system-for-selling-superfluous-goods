@@ -1,7 +1,6 @@
 <%-- 
-    Document   : index
-    Created on : 23.11.2012, 12:16:10
-    Author     : matus
+    Document   : myProfile
+    Author     : Matus Makovy
 --%>
 
 <%@page import="java.util.Map"%>
@@ -33,7 +32,7 @@
                         </div>
                         <div id="registration-content-middle">
                             <%
-                                Map companyMap = (Map) request.getAttribute("companyMap");
+                                Map<String,String> companyMap = (Map) request.getAttribute("companyMap");
                                 Long id = (Long) session.getAttribute("userID");
                                 if (request.getAttribute("message") != null) {
                             %>

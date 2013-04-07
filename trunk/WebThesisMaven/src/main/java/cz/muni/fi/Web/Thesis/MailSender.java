@@ -1,13 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -17,11 +11,11 @@ import javax.mail.internet.MimeMessage;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class MailSender {
 
-    public void sendOneEmail(String to, String subject, String text) {
+    public void sendOneEmail(String to, String subject, String text) throws MessagingException {
 
         String host = "smtp.gmail.com";
         String from = "no.reply.sssg@gmail.com";
@@ -37,21 +31,18 @@ public class MailSender {
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
 
-        try {
-            message.setFrom(new InternetAddress(from));
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(subject);
-            message.setText(text);
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, from, pass);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-        } catch (MessagingException ex) {
-            Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        message.setFrom(new InternetAddress(from));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        message.setSubject(subject);
+        message.setText(text);
+        Transport transport = session.getTransport("smtp");
+        transport.connect(host, from, pass);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();
+
     }
 
-    public void sendMoreEmails(List<String> recipients, String subject, String text) {
+    public void sendMoreEmails(List<String> recipients, String subject, String text) throws MessagingException {
 
         String host = "smtp.gmail.com";
         String from = "no.reply.sssg@gmail.com";
@@ -67,22 +58,19 @@ public class MailSender {
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
 
-        try {
-            message.setFrom(new InternetAddress(from));
-            message.setSubject(subject);
-            message.setText(text);
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, from, pass);
+        message.setFrom(new InternetAddress(from));
+        message.setSubject(subject);
+        message.setText(text);
+        Transport transport = session.getTransport("smtp");
+        transport.connect(host, from, pass);
 
-            for (String email : recipients) {
-                String to = email;
-                message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-                transport.sendMessage(message, message.getAllRecipients());
-            }
-
-            transport.close();
-        } catch (MessagingException ex) {
-            Logger.getLogger(VerificationEmailSender.class.getName()).log(Level.SEVERE, null, ex);
+        for (String email : recipients) {
+            String to = email;
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            transport.sendMessage(message, message.getAllRecipients());
         }
+
+        transport.close();
+
     }
 }

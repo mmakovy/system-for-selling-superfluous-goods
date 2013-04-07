@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.muni.fi.Web.Thesis;
 
 import java.io.IOException;
@@ -15,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class LoggedInFilter implements Filter {
     
