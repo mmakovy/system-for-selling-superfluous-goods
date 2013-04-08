@@ -42,7 +42,7 @@
                             <%                                }%>
                             <h1>${offerData.get("name")}</h1> <br/>
                             <u>Image:</u>
-                            <img width='500' src='/WebThesisMaven/uploads/" + ${offerData.get("photoUrl")}'><br/>
+                            <img width='500' src='/WebThesisMaven/uploads/${offerData.get("photoUrl")}'><br/>
                             <u>Price:</u>
                             ${offerData.get("price")}</br>
                             <u>Quantity:</u>
@@ -67,7 +67,7 @@
                             ${offerData.get("companyStreet")}  ${offerData.get("companyPsc")}<br/>
                             ${offerData.get("companyCity")}<br/>
                             ${offerData.get("companyCountry")}<br/></br>
-                            <a href='FollowOffer?id=" + ${offerData.get("id")}'>Follow this offer</a>
+                            <a href='FollowOffer?id=${offerData.get("id")}'>Follow this offer</a>
 
                             <form method='post' name='send_email_from_offer' action='/WebThesisMaven/auth/ContactFormEmailSender?offerId=${offerData.get("id")}' >
                                 Send e-mail:<br/>

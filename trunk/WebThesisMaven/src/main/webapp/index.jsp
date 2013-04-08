@@ -14,6 +14,10 @@
         <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
         <title>JSP Page</title>
     </head>
+    
+    <script src="myjs.js">
+    </script>   
+    
     <body>
         <div id="wrapper">
             <div id ="page">
@@ -24,13 +28,12 @@
                         </div>
                         <div id="log-in-form-middle">
                             <div class="log-in">LOGIN</div>
-                            <form method="post" name='login' action="/WebThesisMaven/Login" ><!--onsubmit="return submit_company()">-->
+                            <form method="post" name='login' action="/WebThesisMaven/Login" onsubmit="return login()">
                                 Username: <input type="text" name="userName"/><br/>
                                 Password: <input type="password" name="pwd"/><br/>
                                 <input type="submit" value="Log-in"/>
                             </form>  
                             <a href="forgotPassword.jsp">Forgot your password?</a><br/>
-
                         </div>
                         <div id="log-in-form-bottom">
                         </div>

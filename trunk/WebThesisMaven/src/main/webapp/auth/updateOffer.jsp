@@ -90,17 +90,17 @@
 
                                 Purchase Date:<br/>
                                 Day:
-                                <input type='text' name='dob_day' value='${offer.get("purchaseDay")}'/>
+                                <input type='text' name='dob_day' value='${offerData.get("purchaseDay")}'/>
                                 Month:
-                                <input type='text' name='dob_month' value='${offer.get("purchaseMonth")}'/>
+                                <input type='text' name='dob_month' value='${offerData.get("purchaseMonth")}'/>
                                 Year:
-                                <input type='text' name='dob_year' value='${offer.get("purchaseYear")}'/> <br/>
+                                <input type='text' name='dob_year' value='${offerData.get("purchaseYear")}'/> <br/>
 
                                 Description:
                                 <input type='text' name='description' value='${offerData.get("description")}'><br/>
 
                                 Image:<br/>
-                                <img width='300' src='/WebThesisMaven/uploads/${offer.get("photoUrl")}'><br/>
+                                <img width='300' src='/WebThesisMaven/uploads/${offerData.get("photoUrl")}'><br/>
                                 Update image:<br/>
                                 <input type='file' name='image'><br/>
 
