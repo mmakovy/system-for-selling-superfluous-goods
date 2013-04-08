@@ -156,23 +156,22 @@ public class updateOfferProcess extends HttpServlet {
 
         Long id = Long.parseLong(request.getParameter("id"));
 
-        /**
-         * converting String to integer
-         */
-        int YearInt = Integer.parseInt(yearString);
-        int MonthInt = Integer.parseInt(monthString) - 1;
-        /**
-         * corection
-         */
-        int DayInt = Integer.parseInt(dayString);
+
+        Date date;
+        if (yearString.length() == 0 || monthString.length() == 0 || dayString.length() == 0) {
+            date = null;
+        } else {
+            int YearInt = Integer.parseInt(yearString);
+            int MonthInt = Integer.parseInt(monthString) - 1;
+            int DayInt = Integer.parseInt(dayString);
+            calendar.set(YearInt, MonthInt, DayInt);
+            date = new Date(calendar.getTimeInMillis());
+        }
+
         int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
         int quantity = Integer.parseInt(quantityString);
 
-        /**
-         * end
-         */
-        calendar.set(YearInt, MonthInt, DayInt);
-        Date date = new Date(calendar.getTimeInMillis());
+
 
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
@@ -242,7 +241,9 @@ public class updateOfferProcess extends HttpServlet {
 
                     try {
                         recipients = mailingListManager.getEmails(id);
-                        mailSender.sendMoreEmails(recipients, messageSubject, messageText);
+                        if (!recipients.isEmpty()) {
+                            mailSender.sendMoreEmails(recipients, messageSubject, messageText);
+                        }                       
                     } catch (Exception ex) {
                         log.error(ex.getMessage());
                         String message = ex.getMessage();

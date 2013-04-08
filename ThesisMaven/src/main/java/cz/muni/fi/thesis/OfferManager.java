@@ -9,21 +9,21 @@ import java.util.List;
  */
 public interface OfferManager {
 
-    Offer getOffer(Long id) throws DatabaseException;
+    Offer getOffer(Long id) throws DatabaseException, OfferException;
 
-    Offer addOffer(Company company, Offer offer) throws DatabaseException;
+    Offer addOffer(Company company, Offer offer) throws DatabaseException, OfferException;
 
     void removeOffer(Offer offer) throws DatabaseException, OfferException;
 
     void updateOffer(Offer offer) throws DatabaseException, OfferException;
 
-    List<Offer> getAllOffers() throws DatabaseException;
+    List<Offer> getAllOffers() throws DatabaseException, OfferException;
 
-    List<Offer> getOffersByCompany(Company company) throws DatabaseException;
+    List<Offer> getOffersByCompany(Company company) throws DatabaseException, OfferException;
 
-    List<Offer> findOffer(String expression) throws DatabaseException;
+    List<Offer> findOffer(String expression) throws DatabaseException, OfferException;
 
-    List<Offer> getOffersFromCategory(Category category) throws DatabaseException;
+    List<Offer> getOffersFromCategory(Category category) throws DatabaseException, OfferException;
 
     List<Offer> filterQuantity(List<Offer> offers, int min, int max);
 

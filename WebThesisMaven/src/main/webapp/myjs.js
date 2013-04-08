@@ -47,7 +47,7 @@ function submit_company() {
     var username = document.add_company.usrname;
     
     if (name.value == ""){
-        alert('Name field is blank');
+        alert('Company name field is blank');
         return false;
     } else if (email.value == "") {
         alert('Email field is blank');
@@ -97,6 +97,22 @@ function change_password() {
         return true;       
     }
 
+}
+
+
+function login() {
+    var userName = document.login.userName;
+    var password = document.login.pwd;
+    
+    if (userName.value == "") {
+        alert ("Username field is blank");
+        return false;
+    } else if (password.value == "") {
+        alert("Password field is blank");
+        return false;
+    } else {
+        return true;       
+    } 
 }
     
 

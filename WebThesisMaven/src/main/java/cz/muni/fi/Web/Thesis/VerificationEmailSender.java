@@ -43,7 +43,7 @@ public class VerificationEmailSender extends HttpServlet {
         }
 
         String to = company.getEmail();
-        String text = "Verify your e-mail: http://localhost:8090/WebThesisMaven/VerifyEmail?code=" + user.getHashVer() + "";
+        String text = "Verify your e-mail: http://http://env-8372402.jelastic.dogado.eu/WebThesisMaven/VerifyEmail?code=" + user.getHashVer() + "";
         
         try {
             mailSender.sendOneEmail(to, "SSSG - E-mail Verification", text);

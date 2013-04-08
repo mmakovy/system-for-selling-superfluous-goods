@@ -24,9 +24,9 @@ public final class DatabaseConnection {
         Properties config = new Properties();
         try {
             config.load(new FileInputStream("/home/matus/system-for-selling-superfluous-goods/ThesisMaven/config.properties"));
-            url = config.getProperty("url");
-            user = config.getProperty("userName");
-            pass = config.getProperty("password");
+            url = ""; /** config.getProperty("url");*/
+            user = ""; /**config.getProperty("userName");*/
+            pass = ""; /**config.getProperty("password");*/
         } catch (Exception ex){
             log.error("Loading properties failed");  
         }
@@ -34,12 +34,20 @@ public final class DatabaseConnection {
     }
             
     
-    static 
+ /** static 
     {   
         
         BasicDataSource ds = new BasicDataSource();
-        loadProperties();
-        ds.setUrl("jdbc:" + url + "?user=" + user + "&password=" + pass + "&useUnicode=yes&characterEncoding=UTF-8");
+        ds.setUrl("jdbc:mysql://mysql-env-8372402.jelastic.dogado.eu/thesis?user=sssg&password=pavot&useUnicode=yes&characterEncoding=UTF-8");
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        source = ds;
+    }*/
+    
+   static 
+    {   
+        
+        BasicDataSource ds = new BasicDataSource();
+        ds.setUrl("jdbc:mysql://localhost:3306/thesis?user=root&password=pavot&useUnicode=yes&characterEncoding=UTF-8");
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         source = ds;
     }
