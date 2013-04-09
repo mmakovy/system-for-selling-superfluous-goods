@@ -156,23 +156,6 @@ public class updateOfferProcess extends HttpServlet {
 
         Long id = Long.parseLong(request.getParameter("id"));
 
-
-        Date date;
-        if (yearString.length() == 0 || monthString.length() == 0 || dayString.length() == 0) {
-            date = null;
-        } else {
-            int YearInt = Integer.parseInt(yearString);
-            int MonthInt = Integer.parseInt(monthString) - 1;
-            int DayInt = Integer.parseInt(dayString);
-            calendar.set(YearInt, MonthInt, DayInt);
-            date = new Date(calendar.getTimeInMillis());
-        }
-
-        int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
-        int quantity = Integer.parseInt(quantityString);
-
-
-
         HttpSession session = request.getSession();
         Object userID = session.getAttribute("userID");
 
@@ -194,11 +177,32 @@ public class updateOfferProcess extends HttpServlet {
             request.getRequestDispatcher("../error.jsp").forward(request, response);
         } else {
 
-            if (name.length() != 0 && description.length() != 0
-                    && priceString.length() != 0
-                    && quantityString.length() != 0) {
+            if (name.length() != 0 && priceString.length() != 0 && quantityString.length() != 0) {
 
-                BigDecimal price = new BigDecimal(priceString);
+                BigDecimal price = null;
+                int minimalBuyQuantity = 0;
+                int quantity = 0;
+                Date date = null;
+
+                try {
+                    price = new BigDecimal(priceString);
+                    minimalBuyQuantity = Integer.parseInt(minimalBuyString);
+                    quantity = Integer.parseInt(quantityString);
+
+                    if (yearString.length() == 0 || monthString.length() == 0 || dayString.length() == 0) {
+                        date = null;
+                    } else {
+                        int YearInt = Integer.parseInt(yearString);
+                        int MonthInt = Integer.parseInt(monthString) - 1;
+                        int DayInt = Integer.parseInt(dayString);
+                        calendar.set(YearInt, MonthInt, DayInt);
+                        date = new Date(calendar.getTimeInMillis());
+                    }
+                } catch (Exception ex) {
+                    String message = "Bad input - not a Number " + ex.toString();
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                }
 
                 if (!userIdLong.equals(offer.getCompany_id())) {
                     log.error("Access denied");
@@ -243,7 +247,7 @@ public class updateOfferProcess extends HttpServlet {
                         recipients = mailingListManager.getEmails(id);
                         if (!recipients.isEmpty()) {
                             mailSender.sendMoreEmails(recipients, messageSubject, messageText);
-                        }                       
+                        }
                     } catch (Exception ex) {
                         log.error(ex.getMessage());
                         String message = ex.getMessage();

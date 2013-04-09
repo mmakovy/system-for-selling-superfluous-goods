@@ -22,6 +22,8 @@
         <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
         <title>JSP Page</title>
     </head>
+    <script src="../myjs.js">
+    </script>  
     <body>
         <div id="wrapper">
             <div id ="page">
@@ -36,11 +38,11 @@
                             <div class="error">${message}</div>
                             <%                                }%>
                             <h1>Find offer</h1>
-                            <form name="find_offer" method="post" action="/WebThesisMaven/auth/FindOffer">
+                            <form name="findOffer" method="post" action="/WebThesisMaven/auth/FindOffer" onsubmit="return findOffer()">
                                 Search: <input type="text" name="expression"> (searching in name and description)<br/>
-                                Quantity: from <input type="text" name="min-quantity"> to <input type="text" name="max-quantity"><br/>
-                                Minimal quantity to buy: from <input type="text" name="min-quantity-to-buy"> to <input type="text" name="max-quantity-to-buy"><br/>
-                                Price: from <input type="text" name="min-price"> to <input type="text" name="max-price"><br/>
+                                Quantity: from <input type="text" name="minQuantity"> to <input type="text" name="maxQuantity"><br/>
+                                Minimal quantity to buy: from <input type="text" name="minQuantityToBuy"> to <input type="text" name="maxQuantityToBuy"><br/>
+                                Price: from <input type="text" name="minPrice"> to <input type="text" name="maxPrice"><br/>
                                 Category: <select name="category">
                                     <option selected>----</option>
                                     <option>OTHER</option>

@@ -22,6 +22,8 @@
         <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
         <title>JSP Page</title>
     </head>
+    <script src="../myjs.js">
+    </script> 
     <body>
         <div id="wrapper">
             <div id ="page">
@@ -39,7 +41,7 @@
                             <div class="error">${message}</div>
                             <%                                }%>
                             <h1>Edit my profile info</h1>
-                            <form method='post' name='update_company' onsubmit='return submit_company()' action='/WebThesisMaven/auth/updateCompanyProcess?id=<% out.println(id);%>'>
+                            <form method='post' name='updateCompany' onsubmit="return update_company()" action='/WebThesisMaven/auth/updateCompanyProcess?id=<% out.println(id);%>'>
                                 Name:
                                 <input type='text' name='name' value='<% out.println(companyMap.get("name"));%>'><br/>
                                 Email: <% out.println(companyMap.get("email"));%> <br/>

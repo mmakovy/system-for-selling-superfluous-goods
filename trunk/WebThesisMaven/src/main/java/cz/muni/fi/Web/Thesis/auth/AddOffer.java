@@ -76,7 +76,7 @@ public class AddOffer extends HttpServlet {
                 String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
-            } 
+            }
 
             Iterator iter = items.iterator();
             while (iter.hasNext()) {
@@ -113,7 +113,7 @@ public class AddOffer extends HttpServlet {
                         String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
                         request.setAttribute("message", message);
                         request.getRequestDispatcher("../error.jsp").forward(request, response);
-                    } 
+                    }
 
                     if (match != null) {
                         String mimeType = match.getMimeType();
@@ -151,31 +151,37 @@ public class AddOffer extends HttpServlet {
             }
         }
 
-        /**
-         * converting String to integer
-         */
-        int minimalBuyQuantity = Integer.parseInt(minimalBuyString);
-        int quantity = Integer.parseInt(quantityString);
 
-        /**
-         * end
-         */
-        Date date;
-        if (yearString.length() == 0 || monthString.length() == 0 || dayString.length() == 0) {
-            date = null;
-        } else {
-            int YearInt = Integer.parseInt(yearString);
-            int MonthInt = Integer.parseInt(monthString) - 1;
-            int DayInt = Integer.parseInt(dayString);
-            calendar.set(YearInt, MonthInt, DayInt);
-            date = new Date(calendar.getTimeInMillis());
-        }
 
 
         if (name.length() != 0 && priceString.length() != 0 && quantityString.length() != 0) {
 
             Long userId = (Long) userIdObject;
-            BigDecimal price = new BigDecimal(priceString);
+            
+            BigDecimal price = null;
+            int minimalBuyQuantity = 0;
+            int quantity = 0;
+            Date date = null;
+            
+            try {
+                price = new BigDecimal(priceString);
+                minimalBuyQuantity = Integer.parseInt(minimalBuyString);
+                quantity = Integer.parseInt(quantityString);
+
+                if (yearString.length() == 0 || monthString.length() == 0 || dayString.length() == 0) {
+                    date = null;
+                } else {
+                    int YearInt = Integer.parseInt(yearString);
+                    int MonthInt = Integer.parseInt(monthString) - 1;
+                    int DayInt = Integer.parseInt(dayString);
+                    calendar.set(YearInt, MonthInt, DayInt);
+                    date = new Date(calendar.getTimeInMillis());
+                }
+            } catch (Exception ex) {
+                String message = "Bad input - not a Number " + ex.toString();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("addoffer.jsp").forward(request, response);
+            }
 
             Offer offer = new Offer();
             offer.setCompany_id(userId);

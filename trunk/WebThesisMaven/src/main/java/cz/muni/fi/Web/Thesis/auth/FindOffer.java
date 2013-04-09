@@ -37,12 +37,12 @@ public class FindOffer extends HttpServlet {
         List<Offer> offers;
 
         String expression = request.getParameter("expression");
-        String minQuantity = request.getParameter("min-quantity");
-        String maxQuantity = request.getParameter("max-quantity");
-        String minQuantityToBuy = request.getParameter("min-quantity-to-buy");
-        String maxQuantityToBuy = request.getParameter("max-quantity-to-buy");
-        String minPrice = request.getParameter("min-price");
-        String maxPrice = request.getParameter("max-price");
+        String minQuantity = request.getParameter("minQuantity");
+        String maxQuantity = request.getParameter("maxQuantity");
+        String minQuantityToBuy = request.getParameter("minQuantityToBuy");
+        String maxQuantityToBuy = request.getParameter("maxQuantityToBuy");
+        String minPrice = request.getParameter("minPrice");
+        String maxPrice = request.getParameter("maxPrice");
         String categoryString = request.getParameter("category");
         int minQuantityInt;
         int maxQuantityInt;

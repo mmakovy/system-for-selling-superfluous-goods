@@ -133,57 +133,25 @@ public class CompanyManagerImpl implements CompanyManager {
         }
 
         Connection con = DatabaseConnection.getConnection();
-        OfferManager offerManager = new OfferManagerImpl();
 
-        if (con == null) {
-            throw new DatabaseException("Conection to database wasnt established");
-        } else {
+        try {
 
-            List<Offer> offers = offerManager.getOffersByCompany(company);
-            try {
-                if (offers.size() > 0) {
-                    for (int i = 0; i < offers.size(); i++) {
-                        offerManager.removeOffer(offers.get(i));
-                    }
-                }
-            } catch (OfferException ex) {
-                log.error(ex.getMessage());
-                throw new CompanyException(ex.getMessage());
-            }
-
-            try {
-
-                con.setAutoCommit(false);
-
-                PreparedStatement st = con.prepareStatement("DELETE FROM users WHERE userId=?;");
-                st.setLong(1, company.getId());
-
-                if (st.executeUpdate() == 0) {
-                    DatabaseConnection.doRollback(con);
-                    log.error("Contact wasnt removed - users");
-                    throw new CompanyException("Contact wasnt removed - users");
-                }
-
-                PreparedStatement st1 = con.prepareStatement("DELETE FROM company WHERE id_company=?;");
-                st1.setLong(1, company.getId());
-                if (st1.executeUpdate() == 0) {
-                    DatabaseConnection.doRollback(con);
-                    log.error("Contact wasnt removed");
-                    throw new CompanyException("Contact wasnt removed");
-                }
-
-                con.commit();
-
-            } catch (SQLException ex) {
+            PreparedStatement st1 = con.prepareStatement("DELETE FROM company WHERE id_company=?;");
+            st1.setLong(1, company.getId());
+            if (st1.executeUpdate() == 0) {
                 DatabaseConnection.doRollback(con);
-                log.error(ex.getMessage());
-                throw new CompanyException(ex.getMessage());
-            } finally {
-                DatabaseConnection.closeConnection(con);
+                log.error("Contact wasnt removed");
+                throw new CompanyException("Contact wasnt removed");
             }
+
+
+        } catch (SQLException ex) {
+            DatabaseConnection.doRollback(con);
+            log.error(ex.getMessage());
+            throw new CompanyException(ex.getMessage());
+        } finally {
+            DatabaseConnection.closeConnection(con);
         }
-
-
     }
 
     @Override

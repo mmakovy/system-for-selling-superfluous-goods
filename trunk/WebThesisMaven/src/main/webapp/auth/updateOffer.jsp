@@ -24,6 +24,8 @@
         <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
         <title>JSP Page</title>
     </head>
+    <script src="../myjs.js">
+    </script>  
     <body>
         <div id="wrapper">
             <div id ="page">
@@ -40,7 +42,7 @@
                             %>
                             <div class="error">${message}</div>
                             <%                                }%>
-                            <form method='post' name='update_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='/WebThesisMaven/auth/updateOfferProcess?id=${offerData.get("id")}'>
+                            <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='/WebThesisMaven/auth/updateOfferProcess?id=${offerData.get("id")}'>
                                 Name:
                                 <input type='text' name='name'  value='${offerData.get("name")}'><br/>
                                 Price:
