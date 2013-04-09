@@ -84,23 +84,7 @@ public class OfferManagerImpl implements OfferManager {
         } else {
             try {
 
-                PreparedStatement st = con.prepareStatement("SELECT email,id_offer FROM mailing_list WHERE id_offer=?;");
-                st.setLong(1, offer.getId());
-
-                ResultSet result = st.executeQuery();
-
-                if (result.next()) {
-                    st = con.prepareStatement("DELETE FROM mailing_list WHERE id_offer=?;");
-                    st.setLong(1, offer.getId());
-                    
-                    if (st.executeUpdate() == 0) {
-                        DatabaseConnection.doRollback(con);
-                        log.error("Offer wasnt deleted from database - mailing list");
-                        throw new OfferException("Offer wasnt deleted from database - mailing list");
-                    }
-                }
-
-                st = con.prepareStatement("DELETE FROM offer WHERE id_offer=?;");
+                PreparedStatement st = con.prepareStatement("DELETE FROM offer WHERE id_offer=?;");
                 st.setLong(1, offer.getId());
 
                 if (st.executeUpdate() == 0) {
@@ -111,7 +95,7 @@ public class OfferManagerImpl implements OfferManager {
                 
                 con.commit();
 
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                 DatabaseConnection.doRollback(con);
                 log.error(ex.getMessage());
                 throw new OfferException(ex.getMessage());

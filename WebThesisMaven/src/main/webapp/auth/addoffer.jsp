@@ -21,6 +21,8 @@
         <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
         <title>JSP Page</title>
     </head>
+    <script src="../myjs.js">
+    </script>   
     <body>
         <div id="wrapper">
             <div id ="page">

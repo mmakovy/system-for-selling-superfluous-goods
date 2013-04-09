@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface MailingListManager {
     
-    void addEmail(String email, Long id) throws DatabaseException;
-    void removeEmail(String email, Long id) throws DatabaseException;
-    List<String> getEmails(Long id) throws DatabaseException;
+    void addEmail(String email, Long id) throws DatabaseException, MailingListException;
+    void removeEmail(String email, Long id) throws DatabaseException, MailingListException;
+    List<String> getEmails(Long id) throws DatabaseException, MailingListException;
 }
