@@ -38,7 +38,7 @@
                             <%
                                 }%>
                             <h1>Add offer </h1>
-                            <form ENCTYPE="multipart/form-data" name='add_offer' method='post' action='/WebThesisMaven/auth/AddOffer'  onsubmit='return submit_offer()'>  
+                            <form ENCTYPE="multipart/form-data" name='add_offer' method='post' action='/auth/AddOffer'  onsubmit='return submit_offer()'>  
                                 Name*:  
                                 <input type='text' name='name'><br/>  
                                 Price*:  

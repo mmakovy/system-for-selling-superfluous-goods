@@ -26,7 +26,7 @@
                         </div>
                         <div id="log-in-form-middle">
                             <div class="log-in">LOGIN</div>
-                            <form method="post" name='login' action="/WebThesisMaven/Login" ><!--onsubmit="return submit_company()">-->
+                            <form method="post" name='login' action="/Login" ><!--onsubmit="return submit_company()">-->
                                 Username: <input type="text" name="userName"/><br/>
                                 Password: <input type="password" name="pwd"/><br/>
                                 <input type="submit" value="Log-in"/>
@@ -47,7 +47,7 @@
                             <%
                                 }%>
 
-                            <form name="forgot_pass" action="ForgotPassword">
+                            <form name="forgot_pass" action="/ForgotPassword">
                                 <h1> Did you forget your password ? </h1>
                                 <p> Enter your e-mail address, and we will send
                                     you a new one </p>

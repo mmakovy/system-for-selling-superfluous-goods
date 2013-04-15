@@ -4,8 +4,6 @@ import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -67,7 +65,7 @@ public class ForgotPassword extends HttpServlet {
                 request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
             } else {
                 try {
-                    mailSender.sendOneEmail(email, "New password from SSSG", "Your new password is:" + password);
+                    mailSender.sendOneEmail(email, "New password from SSSG", "Your new password is: " + password);
                 } catch (MessagingException ex) {
                     log.error(ex.getMessage());
                     String message = ex.getMessage();

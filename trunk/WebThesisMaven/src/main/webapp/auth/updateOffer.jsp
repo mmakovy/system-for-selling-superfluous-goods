@@ -42,7 +42,7 @@
                             %>
                             <div class="error">${message}</div>
                             <%                                }%>
-                            <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='/WebThesisMaven/auth/updateOfferProcess?id=${offerData.get("id")}'>
+                            <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='/auth/updateOfferProcess?id=${offerData.get("id")}'>
                                 Name:
                                 <input type='text' name='name'  value='${offerData.get("name")}'><br/>
                                 Price:
@@ -102,7 +102,7 @@
                                 <input type='text' name='description' value='${offerData.get("description")}'><br/>
 
                                 Image:<br/>
-                                <img width='300' src='/WebThesisMaven/uploads/${offerData.get("photoUrl")}'><br/>
+                                <img width='300' src='/uploads/${offerData.get("photoUrl")}'><br/>
                                 Update image:<br/>
                                 <input type='file' name='image'><br/>
 

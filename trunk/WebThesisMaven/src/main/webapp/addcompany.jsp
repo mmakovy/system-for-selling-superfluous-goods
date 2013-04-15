@@ -32,7 +32,7 @@
                             <%
                                 }%>
                             <h1>New user registration</h1>
-                            <form method="post" name='add_company' action="/WebThesisMaven/AddCompany" onsubmit="return submit_company()">    
+                            <form method="post" name='add_company' action="/AddCompany" onsubmit="return submit_company()">    
                                 <%
                                     session = request.getSession();
 
