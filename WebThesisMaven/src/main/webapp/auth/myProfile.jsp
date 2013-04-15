@@ -41,7 +41,7 @@
                             <div class="error">${message}</div>
                             <%                                }%>
                             <h1>Edit my profile info</h1>
-                            <form method='post' name='updateCompany' onsubmit="return update_company()" action='/WebThesisMaven/auth/updateCompanyProcess?id=<% out.println(id);%>'>
+                            <form method='post' name='updateCompany' onsubmit="return update_company()" action='/auth/updateCompanyProcess?id=<% out.println(id);%>'>
                                 Name:
                                 <input type='text' name='name' value='<% out.println(companyMap.get("name"));%>'><br/>
                                 Email: <% out.println(companyMap.get("email"));%> <br/>

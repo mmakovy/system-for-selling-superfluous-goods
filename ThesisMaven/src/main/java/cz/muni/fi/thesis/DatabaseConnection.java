@@ -34,22 +34,14 @@ public final class DatabaseConnection {
     }
             
     
-  static 
-    {           
-        BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:mysql://mysql-env-8372402.jelastic.dogado.eu/thesis?user=sssg&password=pavot&useUnicode=yes&characterEncoding=UTF-8");
-        ds.setDriverClassName("com.mysql.jdbc.Driver");
-        source = ds;
-    }
-    
-  /** static 
+   static 
     {   
         
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:mysql://localhost:3306/thesis?user=root&password=pavot&useUnicode=yes&characterEncoding=UTF-8");
+        ds.setUrl("jdbc:mysql://127.9.63.129:3306/sssg?user=admin3Breqb4&password=n98B5gelrNBg&useUnicode=yes&characterEncoding=UTF-8");
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         source = ds;
-    }*/
+    }
     
     public static Connection getConnection()  {
         

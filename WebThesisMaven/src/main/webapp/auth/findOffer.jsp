@@ -38,7 +38,7 @@
                             <div class="error">${message}</div>
                             <%                                }%>
                             <h1>Find offer</h1>
-                            <form name="findOffer" method="post" action="/WebThesisMaven/auth/FindOffer" onsubmit="return findOffer()">
+                            <form name="findOffer" method="post" action="/auth/FindOffer" onsubmit="return findOffer()">
                                 Search: <input type="text" name="expression"> (searching in name and description)<br/>
                                 Quantity: from <input type="text" name="minQuantity"> to <input type="text" name="maxQuantity"><br/>
                                 Minimal quantity to buy: from <input type="text" name="minQuantityToBuy"> to <input type="text" name="maxQuantityToBuy"><br/>

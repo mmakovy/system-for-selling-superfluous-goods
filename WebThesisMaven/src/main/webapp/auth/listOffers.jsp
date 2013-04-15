@@ -47,10 +47,10 @@
                                     <%if (offer.getPhotoUrl() == null || offer.getPhotoUrl().length() == 0) {%>
                                     <td style='border: 1px solid black;'>no-image</td>
                                     <%} else {%>
-                                    <td style='border: 1px solid black;'><img width='100' src='/WebThesisMaven/uploads/<%out.println(offer.getPhotoUrl());%>'></td>
+                                    <td style='border: 1px solid black;'><img width='100' src='/uploads/<%out.println(offer.getPhotoUrl());%>'></td>
                                         <%}%>
 
-                                    <td style='border: 1px solid black;'><a href='/WebThesisMaven/auth/ShowOffer?id=<%out.println(offer.getId());%>'> <%out.println(offer.getName());%> </a></td>
+                                    <td style='border: 1px solid black;'><a href='/auth/ShowOffer?id=<%out.println(offer.getId());%>'> <%out.println(offer.getName());%> </a></td>
                                     <td style='border: 1px solid black;'>  <% out.println(String.format("%.2f", offer.getPrice()));%>  </td>
                                     <td style='border: 1px solid black;'> <% out.println(offer.getQuantity());%> </td>
 
@@ -70,8 +70,8 @@
                                     <td style='border: 1px solid black;'><%out.println(offer.getCategory());%></td>
 
                                     <% if (offer.getCompany_id().equals(id)) {%>
-                                    <td><a href='/WebThesisMaven/auth/removeOffer?id=<% out.println(offer.getId());%>'>Remove</a></td>
-                                    <td><a href='/WebThesisMaven/auth/updateOffer?id=<% out.println(offer.getId());%>'>Update</a></td>
+                                    <td><a href='/auth/removeOffer?id=<% out.println(offer.getId());%>'>Remove</a></td>
+                                    <td><a href='/auth/updateOffer?id=<% out.println(offer.getId());%>'>Update</a></td>
                                     <%
                                         }
                                     %>
