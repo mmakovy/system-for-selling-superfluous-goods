@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ShowOffer extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(ShowOffer.class);
 
     /**
      * Processes requests for both HTTP
@@ -66,7 +66,7 @@ public class ShowOffer extends HttpServlet {
                     } else {
                         offerData.put("photoUrl", offer.getPhotoUrl());
                         offerData.put("name", offer.getName());
-                        offerData.put("price", offer.getPrice().toString());
+                        offerData.put("price", String.format("%.2f", offer.getPrice()).replace(",", "."));
                         offerData.put("quantity", Integer.toString(offer.getQuantity()));
                         offerData.put("minimalQuantity", Integer.toString(offer.getMinimalBuyQuantity()));
                         Date purchaseDate = offer.getPurchaseDate();

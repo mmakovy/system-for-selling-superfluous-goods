@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.User;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ChangePassword extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(ChangePassword.class);
 
     /**
      * Processes requests for both HTTP

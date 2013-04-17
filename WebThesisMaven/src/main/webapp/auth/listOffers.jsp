@@ -14,11 +14,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>System for selling superflouos goods</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - Browse all offers</title>
     </head>
     <body>
         <div id="wrapper">
@@ -47,11 +46,11 @@
                                     <%if (offer.getPhotoUrl() == null || offer.getPhotoUrl().length() == 0) {%>
                                     <td style='border: 1px solid black;'>no-image</td>
                                     <%} else {%>
-                                    <td style='border: 1px solid black;'><img width='100' src='/uploads/<%out.println(offer.getPhotoUrl());%>'></td>
+                                    <td style='border: 1px solid black;'><img width='100' src='<%out.println("/static/" + offer.getPhotoUrl());%>'></td>
                                         <%}%>
 
                                     <td style='border: 1px solid black;'><a href='/auth/ShowOffer?id=<%out.println(offer.getId());%>'> <%out.println(offer.getName());%> </a></td>
-                                    <td style='border: 1px solid black;'>  <% out.println(String.format("%.2f", offer.getPrice()));%>  </td>
+                                    <td style='border: 1px solid black;'>  <% out.println(String.format("%.2f", offer.getPrice()).replace(",", "."));%> &euro; </td>
                                     <td style='border: 1px solid black;'> <% out.println(offer.getQuantity());%> </td>
 
                                     <%if (offer.getMinimalBuyQuantity() == 0) {%>
@@ -70,7 +69,7 @@
                                     <td style='border: 1px solid black;'><%out.println(offer.getCategory());%></td>
 
                                     <% if (offer.getCompany_id().equals(id)) {%>
-                                    <td><a href='/auth/removeOffer?id=<% out.println(offer.getId());%>'>Remove</a></td>
+                                    <td><a href='/auth/removeOffer?id=<% out.println(offer.getId());%>' onclick="return confirm('Do you really want to remove this offer?')">Remove</a></td>
                                     <td><a href='/auth/updateOffer?id=<% out.println(offer.getId());%>'>Update</a></td>
                                     <%
                                         }

@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class MailingListManagerImpl implements MailingListManager {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(MailingListManagerImpl.class);
 
     public void addEmail(String email, Long id) throws DatabaseException {
 
@@ -64,7 +64,7 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE email=? AND offer_id=?;");
+                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE email=? AND id_offer=?;");
                 st.setString(1, email);
                 st.setLong(2, id);
 
@@ -116,4 +116,66 @@ public class MailingListManagerImpl implements MailingListManager {
         return null;
     }
 
+    @Override
+    public List<Offer> getOffers(String email) throws DatabaseException, MailingListException, OfferException {
+        if (email == null) {
+            throw new IllegalArgumentException("email");
+        }
+        
+        OfferManager offerManager = new OfferManagerImpl();
+
+        Connection con = DatabaseConnection.getConnection();
+
+        if (con == null) {
+            throw new DatabaseException("Connection to database wasnt established");
+        } else {
+            try {
+                PreparedStatement st = con.prepareStatement("SELECT id_offer FROM mailing_list WHERE email=?");
+                st.setString(1, email);
+
+                ResultSet idsFromDB = st.executeQuery();
+                List<Offer> offers = new ArrayList<Offer>();
+
+                while (idsFromDB.next()) {
+                    Long id = idsFromDB.getLong("id_offer");
+                    Offer offer = offerManager.getOffer(id);
+                    offers.add(offer);
+                }
+
+                return offers;
+
+            } catch (SQLException ex) {
+                log.error(ex.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(con);
+            }
+        }
+        return null;
+    }
+
+    public void removeAllEntriesFrom(String email) throws DatabaseException, MailingListException {
+        if (email == null) {
+            throw new IllegalArgumentException("email");
+        }
+        
+         Connection con = DatabaseConnection.getConnection();
+
+        if (con == null) {
+            throw new DatabaseException("Connection to database wasnt established");
+        } else {
+            try {
+                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE email=?;");
+                st.setString(1, email);
+
+                if (st.executeUpdate() == 0) {
+                    log.error("Error when deleting entries from mailing list - DB");
+                }
+
+            } catch (SQLException ex) {
+                log.error(ex.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(con);
+            }
+        }
+    }
 }

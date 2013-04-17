@@ -1,4 +1,3 @@
-
 package cz.muni.fi.thesis;
 
 /**

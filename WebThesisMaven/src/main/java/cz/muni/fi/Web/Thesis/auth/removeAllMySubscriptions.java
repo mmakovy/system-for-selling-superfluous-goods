@@ -1,25 +1,22 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.Category;
-import cz.muni.fi.thesis.Offer;
-import cz.muni.fi.thesis.OfferManager;
-import cz.muni.fi.thesis.OfferManagerImpl;
+import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Matus Makovy
  */
-public class ListOffersFromCategory extends HttpServlet {
+public class removeAllMySubscriptions extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(ListOffersFromCategory.class);
+    final static Logger log = LoggerFactory.getLogger(removeAllMySubscriptions.class);
 
     /**
      * Processes requests for both HTTP
@@ -35,48 +32,32 @@ public class ListOffersFromCategory extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-
-        OfferManager offerManager = new OfferManagerImpl();
-        List<Offer> offers;
         HttpSession session = request.getSession();
-        Object userId = session.getAttribute("userID");
-        Long id = (Long) userId;
-
-        String categoryString = request.getParameter("category");
-        Category category = null;
+        Long userId = (Long) session.getAttribute("userID");
+        MailingListManager mailingListManager = new MailingListManagerImpl();
+        CompanyManager companyManager = new CompanyManagerImpl();
 
         try {
-            category = Category.valueOf(categoryString.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            log.error(ex.getMessage());
-            String message = "System doesn't have category " + categoryString;
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("../error.jsp").forward(request, response);
-        }
+            Company company = companyManager.getCompanyById(userId);
 
-        try {
-            offers = offerManager.getOffersFromCategory(category);
-
-            if (offers == null) {
-                log.error("getOffersFromCategory() returned null");
-                String message = "We have some internal problems. Please, try again later";
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("../error.jsp").forward(request, response);
-            } else if (offers.isEmpty()) {
-                String message = "No offers from category " + categoryString + " in database";
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            if (company != null) {
+                mailingListManager.removeAllEntriesFrom(company.getEmail());
+                request.setAttribute("message", "Your subscriptions were removed from database");
+                request.getRequestDispatcher("../response.jsp").forward(request, response);
             } else {
-                request.setAttribute("offers", offers);
-                request.getRequestDispatcher("listOffers.jsp").forward(request, response);
+                log.error("getCompanyById() returned null");
+                String message = "Sorry, we are experiencing some problems, please try again<br/>";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
+
         } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
             request.setAttribute("message", message);
             request.getRequestDispatcher("../error.jsp").forward(request, response);
-        }
 
+        }
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

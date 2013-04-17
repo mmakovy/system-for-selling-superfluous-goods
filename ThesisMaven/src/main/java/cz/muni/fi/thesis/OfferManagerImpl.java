@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OfferManagerImpl implements OfferManager {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(OfferManagerImpl.class);
 
     @Override
     public Offer addOffer(Company company, Offer offer) throws DatabaseException {

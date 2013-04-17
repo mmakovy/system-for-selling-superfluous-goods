@@ -1,6 +1,9 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.*;
+import cz.muni.fi.thesis.Category;
+import cz.muni.fi.thesis.Offer;
+import cz.muni.fi.thesis.OfferManager;
+import cz.muni.fi.thesis.OfferManagerImpl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FindOffer extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(FindOffer.class);
 
     /**
      * Processes requests for both HTTP

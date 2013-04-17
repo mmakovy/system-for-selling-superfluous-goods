@@ -12,14 +12,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>System for selling superflouos goods</title>
-    </head>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
-        <title>JSP Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - Add offer</title>
     </head>
     <script src="../myjs.js">
     </script>   
@@ -41,7 +37,7 @@
                             <form ENCTYPE="multipart/form-data" name='add_offer' method='post' action='/auth/AddOffer'  onsubmit='return submit_offer()'>  
                                 Name*:  
                                 <input type='text' name='name'><br/>  
-                                Price*:  
+                                Price*: in &euro; 
                                 <input type='text' name='price'><br/>  
                                 Quantity*:  
                                 <input type='text' name='quantity'><br/> 
@@ -62,7 +58,7 @@
                                     <option>SPORTS</option>
                                 </select>    <br/>
 
-                                Date of purchase:  
+                                <u>Date of purchase:</u>  
                                 <br/>
                                 Day:
                                 <input type="text" name="dob_day" /><br/>
@@ -73,6 +69,9 @@
                                 <br/>
                                 Image: 
                                 <input type="file" name="image" /><br/> <br/>
+                                <div class="info" style="margin-left: 0;top: -45px;">
+                                    Image can have dimensions up to 500 x 500 px and size 1 MB.
+                                </div>
                                 *-required fields<br/>
                                 <input type='submit' value='Add offer'><br/>  
                             </form>  

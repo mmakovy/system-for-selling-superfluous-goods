@@ -15,14 +15,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>System for selling superflouos goods</title>
-    </head>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
-        <title>JSP Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - Update offer</title>
     </head>
     <script src="../myjs.js">
     </script>  
@@ -43,11 +39,11 @@
                             <div class="error">${message}</div>
                             <%                                }%>
                             <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='/auth/updateOfferProcess?id=${offerData.get("id")}'>
-                                Name:
+                                Name*:
                                 <input type='text' name='name'  value='${offerData.get("name")}'><br/>
-                                Price:
+                                Price*: in &euro;
                                 <input type='text' name='price'  value='${offerData.get("price")}'><br/>
-                                Quantity:
+                                Quantity*:
                                 <input type='text' name='quantity' value='${offerData.get("quantity")}'><br/>
                                 Minimal Buy Quantity:
                                 <input type='text' name='minimal_buy' value='${offerData.get("minimalQuantity")}'><br/>
@@ -88,6 +84,11 @@
                                     <%} else {%>
                                     <option>SPORTS</option>
                                     <%}%>
+                                    <% if (offerData.get("category").equals("OTHERS")) {%>
+                                    <option selected>OTHERS</option>
+                                    <%} else {%>
+                                    <option>OTHERS</option>
+                                    <%}%>
                                 </select>    <br/>
 
                                 Purchase Date:<br/>
@@ -119,10 +120,3 @@
             </div>
     </body>
 </html>
-
-
-calendar.setTime(offer.getPurchaseDate());
-int day = calendar.get(Calendar.DAY_OF_MONTH);
-int month = calendar.get(Calendar.MONTH) + 1;
-int year = calendar.get(Calendar.YEAR);
-

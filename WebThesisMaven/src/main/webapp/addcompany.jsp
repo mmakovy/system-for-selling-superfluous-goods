@@ -10,9 +10,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
-        <title>JSP Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - Register</title>
     </head>
     <script src="myjs.js">
     </script>    
@@ -55,6 +55,7 @@
                                 Company name*: <input type="text" name="name"><br/>
                                 Email*: <input type="text" name="email"><br/>
                                 Email(verification)*: <input type="text" name="emailVer"><br/>
+                                <div class="info">(System will send you a verification e-mail)</div>
                                 PhoneNumber*: <input type="text" name="phone"><br/>   <br/>
                                 Address: <br/>
                                 Street:
@@ -67,6 +68,9 @@
                                 <input type="text" name="psc"/><br/>
                                 Other information:
                                 <input type="text" name="other"/><br/>
+                                <div class="info">
+                                (for example Skype alias, ICQ number,...)
+                                </div>
                                 * - required fields <br/>
                                 <input type="submit" value="Add Company" name="option"/>
                             </form>

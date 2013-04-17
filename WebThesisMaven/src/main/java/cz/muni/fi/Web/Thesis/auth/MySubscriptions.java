@@ -1,9 +1,6 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.Category;
-import cz.muni.fi.thesis.Offer;
-import cz.muni.fi.thesis.OfferManager;
-import cz.muni.fi.thesis.OfferManagerImpl;
+import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -15,11 +12,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Matus Makovy
+ * @author matus
  */
-public class ListOffersFromCategory extends HttpServlet {
+public class MySubscriptions extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(ListOffersFromCategory.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(MySubscriptions.class);
 
     /**
      * Processes requests for both HTTP
@@ -35,41 +32,43 @@ public class ListOffersFromCategory extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-
-        OfferManager offerManager = new OfferManagerImpl();
-        List<Offer> offers;
         HttpSession session = request.getSession();
-        Object userId = session.getAttribute("userID");
-        Long id = (Long) userId;
+        Long id = (Long) session.getAttribute("userID");
 
-        String categoryString = request.getParameter("category");
-        Category category = null;
+        MailingListManager mailingListManager = new MailingListManagerImpl();
+        CompanyManager companyManager = new CompanyManagerImpl();
 
-        try {
-            category = Category.valueOf(categoryString.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            log.error(ex.getMessage());
-            String message = "System doesn't have category " + categoryString;
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("../error.jsp").forward(request, response);
-        }
+        Company company;
+        List<Offer> offers;
 
         try {
-            offers = offerManager.getOffersFromCategory(category);
+            company = companyManager.getCompanyById(id);
 
-            if (offers == null) {
-                log.error("getOffersFromCategory() returned null");
-                String message = "We have some internal problems. Please, try again later";
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("../error.jsp").forward(request, response);
-            } else if (offers.isEmpty()) {
-                String message = "No offers from category " + categoryString + " in database";
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            if (company != null) {
+                offers = mailingListManager.getOffers(company.getEmail());
+
+                if (offers == null) {
+                    log.error("getOffers() returned null");
+                    String message = "Sorry, we are experiencing some problems, please try again<br/>";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                } else if (offers.isEmpty()) {
+                    String message = "You have no subscriptions";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("offers", offers);
+                    request.getRequestDispatcher("mySubscriptions.jsp").forward(request, response);
+                }
+
             } else {
-                request.setAttribute("offers", offers);
-                request.getRequestDispatcher("listOffers.jsp").forward(request, response);
+                log.error("getCompanyById() returned null");
+                String message = "Sorry, we are experiencing some problems, please try again<br/>";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
             }
+            
+
         } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();
@@ -79,7 +78,7 @@ public class ListOffersFromCategory extends HttpServlet {
 
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

@@ -14,37 +14,52 @@ import org.slf4j.LoggerFactory;
  * @author Matus Makovy
  */
 public final class DatabaseConnection {
+
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static DataSource source;
     private static String url;
     private static String user;
     private static String pass;
-    
-    public static void loadProperties(){
+
+    public static void loadProperties() {
         Properties config = new Properties();
         try {
             config.load(new FileInputStream("/home/matus/system-for-selling-superfluous-goods/ThesisMaven/config.properties"));
-            url = ""; /** config.getProperty("url");*/
-            user = ""; /**config.getProperty("userName");*/
-            pass = ""; /**config.getProperty("password");*/
-        } catch (Exception ex){
-            log.error("Loading properties failed");  
+            url = "";
+            /**
+             * config.getProperty("url");
+             */
+            user = "";
+            /**
+             * config.getProperty("userName");
+             */
+            pass = "";
+            /**
+             * config.getProperty("password");
+             */
+        } catch (Exception ex) {
+            log.error("Loading properties failed");
         }
-        
+
     }
-            
-    
-   static 
-    {   
-        
+
+    /**
+     * static {      *
+     * BasicDataSource ds = new BasicDataSource();
+     * ds.setUrl("jdbc:mysql://localhost:3306/thesis?user=root&password=pavot&useUnicode=yes&characterEncoding=UTF-8");
+     * ds.setDriverClassName("com.mysql.jdbc.Driver"); source = ds;
+    }
+     */
+    static {
+
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:mysql://127.9.63.129:3306/sssg?user=admin3Breqb4&password=n98B5gelrNBg&useUnicode=yes&characterEncoding=UTF-8");
+        ds.setUrl("jdbc:mysql://127.11.213.129:3306/sssg?user=adminG3Wv3et&password=XHRF1SFDhDW4&useUnicode=yes&characterEncoding=UTF-8");
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         source = ds;
     }
-    
-    public static Connection getConnection()  {
-        
+
+    public static Connection getConnection() {
+
         Connection con = null;
         try {
             con = source.getConnection();
@@ -54,7 +69,7 @@ public final class DatabaseConnection {
         }
         return con;
     }
-    
+
     public static void closeConnection(Connection con) {
         try {
             if (con != null) {
@@ -65,7 +80,7 @@ public final class DatabaseConnection {
             log.error(ex.getMessage());
         }
     }
-    
+
     public static void doRollback(Connection con) {
         if (con != null) {
             try {

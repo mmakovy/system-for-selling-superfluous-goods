@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis;
 
-import cz.muni.fi.thesis.CompanyManagerImpl;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Logout extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(Logout.class);
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and

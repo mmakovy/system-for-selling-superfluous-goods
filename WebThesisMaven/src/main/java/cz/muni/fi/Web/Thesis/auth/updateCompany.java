@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class updateCompany extends HttpServlet {
 
-    final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(updateCompany.class);
 
     /**
      * Processes requests for both HTTP

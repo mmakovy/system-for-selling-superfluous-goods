@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class removeCompany extends HttpServlet {
 
-    final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(removeCompany.class);
 
     /**
      * Processes requests for both HTTP
