@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class UserManagerImpl implements UserManager {
 
-    final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(UserManagerImpl.class);
 
     public User findUser(String username, String password) throws DatabaseException {
 

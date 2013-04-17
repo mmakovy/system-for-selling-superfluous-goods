@@ -1,4 +1,3 @@
-
 package cz.muni.fi.thesis;
 
 /**
@@ -147,7 +146,19 @@ public class Company {
 
     @Override
     public String toString() {
-        return "Company{" + "name=" + name + ", email=" + email + ", phoneNumber=" + phoneNumber + ", street=" + street + ", city=" + city + ", country=" + country + ", psc=" + psc + ", other=" + other + ", id=" + id + '}';
+        
+        String newline = System.getProperty("line.separator");
+        
+        return "Company" + newline
+                + "Name: " + name + newline
+                + "E-mail: " + email + newline
+                + "Phone number: " + phoneNumber + newline
+                + "Address: " + newline
+                + "Street: " + street + newline
+                + "City: " + city + newline
+                + "Psc: " + psc + newline
+                + "Country: " + country + newline
+                + "Other info: " + other + newline;
     }
 
     

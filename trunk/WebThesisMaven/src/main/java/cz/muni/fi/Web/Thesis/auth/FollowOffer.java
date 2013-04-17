@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FollowOffer extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(FollowOffer.class);
 
     /**
      * Processes requests for both HTTP
@@ -38,11 +38,30 @@ public class FollowOffer extends HttpServlet {
 
         try {
             Company company = companyManager.getCompanyById(idUser);
-            String userEmail = company.getEmail();
-            mailingListManager.addEmail(userEmail, idOffer);
-            String message = "Your email was added to mailing list, you will be notified on change of offer";
-            request.setAttribute("message", message);
-            request.getRequestDispatcher("../response.jsp").forward(request, response);
+
+            if (company != null) {
+                
+                String email = company.getEmail();
+                
+                if (email != null) {
+                    mailingListManager.addEmail(email, idOffer);
+                    String message = "Your email was added to mailing list, you will be notified on change of offer";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../response.jsp").forward(request, response);
+                } else {
+                    log.error("getEmail() returned null");
+                    String message = "Sorry, we are experiencing some problems, please try again<br/>";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("../error.jsp").forward(request, response);
+                }
+
+            } else {
+                log.error("getCompanyById() returned null");
+                String message = "Sorry, we are experiencing some problems, please try again<br/>";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../error.jsp").forward(request, response);
+            }
+
         } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = "Sorry, we are experiencing some problems, please try again<br/>" + ex.getMessage();

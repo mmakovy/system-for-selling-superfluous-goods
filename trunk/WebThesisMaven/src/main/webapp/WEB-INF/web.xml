@@ -109,6 +109,18 @@
         <servlet-name>FollowOffer</servlet-name>
         <servlet-class>cz.muni.fi.Web.Thesis.auth.FollowOffer</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MySubscriptions</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.MySubscriptions</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>removeMySubscription</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.removeMySubscription</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>removeAllMySubscriptions</servlet-name>
+        <servlet-class>cz.muni.fi.Web.Thesis.auth.removeAllMySubscriptions</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ListCompanies</servlet-name>
         <url-pattern>/auth/ListCompanies</url-pattern>
@@ -208,6 +220,18 @@
     <servlet-mapping>
         <servlet-name>FollowOffer</servlet-name>
         <url-pattern>/auth/FollowOffer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MySubscriptions</servlet-name>
+        <url-pattern>/auth/MySubscriptions</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeMySubscription</servlet-name>
+        <url-pattern>/auth/removeMySubscription</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeAllMySubscriptions</servlet-name>
+        <url-pattern>/auth/removeAllMySubscriptions</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

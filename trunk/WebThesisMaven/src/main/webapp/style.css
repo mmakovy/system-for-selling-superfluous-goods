@@ -1,9 +1,7 @@
 /* 
     Document   : style
     Created on : 5.4.2013, 10:02:12
-    Author     : User
-    Description:
-        Purpose of the stylesheet follows.
+    Author     : Matus Makovy
 */
 
 body {
@@ -201,22 +199,61 @@ h1 {
     text-align: center;
 }
 
-form[name='add_company'],
-form[name='add_offer'],
-form[name='find_offer']{
-    line-height:    33px;
-
+form[name='add_company'], form[name='updateCompany'], form[name='add_offer']{
+    line-height: 33px;
 }
 
 form[name='add_company'] input[type='text'], 
-form[name='add_company'] input[type='password'],
-form[name='add_offer'] input[type='text'],
-form[name='add_offer'] input[type='password'],
-form[name='add_offer'] select[name='category'] {
-    
+form[name='add_company'] input[type='password']  {
     float: right;
     margin-bottom: 8px;
-    margin-right: 360px;
+    margin-right: 330px;
+}
+
+form[name='add_offer'] input[type='text'],
+form[name='add_offer'] input[type='password'],
+select[name='category']{
+    float: right;
+    margin-bottom: 8px;
+    margin-right: 425px;
+}
+
+input[type='text'], input[type='password']{
+    width: 150px;
+}
+
+form[name='updateCompany'] input[type='text'],
+form[name='updateCompany'] input[type='password']{
+    float: right;
+    margin-bottom: 8px;
+    margin-right: 475px;
+}
+
+form[name='change_password'] {
+    line-height: 24px;
+}
+
+form[name='change_password'] input[type='text'], form[name='change_password'] input[type='password']  {
+    float: left;
+    margin-bottom: 0px;
+}
+
+#email {
+    margin-left: 90px; 
+}
+
+form[name='add_company'] input[name='other'] {
+    width: 400px;
+    margin-right: 80px !important;
+}
+
+input[name='other'], form[name="send_email_from_offer"] input[name='text'] {
+    width: 400px;
+    margin-right: 225px !important;
+}
+
+input[type="submit"] {
+    margin-top: 10px;
 }
 
 #submenu {
@@ -308,6 +345,14 @@ form[name='login'] input[type='text'], form[name='login'] input[type='password']
     line-height: 53px;
     text-align: center;
     background-color: lightgreen;
+}
+
+.info {
+    margin-left: 277px;
+    font-size: 88%;
+    position: relative;
+    top: -18px;
+    margin-bottom: -20px;
 }
 
 

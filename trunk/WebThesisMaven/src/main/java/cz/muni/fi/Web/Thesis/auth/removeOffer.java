@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class removeOffer extends HttpServlet {
 
-    final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(removeOffer.class);
 
     /**
      * Processes requests for both HTTP
@@ -41,6 +41,7 @@ public class removeOffer extends HttpServlet {
         MailingListManager mailingListManager = new MailingListManagerImpl();
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
+        String newline = System.getProperty("line.separator");
 
 
         try {
@@ -62,7 +63,9 @@ public class removeOffer extends HttpServlet {
                 offerManager.removeOffer(offer);            
 
                 if (!emails.isEmpty()) {
-                    String messageText = "Offer " + offer.toString() + "was deleted from system";
+                    String messageText = "Offer " + offer.toString() + "was deleted from system" 
+                            + newline + "You can disable this notifications in My Subscriptions section " 
+                            + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions" ;
                     mailSender.sendMoreEmails(emails, "Offer" + offer.getName() + " was deleted", messageText);
                 }
 

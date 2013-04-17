@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.Offer;
 import cz.muni.fi.thesis.OfferManager;
 import cz.muni.fi.thesis.OfferManagerImpl;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ListOffers extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(ListOffers.class);
 
     /**
      * Processes requests for both HTTP

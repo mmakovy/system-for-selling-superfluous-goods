@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis;
 
-import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ForgotPassword extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(ForgotPassword.class);
 
     /**
      * Processes requests for both HTTP

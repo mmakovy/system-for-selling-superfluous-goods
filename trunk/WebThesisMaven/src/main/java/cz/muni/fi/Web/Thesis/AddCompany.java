@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AddCompany extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(AddCompany.class);
 
     /**
      * Processes requests for both HTTP

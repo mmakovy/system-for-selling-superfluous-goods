@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ContactFormEmailSender extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(ContactFormEmailSender.class);
 
     /**
      * Processes requests for both HTTP
@@ -41,6 +41,8 @@ public class ContactFormEmailSender extends HttpServlet {
         String text = request.getParameter("text");
         String offerId = request.getParameter("offerId");
         Long offerIdLong = Long.parseLong(offerId);
+        
+        String newline = System.getProperty("line.separator");
 
         HttpSession httpSession = request.getSession();
         Long userIdLong = (Long) httpSession.getAttribute("userID");
@@ -71,7 +73,8 @@ public class ContactFormEmailSender extends HttpServlet {
             }
 
             String subject = "Reply to offer " + offer.getName();
-            String messageText = "Company " + companyFrom.toString() + " has sent you this message:" + text;
+            String messageText =  companyFrom.toString() + newline + " in reply to offer " 
+                                + newline + offer.toString() + newline + " has sent you this message:" + text;
 
             try {
                 mailSender.sendOneEmail(to, subject, messageText);

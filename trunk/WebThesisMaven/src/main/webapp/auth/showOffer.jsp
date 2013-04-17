@@ -15,14 +15,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>System for selling superflouos goods</title>
-    </head>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
-        <title>JSP Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - Offer</title>
     </head>
     <body>
         <div id="wrapper">
@@ -34,7 +30,7 @@
                         </div>
                         <div id="registration-content-middle">
                             <%
-                                ReCaptcha c = ReCaptchaFactory.newReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
+                                ReCaptcha c = ReCaptchaFactory.newSecureReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
                                 Map<String, String> offerData = (Map) request.getAttribute("offerData");
                                 if (request.getAttribute("message") != null) {
                             %>
@@ -42,9 +38,9 @@
                             <%                                }%>
                             <h1>${offerData.get("name")}</h1> <br/>
                             <u>Image:</u>
-                            <img width='500' src='/uploads/${offerData.get("photoUrl")}'><br/>
+                            <img width='500' src='<%out.println("/static/" + offerData.get("photoUrl"));%>'><br/>
                             <u>Price:</u>
-                            ${offerData.get("price")}</br>
+                            ${offerData.get("price")} &euro;</br>
                             <u>Quantity:</u>
                             ${offerData.get("quantity")}</br>
                             <u>Minimal buy quantity:</u>
@@ -70,11 +66,15 @@
                             <a href='FollowOffer?id=${offerData.get("id")}'>Follow this offer</a>
 
                             <form method='post' name='send_email_from_offer' action='/auth/ContactFormEmailSender?offerId=${offerData.get("id")}' >
-                                Send e-mail:<br/>
+                                <br/>
+                                <br/>
+                                <u>Send e-mail:</u><br/>
+                                <br/>
 
-                                Your e-mail address:${offerData.get("myEmail")}<br/>
+                                Your e-mail address: ${offerData.get("myEmail")}<br/>
+                                <br/>
                                 Text of message:<br/>
-                                <input type='text' name='text'>
+                                <input type='text' name='text'><br/>
                                 <% out.println(c.createRecaptchaHtml(null, null));%>
                                 <input type='submit' value='send'>
 

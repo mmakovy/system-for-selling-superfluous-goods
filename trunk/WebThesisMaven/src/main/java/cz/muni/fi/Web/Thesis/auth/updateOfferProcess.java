@@ -2,6 +2,7 @@ package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class updateOfferProcess extends HttpServlet {
 
-    final static org.slf4j.Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static org.slf4j.Logger log = LoggerFactory.getLogger(updateOfferProcess.class);
 
     /**
      * Processes requests for both HTTP
@@ -63,7 +65,7 @@ public class updateOfferProcess extends HttpServlet {
         String dayString = null;
         String monthString = null;
         String yearString = null;
-        boolean fileIsImage = true;
+        boolean fileIsCorrect = true;
 
 
         if (ServletFileUpload.isMultipartContent(request)) {
@@ -88,8 +90,7 @@ public class updateOfferProcess extends HttpServlet {
                 if (!item.isFormField() && item.getName().length() != 0) {
 
                     String fileName = item.getName();
-                    String root = getServletContext().getRealPath("/");
-                    File path = new File(root + "/uploads");
+                    File path = new File(System.getenv("OPENSHIFT_DATA_DIR"));
                     if (!path.exists()) {
                         boolean status = path.mkdirs();
                     }
@@ -121,12 +122,30 @@ public class updateOfferProcess extends HttpServlet {
                     if (match != null) {
                         String mimeType = match.getMimeType();
                         if (!mimeType.startsWith("image")) {
-                            fileIsImage = false;
+                            fileIsCorrect = false;
                             uploadedFile.delete();
                             log.error("File wasnt image");
                             String message = "File wasnt image";
                             request.setAttribute("message", message);
                             request.getRequestDispatcher("../error.jsp").forward(request, response);
+                        } else {
+
+                            BufferedImage bimg = ImageIO.read(uploadedFile);
+                            int imageWidth = bimg.getWidth();
+                            int imageHeight = bimg.getHeight();
+
+                            long fileSizeInBytes = uploadedFile.length();
+                            long fileSizeInKB = fileSizeInBytes / 1024;
+                            long fileSizeInMB = fileSizeInKB / 1024;
+
+                            if (imageWidth > 500 || imageHeight > 500 || fileSizeInMB > 1) {
+                                fileIsCorrect = false;
+                                uploadedFile.delete();
+                                log.error("File doesn't meet the requirements");
+                                String message = "File doesn't meet the requirements";
+                                request.setAttribute("message", message);
+                                request.getRequestDispatcher("../error.jsp").forward(request, response);
+                            }
                         }
                     }
                 } else {
@@ -185,7 +204,7 @@ public class updateOfferProcess extends HttpServlet {
                 Date date = null;
 
                 try {
-                    price = new BigDecimal(priceString);
+                    price = new BigDecimal(priceString.replace(",", "."));
                     minimalBuyQuantity = Integer.parseInt(minimalBuyString);
                     quantity = Integer.parseInt(quantityString);
 
@@ -199,7 +218,7 @@ public class updateOfferProcess extends HttpServlet {
                         date = new Date(calendar.getTimeInMillis());
                     }
                 } catch (Exception ex) {
-                    String message = "Bad input - not a Number " + ex.toString();
+                    String message = "Bad input - Some number field was not a number <br/> or quantity was not a whole number <br/> " + ex.toString();
                     request.setAttribute("message", message);
                     request.getRequestDispatcher("../error.jsp").forward(request, response);
                 }
@@ -238,7 +257,9 @@ public class updateOfferProcess extends HttpServlet {
                         request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
-                    messageText = messageText + "After update: " + newline + updatedOffer.toString() + newline;
+                    messageText = messageText + "After update: " + newline + updatedOffer.toString() 
+                            + newline + "You can disable this notifications in My Subscriptions section " 
+                            + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions" ;
                     String messageSubject = "Offer " + offer.getName() + " was updated";
 
                     List<String> recipients;

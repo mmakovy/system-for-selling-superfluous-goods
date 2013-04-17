@@ -168,6 +168,14 @@ function findOffer() {
         return true         
     }     
 }
+
+function confirmDelete() {
+    if(confirm('Do you really want to remove ?')) {
+        return true;
+    } else {
+        return false;       
+    }
+}
     
 
 

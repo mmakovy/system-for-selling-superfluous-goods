@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.Offer;
 import cz.muni.fi.thesis.OfferManager;
 import cz.muni.fi.thesis.OfferManagerImpl;
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class updateOffer extends HttpServlet {
 
-    final static Logger log = LoggerFactory.getLogger(CompanyManagerImpl.class);
+    final static Logger log = LoggerFactory.getLogger(updateOffer.class);
 
     /**
      * Processes requests for both HTTP
@@ -39,7 +38,7 @@ public class updateOffer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         OfferManager manager = new OfferManagerImpl();
-        Long id = Long.parseLong(request.getParameter("id"));
+        
         Offer offer;
 
         HttpSession session = request.getSession();
@@ -48,6 +47,8 @@ public class updateOffer extends HttpServlet {
         Map<String, String> offerData = new HashMap<String, String>();
 
         try {
+            
+            Long id = Long.parseLong(request.getParameter("id"));
             offer = manager.getOffer(id);
 
             if (offer == null) {
@@ -83,7 +84,7 @@ public class updateOffer extends HttpServlet {
 
                         offerData.put("photoUrl", offer.getPhotoUrl());
                         offerData.put("name", offer.getName());
-                        offerData.put("price", offer.getPrice().toString());
+                        offerData.put("price", String.format("%.2f", offer.getPrice()).replace(",", "."));
                         offerData.put("quantity", Integer.toString(offer.getQuantity()));
                         offerData.put("minimalQuantity", Integer.toString(offer.getMinimalBuyQuantity()));
                         offerData.put("category", offer.getCategory().toString());

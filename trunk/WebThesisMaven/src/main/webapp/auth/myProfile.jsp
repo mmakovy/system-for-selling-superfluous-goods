@@ -13,14 +13,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>System for selling superflouos goods</title>
-    </head>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
-        <title>JSP Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - My Profile</title>
     </head>
     <script src="../myjs.js">
     </script> 
@@ -42,14 +38,14 @@
                             <%                                }%>
                             <h1>Edit my profile info</h1>
                             <form method='post' name='updateCompany' onsubmit="return update_company()" action='/auth/updateCompanyProcess?id=<% out.println(id);%>'>
-                                Name:
+                                Company name:
                                 <input type='text' name='name' value='<% out.println(companyMap.get("name"));%>'><br/>
-                                Email: <% out.println(companyMap.get("email"));%> <br/>
+                                Email: <span id="email"><% out.println(companyMap.get("email"));%> <br/></span>
                                 Phone Number:
-                                <input type='text' name='phone' value='<% out.println(companyMap.get("phoneNumber"));%>'><br/><br/>
-                                Other:
-                                <input type='text' name='other' value='<% out.println(companyMap.get("other"));%>'><br/><br/>
-                                Address: <br/>
+                                <input type='text' name='phone' value='<% out.println(companyMap.get("phoneNumber"));%>'><br/>
+                                
+                                <br/>
+                                <u>Address:</u> <br/>
                                 Street:
                                 <input type='text' name='street' value='<% out.println(companyMap.get("street"));%>'><br/>
                                 City:
@@ -57,7 +53,10 @@
                                 PSC:
                                 <input type='text' name='psc' value='<% out.println(companyMap.get("psc"));%>'><br/>
                                 Country:
-                                <input type='text' name='country' value='<% out.println(companyMap.get("country"));%>'><br/>
+                                <input type='text' name='country' value='<% out.println(companyMap.get("country"));%>'><br/><br/>
+                                Other information:
+                                <input type='text' name='other' value='<% out.println(companyMap.get("other"));%>'><br/>
+                                
 
                                 <input type='submit' name='submit' value='Update'>
                             </form>
@@ -76,7 +75,7 @@
 
                             </form>
 
-                            <a href='removeCompany'>Remove my company from system</a><br/>
+                            <a href='removeCompany' onclick="return confirm('Do you really want to remove your company from system?')">Remove my company from system</a><br/>
 
                         </div>
                         <div id="registration-content-bottom">

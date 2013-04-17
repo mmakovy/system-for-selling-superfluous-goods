@@ -13,14 +13,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>System for selling superflouos goods</title>
-    </head>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
-        <title>JSP Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Days+One' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Istok+Web' rel='stylesheet' type='text/css'>
+        <title>SSSG - Find offer</title>
     </head>
     <script src="../myjs.js">
     </script>  

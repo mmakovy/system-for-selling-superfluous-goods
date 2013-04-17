@@ -2,7 +2,7 @@ package cz.muni.fi.thesis;
 
 /**
  *
- * @author matus
+ * @author Matus Makovy
  */
 public class User {
     
