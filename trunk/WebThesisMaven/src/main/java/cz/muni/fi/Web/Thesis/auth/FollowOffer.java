@@ -31,6 +31,7 @@ public class FollowOffer extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         CompanyManager companyManager = new CompanyManagerImpl();
+        OfferManager offerManager = new OfferManagerImpl();
         MailingListManager mailingListManager = new MailingListManagerImpl();
 
         Long idOffer = Long.parseLong(request.getParameter("id"));
@@ -38,25 +39,23 @@ public class FollowOffer extends HttpServlet {
 
         try {
             Company company = companyManager.getCompanyById(idUser);
+            Offer offer = offerManager.getOffer(idOffer);
 
-            if (company != null) {
-                
-                String email = company.getEmail();
-                
-                if (email != null) {
-                    mailingListManager.addEmail(email, idOffer);
-                    String message = "Your email was added to mailing list, you will be notified on change of offer";
-                    request.setAttribute("message", message);
-                    request.getRequestDispatcher("../response.jsp").forward(request, response);
-                } else {
-                    log.error("getEmail() returned null");
-                    String message = "Sorry, we are experiencing some problems, please try again<br/>";
-                    request.setAttribute("message", message);
-                    request.getRequestDispatcher("../error.jsp").forward(request, response);
-                }
+            if (company != null && offer != null) {
+                    
+                    if (mailingListManager.isFollowingThisOffer(company, offer)) {
+                        String message = "You are already following this offer";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../error.jsp").forward(request, response);
+                    } else {
+                        mailingListManager.addEntry(company, offer);
+                        String message = "Your email was added to mailing list, you will be notified on change of offer";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("../response.jsp").forward(request, response);
+                    }                               
 
             } else {
-                log.error("getCompanyById() returned null");
+                log.error("company or offer isnt in database");
                 String message = "Sorry, we are experiencing some problems, please try again<br/>";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);

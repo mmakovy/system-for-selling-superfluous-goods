@@ -45,7 +45,7 @@ public class MySubscriptions extends HttpServlet {
             company = companyManager.getCompanyById(id);
 
             if (company != null) {
-                offers = mailingListManager.getOffers(company.getEmail());
+                offers = mailingListManager.getOffers(company);
 
                 if (offers == null) {
                     log.error("getOffers() returned null");

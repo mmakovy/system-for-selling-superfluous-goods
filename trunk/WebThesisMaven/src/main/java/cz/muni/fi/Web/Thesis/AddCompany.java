@@ -1,5 +1,6 @@
 package cz.muni.fi.Web.Thesis;
 
+import com.google.common.base.CharMatcher;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -48,47 +49,59 @@ public class AddCompany extends HttpServlet {
         String other = request.getParameter("other");
 
         try {
-            if (userManager.isUsernameInDatabase(usrname)) {
-                String message = "Username is already in database";
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
-            } else if (companyMng.isEmailInDatabase(email)) {
-                String message = "Email is already in database";
+
+            if (!CharMatcher.ASCII.matchesAllOf(usrname)) {
+                log.info("Username is not ASCII");
+                String message = "Username  - only characters from (a-z, A-z, 0-9). ";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
             } else {
-
-                if ((name != null && name.length() != 0) && (email
-                        != null && email.length() != 0) && (phoneNumber != null
-                        && phoneNumber.length() != 0) && (pwd
-                        != null && pwd.length() != 0)) {
-                    company.setName(name);
-                    company.setEmail(email);
-                    company.setPhoneNumber(phoneNumber);
-                    company.setStreet(street);
-                    company.setCountry(country);
-                    company.setCity(city);
-                    company.setOther(other);
-                    company.setPsc(psc);
-
-                    Company added;
-                    added = companyMng.addCompany(company, usrname, pwd);
-                    if (added != null) {
-                        log.info("Company was added");
-                        response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
-                    } else {
-                        log.error("addCompany() returned null");
-                        String message = "Sorry, we are experiencing some problems, please try again";
-                        request.setAttribute("message", message);
-                        request.getRequestDispatcher("/error.jsp").forward(request, response);
-                    }
-                } else {
-                    log.info("Company wasnt added, because one required of fields was left blank");
-                    String message = "Company wasnt added, because one required of fields was left blank<br/>";
+                if (userManager.isUsernameInDatabase(usrname)) {
+                    String message = "Username is already in database";
                     request.setAttribute("message", message);
                     request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
+                } else {
+                    if (companyMng.isEmailInDatabase(email)) {
+                        String message = "Email is already in database";
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
+                    } else {
+
+                        if ((name != null && name.length() != 0) && (email
+                                != null && email.length() != 0) && (phoneNumber != null
+                                && phoneNumber.length() != 0) && (pwd
+                                != null && pwd.length() != 0)) {
+                            company.setName(name);
+                            company.setEmail(email);
+                            company.setPhoneNumber(phoneNumber);
+                            company.setStreet(street);
+                            company.setCountry(country);
+                            company.setCity(city);
+                            company.setOther(other);
+                            company.setPsc(psc);
+
+                            Company added;
+                            added = companyMng.addCompany(company, usrname, pwd);
+                            if (added != null) {
+                                log.info("Company was added");
+                                response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
+                            } else {
+                                log.error("addCompany() returned null");
+                                String message = "Sorry, we are experiencing some problems, please try again";
+                                request.setAttribute("message", message);
+                                request.getRequestDispatcher("/error.jsp").forward(request, response);
+                            }
+                        } else {
+                            log.info("Company wasnt added, because one of required fields was left blank");
+                            String message = "Company wasnt added, because one required of fields was left blank<br/>";
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
+                        }
+                    }
+
                 }
             }
+
         } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = ex.getMessage();

@@ -6,10 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -92,7 +92,7 @@ public class AddOffer extends HttpServlet {
                         boolean status = path.mkdirs();
                     }
 
-                    photoUrl = Normalizer.normalize(fileName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+                    photoUrl = UUID.randomUUID().toString().substring(0, 13) + ".jpg";
                     File uploadedFile = new File(path + "/" + photoUrl);
 
 

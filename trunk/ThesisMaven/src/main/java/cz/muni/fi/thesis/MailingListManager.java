@@ -8,9 +8,10 @@ import java.util.List;
  */
 public interface MailingListManager {
     
-    void addEmail(String email, Long id) throws DatabaseException, MailingListException;
-    void removeEmail(String email, Long id) throws DatabaseException, MailingListException;
-    List<String> getEmails(Long id) throws DatabaseException, MailingListException;
-    List<Offer> getOffers(String email) throws DatabaseException, MailingListException, OfferException;
-    void removeAllEntriesFrom(String email) throws DatabaseException, MailingListException;
+    void addEntry(Company company, Offer offer) throws DatabaseException, MailingListException;
+    void removeEntry(Company company, Offer offer) throws DatabaseException, MailingListException;
+    List<String> getEmails(Offer offer) throws DatabaseException, MailingListException;
+    List<Offer> getOffers(Company company) throws DatabaseException, MailingListException, OfferException;
+    void removeAllEntriesFrom(Company company) throws DatabaseException, MailingListException;
+    boolean isFollowingThisOffer(Company company, Offer offer) throws DatabaseException, MailingListException;
 }
