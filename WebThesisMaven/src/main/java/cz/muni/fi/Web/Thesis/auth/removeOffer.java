@@ -2,8 +2,10 @@ package cz.muni.fi.Web.Thesis.auth;
 
 import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -59,16 +61,24 @@ public class removeOffer extends HttpServlet {
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
             } else {
                 
-                List<String> emails = mailingListManager.getEmails(offer.getId());
+                List<String> emails = mailingListManager.getEmails(offer);
+                
+                String imageUrl = offer.getPhotoUrl();
+                File path = new File(System.getenv("OPENSHIFT_DATA_DIR"));
+                File uploadedFile = new File(path + "/" + imageUrl);               
+                
                 offerManager.removeOffer(offer);            
-
+                
+                uploadedFile.delete();
+                
                 if (!emails.isEmpty()) {
                     String messageText = "Offer " + offer.toString() + "was deleted from system" 
                             + newline + "You can disable this notifications in My Subscriptions section " 
                             + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions" ;
                     mailSender.sendMoreEmails(emails, "Offer" + offer.getName() + " was deleted", messageText);
                 }
-
+                
+                
                 String message = "Offer was deleted from database";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../response.jsp").forward(request, response);

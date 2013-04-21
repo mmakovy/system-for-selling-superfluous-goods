@@ -41,7 +41,7 @@ public class removeAllMySubscriptions extends HttpServlet {
             Company company = companyManager.getCompanyById(userId);
 
             if (company != null) {
-                mailingListManager.removeAllEntriesFrom(company.getEmail());
+                mailingListManager.removeAllEntriesFrom(company);
                 request.setAttribute("message", "Your subscriptions were removed from database");
                 request.getRequestDispatcher("../response.jsp").forward(request, response);
             } else {

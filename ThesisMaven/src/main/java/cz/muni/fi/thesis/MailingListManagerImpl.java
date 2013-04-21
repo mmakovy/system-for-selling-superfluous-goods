@@ -16,15 +16,29 @@ public class MailingListManagerImpl implements MailingListManager {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(MailingListManagerImpl.class);
 
-    public void addEmail(String email, Long id) throws DatabaseException {
+    @Override
+    public void addEntry(Company company, Offer offer) throws DatabaseException {
 
+        if (company == null) {
+            throw new IllegalArgumentException("company");
+        }
+
+        if (offer == null) {
+            throw new IllegalArgumentException("offer");
+        }
+        
+        String email = company.getEmail();
+        Long id = offer.getId();
+        
         if (email == null) {
-            throw new IllegalArgumentException("email");
+            throw new IllegalArgumentException("company email");
         }
 
         if (id == null) {
-            throw new IllegalArgumentException("id");
+            throw new IllegalArgumentException("offer id");
         }
+        
+        
 
         Connection con = DatabaseConnection.getConnection();
 
@@ -49,13 +63,26 @@ public class MailingListManagerImpl implements MailingListManager {
 
     }
 
-    public void removeEmail(String email, Long id) throws DatabaseException {
+    @Override
+    public void removeEntry(Company company, Offer offer) throws DatabaseException {
+        
+        if (company == null) {
+            throw new IllegalArgumentException("company");
+        }
+
+        if (offer == null) {
+            throw new IllegalArgumentException("offer");
+        }
+        
+        String email = company.getEmail();
+        Long id = offer.getId();
+        
         if (email == null) {
-            throw new IllegalArgumentException("email");
+            throw new IllegalArgumentException("company email");
         }
 
         if (id == null) {
-            throw new IllegalArgumentException("id");
+            throw new IllegalArgumentException("offer id");
         }
 
         Connection con = DatabaseConnection.getConnection();
@@ -82,10 +109,17 @@ public class MailingListManagerImpl implements MailingListManager {
 
     }
 
-    public List<String> getEmails(Long id) throws DatabaseException {
+    @Override
+    public List<String> getEmails(Offer offer) throws DatabaseException {        
 
+        if (offer == null) {
+            throw new IllegalArgumentException("offer");
+        }
+        
+        Long id = offer.getId();
+       
         if (id == null) {
-            throw new IllegalArgumentException("id");
+            throw new IllegalArgumentException("offer id");
         }
 
         Connection con = DatabaseConnection.getConnection();
@@ -117,11 +151,17 @@ public class MailingListManagerImpl implements MailingListManager {
     }
 
     @Override
-    public List<Offer> getOffers(String email) throws DatabaseException, MailingListException, OfferException {
-        if (email == null) {
-            throw new IllegalArgumentException("email");
+    public List<Offer> getOffers(Company company) throws DatabaseException, MailingListException, OfferException {
+        if (company == null) {
+            throw new IllegalArgumentException("company");
         }
-        
+      
+        String email = company.getEmail();
+       
+        if (email == null) {
+            throw new IllegalArgumentException("company email");
+        }
+
         OfferManager offerManager = new OfferManagerImpl();
 
         Connection con = DatabaseConnection.getConnection();
@@ -153,12 +193,19 @@ public class MailingListManagerImpl implements MailingListManager {
         return null;
     }
 
-    public void removeAllEntriesFrom(String email) throws DatabaseException, MailingListException {
-        if (email == null) {
-            throw new IllegalArgumentException("email");
+    @Override
+    public void removeAllEntriesFrom(Company company) throws DatabaseException, MailingListException {
+        if (company == null) {
+            throw new IllegalArgumentException("company");
         }
+
+        String email = company.getEmail();
         
-         Connection con = DatabaseConnection.getConnection();
+        if (email == null) {
+            throw new IllegalArgumentException("company email");
+        }
+
+        Connection con = DatabaseConnection.getConnection();
 
         if (con == null) {
             throw new DatabaseException("Connection to database wasnt established");
@@ -177,5 +224,52 @@ public class MailingListManagerImpl implements MailingListManager {
                 DatabaseConnection.closeConnection(con);
             }
         }
+    }
+
+    @Override
+    public boolean isFollowingThisOffer(Company company, Offer offer) throws DatabaseException, MailingListException {
+        if (company == null) {
+            throw new IllegalArgumentException("company");
+        }
+
+        if (offer == null) {
+            throw new IllegalArgumentException("offer");
+        }
+        
+        String email = company.getEmail();
+        Long id = offer.getId();
+        
+        if (email == null) {
+            throw new IllegalArgumentException("company email");
+        }
+
+        if (id == null) {
+            throw new IllegalArgumentException("offer id");
+        }
+
+        Connection con = DatabaseConnection.getConnection();
+
+        if (con == null) {
+            throw new DatabaseException("Connection to database wasnt established");
+        } else {
+            try {
+                PreparedStatement st = con.prepareStatement("SELECT FROM mailing_list WHERE email=? AND id_offer=?");
+                st.setString(1, email);
+                st.setLong(2, id);
+
+                ResultSet results = st.executeQuery();
+                if (results.next()) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            } catch (SQLException ex) {
+                log.error(ex.getMessage());
+            } finally {
+                DatabaseConnection.closeConnection(con);
+            }
+        }
+        return false;
     }
 }

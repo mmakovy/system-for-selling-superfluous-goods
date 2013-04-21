@@ -7,10 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -95,7 +95,7 @@ public class updateOfferProcess extends HttpServlet {
                         boolean status = path.mkdirs();
                     }
 
-                    photoUrl = Normalizer.normalize(fileName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+                    photoUrl = UUID.randomUUID().toString().substring(0, 13) + ".jpg";
                     File uploadedFile = new File(path + "/" + photoUrl);
 
 
@@ -239,9 +239,16 @@ public class updateOfferProcess extends HttpServlet {
                     updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
                     updatedOffer.setPurchaseDate(date);
                     updatedOffer.setCategory(Category.valueOf(categoryString));
+
                     if (photoUrl == null || photoUrl.length() == 0) {
                         photoUrl = offer.getPhotoUrl();
+                    } else {
+                        String imageUrl = offer.getPhotoUrl();
+                        File path = new File(System.getenv("OPENSHIFT_DATA_DIR"));
+                        File uploadedFile = new File(path + "/" + imageUrl);
+                        uploadedFile.delete();
                     }
+
                     updatedOffer.setPhotoUrl(photoUrl);
 
                     String messageText = "Offer " + offer.getName() + " was updated" + newline;
@@ -257,15 +264,15 @@ public class updateOfferProcess extends HttpServlet {
                         request.getRequestDispatcher("../error.jsp").forward(request, response);
                     }
 
-                    messageText = messageText + "After update: " + newline + updatedOffer.toString() 
-                            + newline + "You can disable this notifications in My Subscriptions section " 
-                            + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions" ;
+                    messageText = messageText + "After update: " + newline + updatedOffer.toString()
+                            + newline + "You can disable this notifications in My Subscriptions section "
+                            + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions";
                     String messageSubject = "Offer " + offer.getName() + " was updated";
 
                     List<String> recipients;
 
                     try {
-                        recipients = mailingListManager.getEmails(id);
+                        recipients = mailingListManager.getEmails(offer);
                         if (!recipients.isEmpty()) {
                             mailSender.sendMoreEmails(recipients, messageSubject, messageText);
                         }

@@ -15,28 +15,30 @@ import javax.mail.internet.MimeMessage;
  */
 public class MailSender {
 
+    private static final String HOST = "smtp.gmail.com";
+    private static final String FROM = "no.reply.sssg@gmail.com";
+    private static final String PASS = "epson123";
+
     public void sendOneEmail(String to, String subject, String text) throws MessagingException {
 
-        String host = "smtp.gmail.com";
-        String from = "no.reply.sssg@gmail.com";
-        String pass = "epson123";
+
         Properties props = System.getProperties();
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.user", from);
-        props.put("mail.smtp.password", pass);
+        props.put("mail.smtp.host", HOST);
+        props.put("mail.smtp.user", FROM);
+        props.put("mail.smtp.password", PASS);
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
 
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
 
-        message.setFrom(new InternetAddress(from));
+        message.setFrom(new InternetAddress(FROM));
         message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
         message.setSubject(subject);
         message.setText(text);
         Transport transport = session.getTransport("smtp");
-        transport.connect(host, from, pass);
+        transport.connect(HOST, FROM, PASS);
         transport.sendMessage(message, message.getAllRecipients());
         transport.close();
 
@@ -44,25 +46,22 @@ public class MailSender {
 
     public void sendMoreEmails(List<String> recipients, String subject, String text) throws MessagingException {
 
-        String host = "smtp.gmail.com";
-        String from = "no.reply.sssg@gmail.com";
-        String pass = "epson123";
         Properties props = System.getProperties();
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.user", from);
-        props.put("mail.smtp.password", pass);
+        props.put("mail.smtp.host", HOST);
+        props.put("mail.smtp.user", FROM);
+        props.put("mail.smtp.password", PASS);
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
 
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage message = new MimeMessage(session);
 
-        message.setFrom(new InternetAddress(from));
+        message.setFrom(new InternetAddress(FROM));
         message.setSubject(subject);
         message.setText(text);
         Transport transport = session.getTransport("smtp");
-        transport.connect(host, from, pass);
+        transport.connect(HOST, FROM, PASS);
 
         for (String email : recipients) {
             String to = email;

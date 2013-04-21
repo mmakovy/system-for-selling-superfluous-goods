@@ -50,6 +50,9 @@
                                     }
                                 %>
                                 Username*: <input type="text" name="usrname"><br/>
+                                <div class="info">
+                                (only a-z, A-Z, 0-9)
+                                </div>
                                 Password*: <input type="password" name="pwd" alt=":)"><br/>
                                 Password(verification)*: <input type="password" name="pwdVer" alt=":)"><br/> 
                                 Company name*: <input type="text" name="name"><br/>

@@ -93,9 +93,9 @@
 
                                 Purchase Date:<br/>
                                 Day:
-                                <input type='text' name='dob_day' value='${offerData.get("purchaseDay")}'/>
+                                <input type='text' name='dob_day' value='${offerData.get("purchaseDay")}'/><br/>
                                 Month:
-                                <input type='text' name='dob_month' value='${offerData.get("purchaseMonth")}'/>
+                                <input type='text' name='dob_month' value='${offerData.get("purchaseMonth")}'/><br/>
                                 Year:
                                 <input type='text' name='dob_year' value='${offerData.get("purchaseYear")}'/> <br/>
 

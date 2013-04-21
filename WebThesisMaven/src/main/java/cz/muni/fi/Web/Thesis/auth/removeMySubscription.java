@@ -37,28 +37,22 @@ public class removeMySubscription extends HttpServlet {
         Long userId = (Long) session.getAttribute("userID");
         MailingListManager mailingListManager = new MailingListManagerImpl();
         CompanyManager companyManager = new CompanyManagerImpl();
+        OfferManager offerManager = new OfferManagerImpl();
 
         try {
             Long offerId = Long.parseLong(request.getParameter("id"));
 
             Company company = companyManager.getCompanyById(userId);
+            Offer offer = offerManager.getOffer(offerId);
 
-            if (company != null) {
-                String email = company.getEmail();
+            if (company != null && offer != null) {
 
-                if (email != null) {
-                    mailingListManager.removeEmail(email, offerId);
-                    request.setAttribute("message", "Your subscription was removed from database");
-                    request.getRequestDispatcher("../response.jsp").forward(request, response);
-                } else {
-                    log.error("getEmail() returned null");
-                    String message = "Sorry, we are experiencing some problems, please try again<br/>";
-                    request.setAttribute("message", message);
-                    request.getRequestDispatcher("../error.jsp").forward(request, response);
-                }
+                mailingListManager.removeEntry(company, offer);
+                request.setAttribute("message", "Your subscription was removed from database");
+                request.getRequestDispatcher("../response.jsp").forward(request, response);
 
             } else {
-                log.error("getCompanyById() returned null");
+                log.error("Offer or Company wasnt found in database");
                 String message = "Sorry, we are experiencing some problems, please try again<br/>";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);

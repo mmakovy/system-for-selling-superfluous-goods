@@ -103,7 +103,10 @@ function submit_company() {
         return false;   
     } else if (password.value == "") {
         alert('Password field is blank');
-        return false;   
+        return false;  
+    } else if (username.match(/[^\w\-]/)) {
+        alert('User name can use only a-z A-Z 0-9');
+        return false;
     } else {
         return true;
     }
