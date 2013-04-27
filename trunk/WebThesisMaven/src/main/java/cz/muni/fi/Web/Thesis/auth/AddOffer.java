@@ -87,7 +87,7 @@ public class AddOffer extends HttpServlet {
                 if (!item.isFormField() && item.getName().length() != 0) {
 
                     String fileName = item.getName();
-                    File path = new File(System.getenv("OPENSHIFT_DATA_DIR"));
+                    File path = new File(System.getenv("OPENSHIFT_DATA_DIR") + "/images");
                     if (!path.exists()) {
                         boolean status = path.mkdirs();
                     }
@@ -201,7 +201,7 @@ public class AddOffer extends HttpServlet {
             }
 
             Offer offer = new Offer();
-            offer.setCompany_id(userId);
+            offer.setCompanyId(userId);
             offer.setDescription(description);
             offer.setName(name);
             offer.setPrice(price);

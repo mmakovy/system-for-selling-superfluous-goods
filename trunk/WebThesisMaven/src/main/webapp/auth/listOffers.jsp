@@ -68,9 +68,9 @@
 
                                     <td style='border: 1px solid black;'><%out.println(offer.getCategory());%></td>
 
-                                    <% if (offer.getCompany_id().equals(id)) {%>
+                                    <% if (offer.getCompanyId().equals(id)) {%>
                                     <td><a href='/auth/removeOffer?id=<% out.println(offer.getId());%>' onclick="return confirm('Do you really want to remove this offer?')">Remove</a></td>
-                                    <td><a href='/auth/updateOffer?id=<% out.println(offer.getId());%>'>Update</a></td>
+                                    <td><a href='updateOffer?id=<% out.println(offer.getId());%>'>Update</a></td>
                                     <%
                                         }
                                     %>

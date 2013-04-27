@@ -1,8 +1,10 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,12 +38,11 @@ public class ContactFormEmailSender extends HttpServlet {
 
         CompanyManager companyManager = new CompanyManagerImpl();
         OfferManager offerManager = new OfferManagerImpl();
-        MailSender mailSender = new MailSender();
 
         String text = request.getParameter("text");
         String offerId = request.getParameter("offerId");
         Long offerIdLong = Long.parseLong(offerId);
-        
+
         String newline = System.getProperty("line.separator");
 
         HttpSession httpSession = request.getSession();
@@ -62,7 +63,7 @@ public class ContactFormEmailSender extends HttpServlet {
         if (reCaptchaResponse.isValid()) {
             try {
                 offer = offerManager.getOffer(offerIdLong);
-                Long companyId = offer.getCompany_id();
+                Long companyId = offer.getCompanyId();
                 to = companyManager.getCompanyById(companyId).getEmail();
                 companyFrom = companyManager.getCompanyById(userIdLong);
             } catch (Exception ex) {
@@ -73,11 +74,17 @@ public class ContactFormEmailSender extends HttpServlet {
             }
 
             String subject = "Reply to offer " + offer.getName();
-            String messageText =  companyFrom.toString() + newline + " in reply to offer " 
-                                + newline + offer.toString() + newline + " has sent you this message:" + text;
+            String messageText = companyFrom.toString() + newline + " in reply to offer "
+                    + newline + offer.toString() + newline + " has sent you this message:" + text;
 
             try {
-                mailSender.sendOneEmail(to, subject, messageText);
+                BlockingQueue<Map<String, String>> messagesQueue = (BlockingQueue<Map<String, String>>) request.getSession().getServletContext().getAttribute("messagesQueue");
+                Map<String, String> messageMap = new HashMap<String, String>();
+                messageMap.put("to", to);
+                messageMap.put("subject", subject);
+                messageMap.put("text", messageText);
+                messagesQueue.add(messageMap);
+
                 String message = "Your email has been sent<br/>";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../response.jsp").forward(request, response);

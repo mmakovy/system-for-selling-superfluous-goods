@@ -1,5 +1,7 @@
 package cz.muni.fi.thesis;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Matus Makovy
@@ -7,41 +9,25 @@ package cz.muni.fi.thesis;
 public class User {
     
     private String userName;
-    private byte[] hash;
-    private Long id;  
-    private String hashVer;
-    private int active;
+    private byte[] passwordHash;
+    private Long idCompany;  
+    private String verificationString;
+    private int verified;
 
-    public int getActive() {
-        return active;
+    public Long getIdCompany() {
+        return idCompany;
     }
 
-    public void setActive(int active) {
-        this.active = active;
+    public void setIdCompany(Long idCompany) {
+        this.idCompany = idCompany;
     }
 
-    public String getHashVer() {
-        return hashVer;
+    public byte[] getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setHashVer(String hashVer) {
-        this.hashVer = hashVer;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public byte[] getHash() {
-        return hash;
-    }
-
-    public void setHash(byte[] hash) {
-        this.hash = hash;
+    public void setPasswordHash(byte[] passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getUserName() {
@@ -50,6 +36,22 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getVerificationString() {
+        return verificationString;
+    }
+
+    public void setVerificationString(String verificationString) {
+        this.verificationString = verificationString;
+    }
+
+    public int getVerified() {
+        return verified;
+    }
+
+    public void setVerified(int verified) {
+        this.verified = verified;
     }
 
     @Override
@@ -64,13 +66,16 @@ public class User {
         if ((this.userName == null) ? (other.userName != null) : !this.userName.equals(other.userName)) {
             return false;
         }
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+        if (!Arrays.equals(this.passwordHash, other.passwordHash)) {
             return false;
         }
-        if ((this.hashVer == null) ? (other.hashVer != null) : !this.hashVer.equals(other.hashVer)) {
+        if (this.idCompany != other.idCompany && (this.idCompany == null || !this.idCompany.equals(other.idCompany))) {
             return false;
         }
-        if (this.active != other.active) {
+        if ((this.verificationString == null) ? (other.verificationString != null) : !this.verificationString.equals(other.verificationString)) {
+            return false;
+        }
+        if (this.verified != other.verified) {
             return false;
         }
         return true;
@@ -78,15 +83,14 @@ public class User {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 41 * hash + (this.userName != null ? this.userName.hashCode() : 0);
-        hash = 41 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 41 * hash + (this.hashVer != null ? this.hashVer.hashCode() : 0);
-        hash = 41 * hash + this.active;
+        int hash = 5;
+        hash = 31 * hash + (this.userName != null ? this.userName.hashCode() : 0);
+        hash = 31 * hash + Arrays.hashCode(this.passwordHash);
+        hash = 31 * hash + (this.idCompany != null ? this.idCompany.hashCode() : 0);
+        hash = 31 * hash + (this.verificationString != null ? this.verificationString.hashCode() : 0);
+        hash = 31 * hash + this.verified;
         return hash;
     }
-    
-    
-    
+
     
 }

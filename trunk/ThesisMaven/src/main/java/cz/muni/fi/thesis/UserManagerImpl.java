@@ -37,7 +37,7 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT userId,username,hash_pwd,hash_ver,active FROM users WHERE username = ? AND hash_pwd = ?;");
+                PreparedStatement st = con.prepareStatement("SELECT company_id,username,hash_password,verification_code,verified FROM user WHERE username = ? AND hash_password = ?;");
                 st.setString(1, username);
                 st.setBlob(2, blobHash);
 
@@ -45,13 +45,13 @@ public class UserManagerImpl implements UserManager {
                 User user = null;
                 if (usersDB.next()) {
                     user = new User();
-                    user.setId(usersDB.getLong("userId"));
+                    user.setIdCompany(usersDB.getLong("company_id"));
                     user.setUserName(usersDB.getString("username"));
-                    Blob blob = usersDB.getBlob("hash_pwd");
+                    Blob blob = usersDB.getBlob("hash_password");
                     int blobLength = (int) blob.length();
-                    user.setHash(blob.getBytes(1, blobLength));
-                    user.setHashVer(usersDB.getString("hash_ver"));
-                    user.setActive(usersDB.getInt("active"));
+                    user.setPasswordHash(blob.getBytes(1, blobLength));
+                    user.setVerificationString(usersDB.getString("verification_code"));
+                    user.setVerified(usersDB.getInt("verified"));
                     return user;
                 } else {
                     return null;
@@ -78,20 +78,20 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT userId,username,hash_pwd,hash_ver,active FROM users WHERE userId = ?;");
+                PreparedStatement st = con.prepareStatement("SELECT company_id,username,hash_password,verification_code,verified FROM user WHERE company_id = ?;");
                 st.setLong(1, id);
 
                 ResultSet usersDB = st.executeQuery();
                 User user = null;
                 if (usersDB.next()) {
                     user = new User();
-                    user.setId(usersDB.getLong("userId"));
+                    user.setIdCompany(usersDB.getLong("company_id"));
                     user.setUserName(usersDB.getString("username"));
-                    user.setHashVer(usersDB.getString("hash_ver"));
-                    Blob blob = usersDB.getBlob("hash_pwd");
-                    user.setActive(usersDB.getInt("active"));
+                    user.setVerificationString(usersDB.getString("verification_code"));
+                    Blob blob = usersDB.getBlob("hash_password");
+                    user.setVerified(usersDB.getInt("verified"));
                     int blobLength = (int) blob.length();
-                    user.setHash(blob.getBytes(1, blobLength));
+                    user.setPasswordHash(blob.getBytes(1, blobLength));
                     return user;
                 } else {
                     return null;
@@ -119,7 +119,7 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("UPDATE users SET active=1 WHERE hash_ver=?");
+                PreparedStatement st = con.prepareStatement("UPDATE user SET verified=1 WHERE verification_code=?");
                 st.setString(1, code);
 
                 int result = st.executeUpdate();
@@ -143,7 +143,7 @@ public class UserManagerImpl implements UserManager {
             throw new IllegalArgumentException("code");
         }
 
-        if (user.getActive() == 1) {
+        if (user.getVerified() == 1) {
             return true;
         }
 
@@ -161,7 +161,7 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT username FROM users WHERE username=?;");
+                PreparedStatement st = con.prepareStatement("SELECT username FROM user WHERE username=?;");
                 st.setString(1, username);
 
                 ResultSet usersDB = st.executeQuery();
@@ -181,7 +181,8 @@ public class UserManagerImpl implements UserManager {
         }
     }
 
-    public String forgotPassword(String email) throws DatabaseException {
+    public String newPassword(String email) throws DatabaseException {
+        
         if (email == null) {
             throw new IllegalArgumentException("email");
         }
@@ -227,7 +228,7 @@ public class UserManagerImpl implements UserManager {
             throw new DatabaseException("Connection to DB wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("UPDATE users SET hash_pwd=? WHERE userId=?;");
+                PreparedStatement st = con.prepareStatement("UPDATE user SET hash_password=? WHERE company_id=?;");
                 st.setBlob(1, blobHash);
                 st.setLong(2, id);
 
@@ -266,7 +267,7 @@ public class UserManagerImpl implements UserManager {
                 throw new DatabaseException("Connection to database wasnt established");
             } else {
                 Blob passwordHash = hashPassword(newPassword);
-                changePasswordInDB(user.getId(),passwordHash);
+                changePasswordInDB(user.getIdCompany(),passwordHash);
             }
         } else {
             throw new UserException("Wrong OLD password");

@@ -1,16 +1,13 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -50,7 +47,6 @@ public class updateOfferProcess extends HttpServlet {
         OfferManager manager = new OfferManagerImpl();
         Offer offer = null;
         Calendar calendar = Calendar.getInstance();
-        MailSender mailSender = new MailSender();
         MailingListManager mailingListManager = new MailingListManagerImpl();
         String newline = System.getProperty("line.separator");
 
@@ -90,7 +86,7 @@ public class updateOfferProcess extends HttpServlet {
                 if (!item.isFormField() && item.getName().length() != 0) {
 
                     String fileName = item.getName();
-                    File path = new File(System.getenv("OPENSHIFT_DATA_DIR"));
+                    File path = new File(System.getenv("OPENSHIFT_DATA_DIR") + "/images");
                     if (!path.exists()) {
                         boolean status = path.mkdirs();
                     }
@@ -223,7 +219,7 @@ public class updateOfferProcess extends HttpServlet {
                     request.getRequestDispatcher("../error.jsp").forward(request, response);
                 }
 
-                if (!userIdLong.equals(offer.getCompany_id())) {
+                if (!userIdLong.equals(offer.getCompanyId())) {
                     log.error("Access denied");
                     String message = "You don't have permission to do this";
                     request.setAttribute("message", message);
@@ -235,7 +231,7 @@ public class updateOfferProcess extends HttpServlet {
                     updatedOffer.setPrice(price);
                     updatedOffer.setQuantity(quantity);
                     updatedOffer.setId(id);
-                    updatedOffer.setCompany_id(offer.getCompany_id());
+                    updatedOffer.setCompanyId(offer.getCompanyId());
                     updatedOffer.setMinimalBuyQuantity(minimalBuyQuantity);
                     updatedOffer.setPurchaseDate(date);
                     updatedOffer.setCategory(Category.valueOf(categoryString));
@@ -274,7 +270,16 @@ public class updateOfferProcess extends HttpServlet {
                     try {
                         recipients = mailingListManager.getEmails(offer);
                         if (!recipients.isEmpty()) {
-                            mailSender.sendMoreEmails(recipients, messageSubject, messageText);
+                            
+                            BlockingQueue<Map<String, String>> messagesQueue = (BlockingQueue<Map<String, String>>) request.getSession().getServletContext().getAttribute("messagesQueue");
+
+                            for (String email : recipients) {
+                                Map<String, String> messageMap = new HashMap<String, String>();
+                                messageMap.put("to", email);
+                                messageMap.put("subject", messageSubject);
+                                messageMap.put("text", messageText);
+                                messagesQueue.add(messageMap);
+                            }
                         }
                     } catch (Exception ex) {
                         log.error(ex.getMessage());

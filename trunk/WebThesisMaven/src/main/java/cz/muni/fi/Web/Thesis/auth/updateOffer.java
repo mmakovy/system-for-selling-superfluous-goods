@@ -56,7 +56,7 @@ public class updateOffer extends HttpServlet {
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
             } else {
-                if (!userID.equals(offer.getCompany_id())) {
+                if (!userID.equals(offer.getCompanyId())) {
 
                     log.error("Access denied");
                     String message = "You have not permission to do this";

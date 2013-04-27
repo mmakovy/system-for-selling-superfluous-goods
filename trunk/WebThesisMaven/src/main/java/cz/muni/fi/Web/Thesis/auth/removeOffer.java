@@ -1,11 +1,12 @@
 package cz.muni.fi.Web.Thesis.auth;
 
-import cz.muni.fi.Web.Thesis.MailSender;
 import cz.muni.fi.thesis.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,6 @@ public class removeOffer extends HttpServlet {
         OfferManager offerManager = new OfferManagerImpl();
         Long id = Long.parseLong(request.getParameter("id"));
         Offer offer;
-        MailSender mailSender = new MailSender();
         MailingListManager mailingListManager = new MailingListManagerImpl();
         HttpSession session = request.getSession();
         Long userID = (Long) session.getAttribute("userID");
@@ -54,31 +54,40 @@ public class removeOffer extends HttpServlet {
                 String message = "Offer wasnt found in database";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
-            } else if (!userID.equals(offer.getCompany_id())) {
+            } else if (!userID.equals(offer.getCompanyId())) {
                 log.error("Access denied");
                 String message = "You don't have permission to do this";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../error.jsp").forward(request, response);
             } else {
-                
+
                 List<String> emails = mailingListManager.getEmails(offer);
-                
+
                 String imageUrl = offer.getPhotoUrl();
-                File path = new File(System.getenv("OPENSHIFT_DATA_DIR"));
-                File uploadedFile = new File(path + "/" + imageUrl);               
-                
-                offerManager.removeOffer(offer);            
-                
+                File path = new File(System.getenv("OPENSHIFT_DATA_DIR") + "/images");
+                File uploadedFile = new File(path + "/" + imageUrl);
+
+                offerManager.removeOffer(offer);
+
                 uploadedFile.delete();
-                
+
                 if (!emails.isEmpty()) {
-                    String messageText = "Offer " + offer.toString() + "was deleted from system" 
-                            + newline + "You can disable this notifications in My Subscriptions section " 
-                            + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions" ;
-                    mailSender.sendMoreEmails(emails, "Offer" + offer.getName() + " was deleted", messageText);
+                    String messageText = "Offer " + offer.toString() + "was deleted from system"
+                            + newline + "You can disable this notifications in My Subscriptions section "
+                            + newline + "https://sssg-sssg.rhcloud.com/auth/MySubscriptions";
+
+                    BlockingQueue<Map<String, String>> messagesQueue = (BlockingQueue<Map<String, String>>) request.getSession().getServletContext().getAttribute("messagesQueue");
+
+                    for (String email : emails) {
+                        Map<String, String> messageMap = new HashMap<String, String>();
+                        messageMap.put("to", email);
+                        messageMap.put("subject", "Offer " + offer.getName() + " was deleted");
+                        messageMap.put("text", messageText);
+                        messagesQueue.add(messageMap);
+                    }
                 }
-                
-                
+
+
                 String message = "Offer was deleted from database";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("../response.jsp").forward(request, response);
