@@ -27,14 +27,14 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new IllegalArgumentException("offer");
         }
         
-        String email = company.getEmail();
-        Long id = offer.getId();
+        Long companyId = company.getId();
+        Long offerId = offer.getId();
         
-        if (email == null) {
-            throw new IllegalArgumentException("company email");
+        if (companyId == null) {
+            throw new IllegalArgumentException("company id");
         }
 
-        if (id == null) {
+        if (offerId == null) {
             throw new IllegalArgumentException("offer id");
         }
         
@@ -46,12 +46,12 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("INSERT INTO mailing_list(email,id_offer) VALUES (?,?);");
-                st.setString(1, email);
-                st.setLong(2, id);
+                PreparedStatement st = con.prepareStatement("INSERT INTO mailing_list(company_id,offer_id) VALUES (?,?);");
+                st.setLong(1, companyId);
+                st.setLong(2, offerId);
 
                 if (st.executeUpdate() == 0) {
-                    log.error("Error when adding email to mailing list - DB");
+                    log.error("Error when adding entry to mailing list - DB");
                 }
 
             } catch (SQLException ex) {
@@ -74,14 +74,14 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new IllegalArgumentException("offer");
         }
         
-        String email = company.getEmail();
-        Long id = offer.getId();
+        Long companyId = company.getId();
+        Long offerId = offer.getId();
         
-        if (email == null) {
-            throw new IllegalArgumentException("company email");
+        if (companyId == null) {
+            throw new IllegalArgumentException("company id");
         }
 
-        if (id == null) {
+        if (offerId == null) {
             throw new IllegalArgumentException("offer id");
         }
 
@@ -91,12 +91,12 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE email=? AND id_offer=?;");
-                st.setString(1, email);
-                st.setLong(2, id);
+                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE company_id=? AND offer_id=?;");
+                st.setLong(1, companyId);
+                st.setLong(2, offerId);
 
                 if (st.executeUpdate() == 0) {
-                    log.error("Error when deleting email from mailing list - DB");
+                    log.error("Error when deleting entry from mailing list - DB");
                 }
 
             } catch (SQLException ex) {
@@ -116,9 +116,9 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new IllegalArgumentException("offer");
         }
         
-        Long id = offer.getId();
+        Long offerId = offer.getId();
        
-        if (id == null) {
+        if (offerId == null) {
             throw new IllegalArgumentException("offer id");
         }
 
@@ -128,8 +128,8 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT email FROM mailing_list WHERE id_offer=?");
-                st.setLong(1, id);
+                PreparedStatement st = con.prepareStatement("SELECT email FROM mailing_list JOIN company ON mailing_list.company_id=company.id WHERE offer_id=?");
+                st.setLong(1, offerId);
 
                 ResultSet emailsFromDB = st.executeQuery();
                 List<String> emails = new ArrayList<String>();
@@ -156,32 +156,37 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new IllegalArgumentException("company");
         }
       
-        String email = company.getEmail();
+        Long companyId = company.getId();
        
-        if (email == null) {
-            throw new IllegalArgumentException("company email");
+        if (companyId == null) {
+            throw new IllegalArgumentException("company id");
         }
 
-        OfferManager offerManager = new OfferManagerImpl();
-
         Connection con = DatabaseConnection.getConnection();
+        List<Offer> offers = new ArrayList<Offer>();
 
         if (con == null) {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_offer FROM mailing_list WHERE email=?");
-                st.setString(1, email);
+                PreparedStatement st = con.prepareStatement("SELECT offer.company_id,name,description,id,price,quantity,category,purchase_date,minimal_buy_quantity,photo_url FROM mailing_list JOIN offer ON mailing_list.offer_id=offer.id WHERE mailing_list.company_id=?");
+                st.setLong(1,companyId);
 
-                ResultSet idsFromDB = st.executeQuery();
-                List<Offer> offers = new ArrayList<Offer>();
-
-                while (idsFromDB.next()) {
-                    Long id = idsFromDB.getLong("id_offer");
-                    Offer offer = offerManager.getOffer(id);
+                ResultSet offerDB = st.executeQuery();
+                while (offerDB.next()) {
+                    Offer offer = new Offer();
+                    offer.setCompanyId(offerDB.getLong("company_id"));
+                    offer.setName(offerDB.getString("name"));
+                    offer.setDescription(offerDB.getString("description"));
+                    offer.setId(offerDB.getLong("id"));
+                    offer.setPrice(offerDB.getBigDecimal("price"));
+                    offer.setQuantity(offerDB.getInt("quantity"));
+                    offer.setCategory(Category.valueOf(offerDB.getString("category")));
+                    offer.setPurchaseDate(offerDB.getDate("purchase_date"));
+                    offer.setMinimalBuyQuantity(offerDB.getInt("minimal_buy_quantity"));
+                    offer.setPhotoUrl(offerDB.getString("photo_url"));
                     offers.add(offer);
                 }
-
                 return offers;
 
             } catch (SQLException ex) {
@@ -199,10 +204,10 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new IllegalArgumentException("company");
         }
 
-        String email = company.getEmail();
+        Long companyId = company.getId();
         
-        if (email == null) {
-            throw new IllegalArgumentException("company email");
+        if (companyId == null) {
+            throw new IllegalArgumentException("company id");
         }
 
         Connection con = DatabaseConnection.getConnection();
@@ -211,8 +216,8 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE email=?;");
-                st.setString(1, email);
+                PreparedStatement st = con.prepareStatement("DELETE FROM mailing_list WHERE company_id=?;");
+                st.setLong(1, companyId);
 
                 if (st.executeUpdate() == 0) {
                     log.error("Error when deleting entries from mailing list - DB");
@@ -236,14 +241,14 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new IllegalArgumentException("offer");
         }
         
-        String email = company.getEmail();
-        Long id = offer.getId();
+        Long companyId = company.getId();
+        Long offerId = offer.getId();
         
-        if (email == null) {
-            throw new IllegalArgumentException("company email");
+        if (companyId == null) {
+            throw new IllegalArgumentException("company id");
         }
 
-        if (id == null) {
+        if (offerId == null) {
             throw new IllegalArgumentException("offer id");
         }
 
@@ -253,9 +258,9 @@ public class MailingListManagerImpl implements MailingListManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT FROM mailing_list WHERE email=? AND id_offer=?");
-                st.setString(1, email);
-                st.setLong(2, id);
+                PreparedStatement st = con.prepareStatement("SELECT FROM mailing_list WHERE company_id=? AND offer_id=?");
+                st.setLong(1, companyId);
+                st.setLong(2, offerId);
 
                 ResultSet results = st.executeQuery();
                 if (results.next()) {

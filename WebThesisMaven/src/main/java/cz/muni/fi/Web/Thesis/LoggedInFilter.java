@@ -64,7 +64,7 @@ public class LoggedInFilter implements Filter {
         Object userID = session.getAttribute("userID");       
 
         if (userID == null) {
-            httpResponse.sendRedirect("../index.jsp");
+            httpRequest.getRequestDispatcher("../index.jsp").forward(httpRequest, httpResponse);
         } 
         
         Throwable problem = null;

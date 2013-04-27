@@ -28,7 +28,7 @@
                         </div>
                         <div id="log-in-form-middle">
                             <div class="log-in">LOGIN</div>
-                            <form method="post" name='login' action="/Login" onsubmit="return login()">
+                            <form method="post" name='login' action="Login" onsubmit="return login()">
                                 Username: <input type="text" name="userName"/><br/>
                                 Password: <input type="password" name="pwd"/><br/>
                                 <input type="submit" value="Log-in"/>

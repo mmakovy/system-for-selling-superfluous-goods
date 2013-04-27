@@ -3,7 +3,9 @@ package cz.muni.fi.Web.Thesis;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
 import java.io.IOException;
-import javax.mail.MessagingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,6 @@ public class ForgotPassword extends HttpServlet {
 
         response.setContentType("text/html;charset=UTF-8");
         UserManager userManager = new UserManagerImpl();
-        MailSender mailSender = new MailSender();
 
         String email = request.getParameter("email");
         String password = null;
@@ -50,7 +51,7 @@ public class ForgotPassword extends HttpServlet {
 
         if (reCaptchaResponse.isValid()) {
             try {
-                password = userManager.forgotPassword(email);
+                password = userManager.newPassword(email);
             } catch (Exception ex) {
                 log.error(ex.getMessage());
                 String message = ex.getMessage();
@@ -63,14 +64,13 @@ public class ForgotPassword extends HttpServlet {
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
             } else {
-                try {
-                    mailSender.sendOneEmail(email, "New password from SSSG", "Your new password is: " + password);
-                } catch (MessagingException ex) {
-                    log.error(ex.getMessage());
-                    String message = ex.getMessage();
-                    request.setAttribute("message", message);
-                    request.getRequestDispatcher("/error.jsp").forward(request, response);
-                }
+
+                BlockingQueue<Map<String, String>> messagesQueue = (BlockingQueue<Map<String, String>>) request.getSession().getServletContext().getAttribute("messagesQueue");
+                Map<String, String> messageMap = new HashMap<String, String>();
+                messageMap.put("to", email);
+                messageMap.put("subject", "New password from SSSG");
+                messageMap.put("text", "Your new password is: " + password);
+                messagesQueue.add(messageMap);
 
                 String message = "New password has been sent to your e-mail<br/> You can login now <br/>";
                 request.setAttribute("message", message);

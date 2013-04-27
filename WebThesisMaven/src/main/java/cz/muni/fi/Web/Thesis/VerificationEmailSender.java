@@ -2,7 +2,9 @@ package cz.muni.fi.Web.Thesis;
 
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
-import javax.mail.MessagingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +27,7 @@ public class VerificationEmailSender extends HttpServlet {
 
         CompanyManager companyManager = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
-        MailSender mailSender = new MailSender();
-
+        
         String userID = request.getParameter("id");
         Long id = Long.parseLong(userID);
         Company company = null;
@@ -43,11 +44,16 @@ public class VerificationEmailSender extends HttpServlet {
         }
 
         String to = company.getEmail();
-        String text = "Verify your e-mail: https://sssg-sssg.rhcloud.com/VerifyEmail?code=" + user.getHashVer() + "";
-        
+        String text = "Verify your e-mail: https://sssg-sssg.rhcloud.com/VerifyEmail?code=" + user.getVerificationString() + "";
+
         try {
-            mailSender.sendOneEmail(to, "SSSG - E-mail Verification", text);
-        } catch (MessagingException ex) {
+            BlockingQueue<Map<String, String>> messagesQueue = (BlockingQueue<Map<String, String>>)request.getSession().getServletContext().getAttribute("messagesQueue");
+            Map<String, String> messageMap = new HashMap<String, String>();
+            messageMap.put("to", to);
+            messageMap.put("subject", "SSSG - E-mail Verification");
+            messageMap.put("text",text);
+            messagesQueue.add(messageMap);
+        } catch (Exception ex) {
             log.error(ex.getMessage());
             String message = ex.getMessage();
             request.setAttribute("message", message);

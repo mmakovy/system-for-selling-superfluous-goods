@@ -1,7 +1,7 @@
 package cz.muni.fi.thesis;
 
 /**
- * This class represents one customer, one company 
+ * This class represents one customer, one company in the system.
  * 
  * @author Matus Makovy
  */

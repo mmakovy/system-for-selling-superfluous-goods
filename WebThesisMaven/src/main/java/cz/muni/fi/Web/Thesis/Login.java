@@ -52,7 +52,7 @@ public class Login extends HttpServlet {
                 request.getRequestDispatcher("/error.jsp").forward(request, response);
             } else {
                 session = request.getSession(true);
-                session.setAttribute("userID", user.getId());
+                session.setAttribute("userID", user.getIdCompany());
                 response.sendRedirect("auth/index.jsp");
             }
 

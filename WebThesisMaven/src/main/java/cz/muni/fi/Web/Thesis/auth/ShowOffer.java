@@ -54,7 +54,7 @@ public class ShowOffer extends HttpServlet {
             offer = offerManager.getOffer(id);
             
             if (offer != null) {
-                Long id_company = offer.getCompany_id();
+                Long id_company = offer.getCompanyId();
 
                 if (id_company != null) {
                     company = companyManager.getCompanyById(id_company);

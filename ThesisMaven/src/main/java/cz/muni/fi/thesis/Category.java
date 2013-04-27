@@ -1,6 +1,7 @@
 package cz.muni.fi.thesis;
 
 /**
+ * Enum class that represents supported Categories in the system.
  *
  * @author Matus Makovy
  */

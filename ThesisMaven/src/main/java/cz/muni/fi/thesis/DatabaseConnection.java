@@ -24,36 +24,20 @@ public final class DatabaseConnection {
     public static void loadProperties() {
         Properties config = new Properties();
         try {
-            config.load(new FileInputStream("/home/matus/system-for-selling-superfluous-goods/ThesisMaven/config.properties"));
-            url = "";
-            /**
-             * config.getProperty("url");
-             */
-            user = "";
-            /**
-             * config.getProperty("userName");
-             */
-            pass = "";
-            /**
-             * config.getProperty("password");
-             */
+            config.load(new FileInputStream("/var/lib/openshift/516daf70e0b8cd59c4000169/app-root/data/config.properties"));
+            url = config.getProperty("url");
+            user = config.getProperty("userName");
+            pass = config.getProperty("password");
         } catch (Exception ex) {
-            log.error("Loading properties failed");
+            log.error("Loading properties failed " + ex.getMessage());
         }
 
     }
 
-    /**
-     * static {      *
-     * BasicDataSource ds = new BasicDataSource();
-     * ds.setUrl("jdbc:mysql://localhost:3306/thesis?user=root&password=pavot&useUnicode=yes&characterEncoding=UTF-8");
-     * ds.setDriverClassName("com.mysql.jdbc.Driver"); source = ds;
-    }
-     */
     static {
-
+        loadProperties();
         BasicDataSource ds = new BasicDataSource();
-        ds.setUrl("jdbc:mysql://127.11.213.129:3306/sssg?user=adminG3Wv3et&password=XHRF1SFDhDW4&useUnicode=yes&characterEncoding=UTF-8");
+        ds.setUrl("jdbc:" +  url + "?user=" + user + "&password=" + pass + "&useUnicode=yes&characterEncoding=UTF-8");
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         source = ds;
     }

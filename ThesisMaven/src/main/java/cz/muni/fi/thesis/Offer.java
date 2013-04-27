@@ -18,7 +18,7 @@ public class Offer {
     private Category category;
     private int minimalBuyQuantity;
     private Long id;
-    private Long company_id;
+    private Long companyId;
     private String photoUrl;
 
     public String getPhotoUrl() {
@@ -37,12 +37,12 @@ public class Offer {
         this.category = category;
     }
 
-    public Long getCompany_id() {
-        return company_id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany_id(Long company_id) {
-        this.company_id = company_id;
+    public void setCompanyId(Long company_id) {
+        this.companyId = company_id;
     }
 
     public String getDescription() {
@@ -134,7 +134,7 @@ public class Offer {
         if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
             return false;
         }
-        if (this.company_id != other.company_id && (this.company_id == null || !this.company_id.equals(other.company_id))) {
+        if (this.companyId != other.companyId && (this.companyId == null || !this.companyId.equals(other.companyId))) {
             return false;
         }
         return true;
@@ -151,7 +151,7 @@ public class Offer {
         hash = 67 * hash + (this.category != null ? this.category.hashCode() : 0);
         hash = 67 * hash + this.minimalBuyQuantity;
         hash = 67 * hash + (this.id != null ? this.id.hashCode() : 0);
-        hash = 67 * hash + (this.company_id != null ? this.company_id.hashCode() : 0);
+        hash = 67 * hash + (this.companyId != null ? this.companyId.hashCode() : 0);
         return hash;
     }
 

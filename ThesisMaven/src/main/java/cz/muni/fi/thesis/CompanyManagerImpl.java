@@ -59,7 +59,7 @@ public class CompanyManagerImpl implements CompanyManager {
                 }
 
 
-                st = con.prepareStatement("INSERT INTO users(username, userId,hash_pwd,hash_ver) VALUES (?,?,?,?);");
+                st = con.prepareStatement("INSERT INTO user(username, company_id, hash_password, verification_code) VALUES (?,?,?,?);");
 
                 st.setString(1, username);
                 st.setLong(2, returnCompany.getId());
@@ -97,11 +97,11 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number,street,city,country,psc,other FROM company;");
+                PreparedStatement st = con.prepareStatement("SELECT id,name,email,phone_number,street,city,country,psc,other FROM company;");
                 ResultSet companyDB = st.executeQuery();
                 while (companyDB.next()) {
                     Company company = new Company();
-                    company.setId(companyDB.getLong("id_company"));
+                    company.setId(companyDB.getLong("id"));
                     company.setName(companyDB.getString("name"));
                     company.setEmail(companyDB.getString("email"));
                     company.setPhoneNumber(companyDB.getString("phone_number"));
@@ -136,7 +136,7 @@ public class CompanyManagerImpl implements CompanyManager {
 
         try {
 
-            PreparedStatement st1 = con.prepareStatement("DELETE FROM company WHERE id_company=?;");
+            PreparedStatement st1 = con.prepareStatement("DELETE FROM company WHERE id=?;");
             st1.setLong(1, company.getId());
             if (st1.executeUpdate() == 0) {
                 DatabaseConnection.doRollback(con);
@@ -170,7 +170,7 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("UPDATE company SET name=?, email=?, phone_number=?, street=?, city=?, country=?, psc=?, other=? WHERE id_company=?;");
+                PreparedStatement st = con.prepareStatement("UPDATE company SET name=?, email=?, phone_number=?, street=?, city=?, country=?, psc=?, other=? WHERE id=?;");
                 st.setString(1, company.getName());
                 st.setString(2, company.getEmail());
                 st.setString(3, company.getPhoneNumber());
@@ -208,13 +208,13 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number,street,city,country,psc,other FROM company WHERE id_company=?");
+                PreparedStatement st = con.prepareStatement("SELECT id,name,email,phone_number,street,city,country,psc,other FROM company WHERE id=?");
                 st.setLong(1, id);
                 ResultSet companyDB = st.executeQuery();
                 Company company = null;
                 while (companyDB.next()) {
                     company = new Company();
-                    company.setId(companyDB.getLong("id_company"));
+                    company.setId(companyDB.getLong("id"));
                     company.setName(companyDB.getString("name"));
                     company.setEmail(companyDB.getString("email"));
                     company.setPhoneNumber(companyDB.getString("phone_number"));
@@ -280,13 +280,13 @@ public class CompanyManagerImpl implements CompanyManager {
             throw new DatabaseException("Conection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT id_company,name,email,phone_number,street,city,country,psc,other FROM company WHERE email=?");
+                PreparedStatement st = con.prepareStatement("SELECT id,name,email,phone_number,street,city,country,psc,other FROM company WHERE email=?");
                 st.setString(1, email);
                 ResultSet companyDB = st.executeQuery();
                 Company company = null;
                 while (companyDB.next()) {
                     company = new Company();
-                    company.setId(companyDB.getLong("id_company"));
+                    company.setId(companyDB.getLong("id"));
                     company.setName(companyDB.getString("name"));
                     company.setEmail(companyDB.getString("email"));
                     company.setPhoneNumber(companyDB.getString("phone_number"));
