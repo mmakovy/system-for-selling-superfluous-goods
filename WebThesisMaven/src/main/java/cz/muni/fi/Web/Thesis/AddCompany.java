@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.tanesha.recaptcha.ReCaptchaImpl;
+import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -36,77 +38,93 @@ public class AddCompany extends HttpServlet {
         CompanyManager companyMng = new CompanyManagerImpl();
         UserManager userManager = new UserManagerImpl();
 
-        Company company = new Company();
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phone");
-        String usrname = request.getParameter("usrname");
-        String pwd = request.getParameter("pwd");
-        String street = request.getParameter("street");
-        String city = request.getParameter("city");
-        String country = request.getParameter("country");
-        String psc = request.getParameter("psc");
-        String other = request.getParameter("other");
+        String remoteAddr = request.getRemoteAddr();
+        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+        reCaptcha.setPrivateKey("6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr");
 
-        try {
+        String challenge = request.getParameter("recaptcha_challenge_field");
+        String uresponse = request.getParameter("recaptcha_response_field");
+        ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
+        
+        if (reCaptchaResponse.isValid()) {
+            
+            Company company = new Company();
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String phoneNumber = request.getParameter("phone");
+            String usrname = request.getParameter("usrname");
+            String pwd = request.getParameter("pwd");
+            String street = request.getParameter("street");
+            String city = request.getParameter("city");
+            String country = request.getParameter("country");
+            String psc = request.getParameter("psc");
+            String other = request.getParameter("other");
 
-            if (!CharMatcher.ASCII.matchesAllOf(usrname)) {
-                log.info("Username is not ASCII");
-                String message = "Username  - only characters from (a-z, A-z, 0-9). ";
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
-            } else {
-                if (userManager.isUsernameInDatabase(usrname)) {
-                    String message = "Username is already in database";
+            try {
+
+                if (!CharMatcher.ASCII.matchesAllOf(usrname)) {
+                    log.info("Username is not ASCII");
+                    String message = "Username  - only characters from (a-z, A-z, 0-9). ";
                     request.setAttribute("message", message);
                     request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
                 } else {
-                    if (companyMng.isEmailInDatabase(email)) {
-                        String message = "Email is already in database";
+                    if (userManager.isUsernameInDatabase(usrname)) {
+                        String message = "Username is already in database";
                         request.setAttribute("message", message);
                         request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
                     } else {
-
-                        if ((name != null && name.length() != 0) && (email
-                                != null && email.length() != 0) && (phoneNumber != null
-                                && phoneNumber.length() != 0) && (pwd
-                                != null && pwd.length() != 0)) {
-                            company.setName(name);
-                            company.setEmail(email);
-                            company.setPhoneNumber(phoneNumber);
-                            company.setStreet(street);
-                            company.setCountry(country);
-                            company.setCity(city);
-                            company.setOther(other);
-                            company.setPsc(psc);
-
-                            Company added;
-                            added = companyMng.addCompany(company, usrname, pwd);
-                            if (added != null) {
-                                log.info("Company was added");
-                                response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
-                            } else {
-                                log.error("addCompany() returned null");
-                                String message = "Sorry, we are experiencing some problems, please try again";
-                                request.setAttribute("message", message);
-                                request.getRequestDispatcher("/error.jsp").forward(request, response);
-                            }
-                        } else {
-                            log.info("Company wasnt added, because one of required fields was left blank");
-                            String message = "Company wasnt added, because one required of fields was left blank<br/>";
+                        if (companyMng.isEmailInDatabase(email)) {
+                            String message = "Email is already in database";
                             request.setAttribute("message", message);
                             request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
-                        }
-                    }
+                        } else {
 
+                            if ((name != null && name.length() != 0) && (email
+                                    != null && email.length() != 0) && (phoneNumber != null
+                                    && phoneNumber.length() != 0) && (pwd
+                                    != null && pwd.length() != 0)) {
+                                company.setName(name);
+                                company.setEmail(email);
+                                company.setPhoneNumber(phoneNumber);
+                                company.setStreet(street);
+                                company.setCountry(country);
+                                company.setCity(city);
+                                company.setOther(other);
+                                company.setPsc(psc);
+
+                                Company added;
+                                added = companyMng.addCompany(company, usrname, pwd);
+                                if (added != null) {
+                                    log.info("Company was added");
+                                    response.sendRedirect("VerificationEmailSender?id=" + added.getId() + "");
+                                } else {
+                                    log.error("addCompany() returned null");
+                                    String message = "Sorry, we are experiencing some problems, please try again";
+                                    request.setAttribute("message", message);
+                                    request.getRequestDispatcher("/error.jsp").forward(request, response);
+                                }
+                            } else {
+                                log.info("Company wasnt added, because one of required fields was left blank");
+                                String message = "Company wasnt added, because one required of fields was left blank<br/>";
+                                request.setAttribute("message", message);
+                                request.getRequestDispatcher("/addcompany.jsp").forward(request, response);
+                            }
+                        }
+
+                    }
                 }
+
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
+                String message = ex.getMessage();
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("/error.jsp").forward(request, response);
             }
 
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            String message = ex.getMessage();
+        } else {
+            String message = "Your reCaptcha answer wasnt correct";
             request.setAttribute("message", message);
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
         }
     }
 

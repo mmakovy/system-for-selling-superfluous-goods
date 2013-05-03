@@ -7,6 +7,7 @@
 <%@page import="cz.muni.fi.thesis.UserManager"%>
 <%@page import="cz.muni.fi.thesis.UserManagerImpl"%>
 <%@page import="cz.muni.fi.thesis.DatabaseConnection"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -27,7 +28,7 @@
                         </div>
                         <div id="registration-content-middle">
                             <div class="error">
-                                ${message}
+                                ${fn:escapeXml(message)}
                             </div>
                         </div>
                         <div id="registration-content-bottom">

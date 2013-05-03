@@ -10,6 +10,7 @@
 <%@page import="cz.muni.fi.thesis.UserManager"%>
 <%@page import="cz.muni.fi.thesis.UserManagerImpl"%>
 <%@page import="cz.muni.fi.thesis.DatabaseConnection"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -30,48 +31,87 @@
                         </div>
                         <div id="registration-content-middle">
                             <%
+                                Long id = (Long) session.getAttribute("userID");
                                 ReCaptcha c = ReCaptchaFactory.newSecureReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
                                 Map<String, String> offerData = (Map) request.getAttribute("offerData");
                                 if (request.getAttribute("message") != null) {
                             %>
-                            <div class="error">${message}</div>
+                            <div class="error">${fn:escapeXml(message)}</div>
                             <%                                }%>
-                            <h1>${offerData.get("name")}</h1> <br/>
-                            <u>Image:</u>
-                            <img width='500' src='<%out.println("/static/" + offerData.get("photoUrl"));%>'><br/>
+
+                            <h1>${fn:escapeXml(offerData.get("name"))}</h1> <br/>
+
+
+
+                            <% if (id.toString().equals(offerData.get("idCompany"))) {%>
+                            <div class="edit-remove-follow">
+                                <td><a href='removeOffer?id=${offerData.get("id")}' onclick="return confirm('Do you really want to remove this offer?')">Remove</a></td>
+                                <td><a href='updateOffer?id=${offerData.get("id")}'>Update</a></td>
+                            </div>
+                            <%}%>
+                            <div class="follow">
+                                <a href='FollowOffer?id=${fn:escapeXml(offerData.get("id"))}'>Follow this offer</a>
+                            </div>
+
+
+
+                            <%
+                                if (offerData.get("photoUrl") != null) {
+                            %>
+                            <img width='500' src='/static/${fn:escapeXml(offerData.get("photoUrl"))}'><br/>
+                            <%                                }
+                            %>
+
                             <u>Price:</u>
-                            ${offerData.get("price")} &euro;</br>
+                            ${fn:escapeXml(offerData.get("price"))} &euro;</br>
                             <u>Quantity:</u>
-                            ${offerData.get("quantity")}</br>
+                            ${fn:escapeXml(offerData.get("quantity"))}</br>
                             <u>Minimal buy quantity:</u>
-                            ${offerData.get("minimalQuantity")}</br>
+                            ${fn:escapeXml(offerData.get("minimalQuantity"))}</br>
                             <u>Purchase Date:</u>
-                            ${offerData.get("purchaseDate")}</br>
+                            ${fn:escapeXml(offerData.get("purchaseDate"))}</br>
                             <u>Category:</u>
-                            ${offerData.get("category")}</br>
+                            ${fn:escapeXml(offerData.get("category"))}</br>
                             <u>Description:</u>
-                            ${offerData.get("description")}</br></br>
+                            ${fn:escapeXml(offerData.get("description"))}</br></br>
 
                             is offered by COMPANY<br/></br>
                             <u>Name:</u>
-                            ${offerData.get("companyName")}</br>
+                            ${fn:escapeXml(offerData.get("companyName"))}</br>
                             <u>E-mail address:</u>
-                            ${offerData.get("companyEmail")}</br>
+                            ${fn:escapeXml(offerData.get("companyEmail"))}</br>
                             <u>Phone number:</u>
-                            ${offerData.get("companyPhone")}</br></br>
-                            <u>Address:</u> <br/>
-                            ${offerData.get("companyStreet")}  ${offerData.get("companyPsc")}<br/>
-                            ${offerData.get("companyCity")}<br/>
-                            ${offerData.get("companyCountry")}<br/></br>
-                            <a href='FollowOffer?id=${offerData.get("id")}'>Follow this offer</a>
+                            ${fn:escapeXml(offerData.get("companyPhone"))}</br></br>
 
-                            <form method='post' name='send_email_from_offer' action='/auth/ContactFormEmailSender?offerId=${offerData.get("id")}' >
-                                <br/>
-                                <br/>
+                            <% if (!offerData.get("companyStreet").isEmpty()
+                                        || (!offerData.get("companyPsc").isEmpty())
+                                        || (!offerData.get("companyCity").isEmpty()) 
+                                        || (!offerData.get("companyCountry").isEmpty())) {%>
+                            <u>Address:</u> <br/>
+                            <% }%>
+
+                            <% if (!offerData.get("companyStreet").isEmpty()) {%>
+                            ${fn:escapeXml(offerData.get("companyStreet"))} 
+                            <% }%>
+
+                            <% if (!offerData.get("companyPsc").isEmpty()) {%>
+                            ${fn:escapeXml(offerData.get("companyPsc"))} 
+                            <% }%>
+
+                            <% if (!offerData.get("companyCity").isEmpty()) {%>
+                            ${fn:escapeXml(offerData.get("companyCity"))} 
+                            <% }%>
+
+                            <% if (!offerData.get("companyCountry").isEmpty()) {%>
+                            ${fn:escapeXml(offerData.get("companyCountry"))} 
+                            <% }%>
+
+
+                            <form method='post' name='send_email_from_offer' action='/auth/ContactFormEmailSender?offerId=${fn:escapeXml(offerData.get("id"))}' >
                                 <u>Send e-mail:</u><br/>
                                 <br/>
 
-                                Your e-mail address: ${offerData.get("myEmail")}<br/>
+                                Your e-mail address: ${fn:escapeXml(offerData.get("myEmail"))}<br/>
                                 <br/>
                                 Text of message:<br/>
                                 <input type='text' name='text'><br/>

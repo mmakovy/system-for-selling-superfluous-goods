@@ -5,6 +5,9 @@
 
 <%@page import="javax.print.attribute.standard.OutputDeviceAssigned"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
+<%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -28,7 +31,7 @@
                         <div id="registration-content-middle">
                             <% if (request.getAttribute("message")!=null) {
                                 %>
-                                <div class="error">${message}</div>
+                                <div class="error">${fn:escapeXml(message)}</div>
                             <%
                                 }%>
                             <h1>New user registration</h1>
@@ -75,6 +78,10 @@
                                 (for example Skype alias, ICQ number,...)
                                 </div>
                                 * - required fields <br/>
+                                <%
+                                    ReCaptcha c = ReCaptchaFactory.newSecureReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
+                                    out.println(c.createRecaptchaHtml(null, null));
+                                %>
                                 <input type="submit" value="Add Company" name="option"/>
                             </form>
                         </div>
