@@ -6,6 +6,7 @@
 <%@page import="cz.muni.fi.thesis.Offer"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -28,20 +29,19 @@
                             %>
                             <div class="success">${message}</div>
                             <%                                }%>
-                            <table class="offers-table">
-                                <th>Offer</th>
+                            <table>
+                                <th>Offer name</th>
                                 <%
                                     List<Offer> offers = (List) request.getAttribute("offers");
-                                    for (Offer offer : offers) {
                                 %>
+                                <c:forEach items='${offers}' var="offer">
                                 <tr>
-                                    <td style='border: 1px solid black;'><a href='/auth/ShowOffer?id=<%out.println(offer.getId());%>'> <%out.println(offer.getName());%> </a></td>
-                                    <td><a href='/auth/removeMySubscription?id=<% out.println(offer.getId());%>' onclick="return confirm('Do you really want to remove this subscription?')">Remove</a></td>
+                                    <td><a href='ShowOffer?id=<c:out value='${offer.id}'/>'> <c:out value='${offer.name}'/></a></td>
+                                    <td><a href='removeMySubscription?id=<c:out value='${offer.id}'/>' onclick="return confirm('Do you really want to remove this subscription?')">Remove</a></td>
                                 </tr>
-                                <%
-                                    }
-                                %>
+                                </c:forEach>
                             </table>
+                                <br/>
                             <a href='/auth/removeAllMySubscriptions' onclick="return confirm('Do you really want to remove all your subscription?')">Remove all my Subscriptions</a>
                         </div>
                         <div id="registration-content-bottom">

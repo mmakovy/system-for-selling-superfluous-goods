@@ -349,7 +349,7 @@ public class OfferManagerImpl implements OfferManager {
                 ResultSet offerDB = st.executeQuery();
                 while (offerDB.next()) {
                     Offer offer = new Offer();
-                    offer.setCompanyId(offerDB.getLong("id_company"));
+                    offer.setCompanyId(offerDB.getLong("company_id"));
                     offer.setName(offerDB.getString("name"));
                     offer.setDescription(offerDB.getString("description"));
                     offer.setId(offerDB.getLong("id"));

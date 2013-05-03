@@ -250,6 +250,7 @@ form[name='add_company'] input[name='other'] {
 input[name='other'], form[name="send_email_from_offer"] input[name='text'] {
     width: 400px;
     margin-right: 225px !important;
+    height: 50px;
 }
 
 input[type="submit"] {
@@ -277,7 +278,6 @@ input[type="submit"] {
     margin-left: -5px;
     margin-right: -5px;
     vertical-align: top;
-
 }
 
 #submenu-right {
@@ -285,7 +285,6 @@ input[type="submit"] {
     height: 23px;
     width: 10px;
     display: inline-block;
-
 }
 
 .submenu-item {
@@ -293,7 +292,6 @@ input[type="submit"] {
     margin-top: 0;
     vertical-align: top;
     margin-left: 10px;
-
 }
 
 .submenu-item a {
@@ -310,17 +308,14 @@ input[type="submit"] {
 
 .logout a:hover {
     color: red;
-
 }
 
 .offers-table {
-
-
+    width: 100%;
 }
 
 .offers-table a {
     color: #35b2f2;
-
 }
 
 form[name='login'] input[type='text'], form[name='login'] input[type='password'] {
@@ -355,5 +350,62 @@ form[name='login'] input[type='text'], form[name='login'] input[type='password']
     margin-bottom: -20px;
 }
 
+#submenu-middle ul {
+    list-style: none;
+    padding: 0px 0px 0px 1px;
+    margin: 2px 0 0 0;
+    display: inline-table;
+}
+
+#submenu-middle ul li {
+    display: inline-block;
+    float: left;
+}
+
+#submenu-middle ul ul {
+    display: none;
+}
+
+#submenu-middle ul li:hover > ul {
+    display: block;
+}
+
+#submenu-middle ul li ul li{
+    margin-left: 10px;
+    background: white;
+    width: 100px;
+}
+
+#submenu-middle ul li ul {
+    background-color:   white;
+    height: 180px;
+    width: 100px;
+    margin-top: -1px;
+}
+
+#submenu-middle ul li ul a {
+    color:black;
+}
+
+#submenu-middle ul li ul a:hover {
+    color: #35b2f2;
+}
+
+.browse {
+    margin-right:10px;    
+}
+
+.offers-table td {
+    text-align: center;
+    border-bottom:  1px solid black;
+}
 
 
+.offers-table th {
+    text-align: center;
+    border-bottom:  2px solid black;
+}
+
+#recaptcha_widget_div {
+    margin-top: 10px;
+}

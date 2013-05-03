@@ -3,6 +3,7 @@
     Author     : Matus Makovy
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.List"%>
 <%@page import="cz.muni.fi.thesis.Offer"%>
 <%@page import="cz.muni.fi.thesis.User"%>
@@ -33,51 +34,53 @@
                                 <th> Name </th>
                                 <th> Price </th>
                                 <th> Quantity </th>
-                                <th> Minimal Buy Quantity </th>
+                                <th> MBQ* </th>
                                 <th> Purchase Date </th>
                                 <th> Category </th>
                                 <%
-                                    Long id = (Long) session.getAttribute("userID");
-                                    List<Offer> offers = (List) request.getAttribute("offers");
-                                    for (Offer offer : offers) {    
+                                    List<Offer> offers = (List) request.getAttribute("offers");  
                                 %>
+                                <c:forEach items='${offers}' var="offer">
                                 <tr>
 
-                                    <%if (offer.getPhotoUrl() == null || offer.getPhotoUrl().length() == 0) {%>
-                                    <td style='border: 1px solid black;'>no-image</td>
-                                    <%} else {%>
-                                    <td style='border: 1px solid black;'><img width='100' src='<%out.println("/static/" + offer.getPhotoUrl());%>'></td>
-                                        <%}%>
+                                    <c:if test='${empty offer.photoUrl}'>
+                                    <td>no-image</td>
+                                    </c:if>
+                                    
+                                    <c:if test='${not empty offer.photoUrl}'>
+                                    <td><img width='100' src='/static/<c:out value='${offer.photoUrl}'/>'/></td>
+                                    </c:if>
 
-                                    <td style='border: 1px solid black;'><a href='/auth/ShowOffer?id=<%out.println(offer.getId());%>'> <%out.println(offer.getName());%> </a></td>
-                                    <td style='border: 1px solid black;'>  <% out.println(String.format("%.2f", offer.getPrice()).replace(",", "."));%> &euro; </td>
-                                    <td style='border: 1px solid black;'> <% out.println(offer.getQuantity());%> </td>
+                                    <td><a href='ShowOffer?id=<c:out value='${offer.id}'/>'> <c:out value='${offer.name}'/> </a></td>
+                                    <td>  <c:out value='${offer.price}'/> &euro; </td>
+                                    <td> <c:out value='${offer.quantity}'/> </td>
+                                    
+                                    <c:if test='${offer.minimalBuyQuantity == 0}'>
+                                    <td> Not specified</td>
+                                    </c:if>
+                                    
+                                    <c:if test='${offer.minimalBuyQuantity != 0}'>
+                                    <td><c:out value='${offer.minimalBuyQuantity}'/></td>
+                                    </c:if>
 
-                                    <%if (offer.getMinimalBuyQuantity() == 0) {%>
-                                    <td style='border: 1px solid black;'> Not specified</td>
-                                    <%} else {%>
-                                    <td style='border: 1px solid black;'><%out.println(offer.getMinimalBuyQuantity());%></td>
-                                    <% }%>
+                                    
+                                    <c:if test='${empty offer.purchaseDate}'>
+                                    <td> Not specified</td>
+                                    </c:if>
+                                    
+                                    <c:if test='${not empty offer.purchaseDate}'>
+                                    <td><c:out value='${offer.purchaseDate}'/></td>
+                                    </c:if>
+                                    
 
-
-                                    <%if (offer.getPurchaseDate() == null) {%>
-                                    <td style='border: 1px solid black;'> Not specified</td>
-                                    <%} else {%>
-                                    <td style='border: 1px solid black;'><% out.println(offer.getPurchaseDate());%></td>
-                                    <%}%>
-
-                                    <td style='border: 1px solid black;'><%out.println(offer.getCategory());%></td>
-
-                                    <% if (offer.getCompanyId().equals(id)) {%>
-                                    <td><a href='/auth/removeOffer?id=<% out.println(offer.getId());%>' onclick="return confirm('Do you really want to remove this offer?')">Remove</a></td>
-                                    <td><a href='updateOffer?id=<% out.println(offer.getId());%>'>Update</a></td>
-                                    <%
-                                        }
-                                    %>
+                                    <td><a href="ListOffersFromCategory?category=<c:out value='${offer.category}'/>"><c:out value='${offer.category}'/></a></td>
+                                 
 
                                 </tr>
-                                <% }%>
+                                </c:forEach>
+                                
                             </table>
+                                *-Minimal Buy Quantity
                         </div>
                         <div id="registration-content-bottom">
                         </div>

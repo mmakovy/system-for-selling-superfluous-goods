@@ -7,6 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="net.tanesha.recaptcha.ReCaptcha" %>
 <%@ page import="net.tanesha.recaptcha.ReCaptchaFactory" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -43,7 +44,7 @@
                         <div id="index-content-middle">
                             <% if (request.getAttribute("message") != null) {
                                 %>
-                                <div class="error">${message}</div>
+                                <div class="error">${fn:escapeXml(message)}</div>
                             <%
                                 }%>
 

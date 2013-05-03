@@ -5,6 +5,7 @@
 
 <%@page import="java.util.UUID"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -44,7 +45,7 @@
                         <div id="index-content-middle">
                             <% if (request.getAttribute("message") != null) {
                                 %>
-                                <div class="error">${message}</div>
+                                <div class="error">${fn:escapeXml(message)}</div>
                             <%
                                 }%>
                             <h1> What is SSSG ? </h1>

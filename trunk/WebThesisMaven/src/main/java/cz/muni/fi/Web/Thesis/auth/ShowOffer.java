@@ -76,6 +76,7 @@ public class ShowOffer extends HttpServlet {
                         offerData.put("category", offer.getCategory().toString());
                         offerData.put("description", offer.getDescription());
                         offerData.put("id", offer.getId().toString());
+                        offerData.put("idCompany", offer.getCompanyId().toString());
 
                         offerData.put("companyName", company.getName());
                         offerData.put("companyEmail", company.getEmail());

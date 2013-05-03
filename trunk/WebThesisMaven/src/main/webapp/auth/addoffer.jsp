@@ -7,6 +7,7 @@
 <%@page import="cz.muni.fi.thesis.UserManager"%>
 <%@page import="cz.muni.fi.thesis.UserManagerImpl"%>
 <%@page import="cz.muni.fi.thesis.DatabaseConnection"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -30,11 +31,11 @@
                         <div id="registration-content-middle">
                             <% if (request.getAttribute("message")!=null) {
                                 %>
-                                <div class="error">${message}</div>
+                                <div class="error">${fn:escapeXml(message)}</div>
                             <%
                                 }%>
                             <h1>Add offer </h1>
-                            <form ENCTYPE="multipart/form-data" name='add_offer' method='post' action='/auth/AddOffer'  onsubmit='return submit_offer()'>  
+                            <form ENCTYPE="multipart/form-data" name='add_offer' method='post' action='AddOffer'  onsubmit='return submit_offer()'>  
                                 Name*:  
                                 <input type='text' name='name'><br/>  
                                 Price*: in &euro; 

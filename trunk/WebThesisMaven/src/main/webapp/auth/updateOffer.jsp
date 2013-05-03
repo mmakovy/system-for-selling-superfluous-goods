@@ -10,6 +10,7 @@
 <%@page import="cz.muni.fi.thesis.UserManager"%>
 <%@page import="cz.muni.fi.thesis.UserManagerImpl"%>
 <%@page import="cz.muni.fi.thesis.DatabaseConnection"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -36,17 +37,17 @@
                                 Map<String, String> offerData = (Map) request.getAttribute("offerData");
                                 if (request.getAttribute("message") != null) {
                             %>
-                            <div class="error">${message}</div>
+                            <div class="error">${fn:escapeXml(message)}</div>
                             <%                                }%>
-                            <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='updateOfferProcess?id=${offerData.get("id")}'>
+                            <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='updateOfferProcess?id=${fn:escapeXml(offerData.get("id"))}'>
                                 Name*:
-                                <input type='text' name='name'  value='${offerData.get("name")}'><br/>
+                                <input type='text' name='name'  value='${fn:escapeXml(offerData.get("name"))}'><br/>
                                 Price*: in &euro;
-                                <input type='text' name='price'  value='${offerData.get("price")}'><br/>
+                                <input type='text' name='price'  value='${fn:escapeXml(offerData.get("price"))}'><br/>
                                 Quantity*:
-                                <input type='text' name='quantity' value='${offerData.get("quantity")}'><br/>
+                                <input type='text' name='quantity' value='${fn:escapeXml(offerData.get("quantity"))}'><br/>
                                 Minimal Buy Quantity:
-                                <input type='text' name='minimal_buy' value='${offerData.get("minimalQuantity")}'><br/>
+                                <input type='text' name='minimal_buy' value='${fn:escapeXml(offerData.get("minimalQuantity"))}'><br/>
                                 Category:
                                 <select name='category'>
                                     <% if (offerData.get("category").equals("BUILDING")) {%>
@@ -93,17 +94,17 @@
 
                                 Purchase Date:<br/>
                                 Day:
-                                <input type='text' name='dob_day' value='${offerData.get("purchaseDay")}'/><br/>
+                                <input type='text' name='dob_day' value='${fn:escapeXml(offerData.get("purchaseDay"))}'/><br/>
                                 Month:
-                                <input type='text' name='dob_month' value='${offerData.get("purchaseMonth")}'/><br/>
+                                <input type='text' name='dob_month' value='${fn:escapeXml(offerData.get("purchaseMonth"))}'/><br/>
                                 Year:
-                                <input type='text' name='dob_year' value='${offerData.get("purchaseYear")}'/> <br/>
+                                <input type='text' name='dob_year' value='${fn:escapeXml(offerData.get("purchaseYear"))}'/> <br/>
 
                                 Description:
-                                <input type='text' name='description' value='${offerData.get("description")}'><br/>
+                                <input type='text' name='description' value='${fn:escapeXml(offerData.get("description"))}'><br/>
 
                                 Image:<br/>
-                                <img width='300' src='/uploads/${offerData.get("photoUrl")}'><br/>
+                                <img width='300' src='/uploads/${fn:escapeXml(offerData.get("photoUrl"))}'><br/>
                                 Update image:<br/>
                                 <input type='file' name='image'><br/>
 
