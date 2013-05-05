@@ -42,17 +42,11 @@ public class FollowOffer extends HttpServlet {
             Offer offer = offerManager.getOffer(idOffer);
 
             if (company != null && offer != null) {
-                    
-                    if (mailingListManager.isFollowingThisOffer(company, offer)) {
-                        String message = "You are already following this offer";
-                        request.setAttribute("message", message);
-                        request.getRequestDispatcher("../error.jsp").forward(request, response);
-                    } else {
-                        mailingListManager.addEntry(company, offer);
-                        String message = "Your email was added to mailing list, you will be notified on change of offer";
-                        request.setAttribute("message", message);
-                        request.getRequestDispatcher("../response.jsp").forward(request, response);
-                    }                               
+
+                mailingListManager.addEntry(company, offer);
+                String message = "Your email was added to mailing list, you will be notified on change of offer";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("../response.jsp").forward(request, response);
 
             } else {
                 log.error("company or offer isnt in database");

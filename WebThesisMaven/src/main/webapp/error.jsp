@@ -23,15 +23,15 @@
             <div id ="page">
                 <jsp:include page="menu.jsp"/> 
                 <div id="content">
-                    <div id="registration-content">
-                        <div id="registration-content-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <div class="error">
                                 ${fn:escapeXml(message)}
                             </div>
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 

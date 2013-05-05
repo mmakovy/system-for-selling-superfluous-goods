@@ -1,7 +1,8 @@
 package cz.muni.fi.thesis;
 
 /**
- *
+ * The Exception for errors occuring in connection management.
+ * 
  * @author Matus Makovy
  */
 public class DatabaseException extends Exception{

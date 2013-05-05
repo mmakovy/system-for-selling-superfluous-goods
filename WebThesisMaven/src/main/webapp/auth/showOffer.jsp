@@ -44,9 +44,11 @@
 
 
                             <% if (id.toString().equals(offerData.get("idCompany"))) {%>
-                            <div class="edit-remove-follow">
-                                <td><a href='removeOffer?id=${offerData.get("id")}' onclick="return confirm('Do you really want to remove this offer?')">Remove</a></td>
-                                <td><a href='updateOffer?id=${offerData.get("id")}'>Update</a></td>
+                            <div class="update">
+                                <a href='updateOffer?id=${offerData.get("id")}'>Update</a>
+                            </div>
+                            <div class="remove">
+                                <a href='removeOffer?id=${offerData.get("id")}' onclick="return confirm('Do you really want to remove this offer?')">Remove</a>
                             </div>
                             <%}%>
                             <div class="follow">

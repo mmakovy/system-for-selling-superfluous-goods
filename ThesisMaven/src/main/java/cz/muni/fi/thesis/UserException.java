@@ -1,7 +1,8 @@
 package cz.muni.fi.thesis;
 
 /**
- *
+ * The Exception for errors occuring in user management.
+ * 
  * @author Matus Makovy
  */
 public class UserException extends Exception {

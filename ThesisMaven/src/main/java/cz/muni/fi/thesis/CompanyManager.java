@@ -3,7 +3,7 @@ package cz.muni.fi.thesis;
 import java.util.List;
 
 /**
- * Interface for manipulating with objects of class Company
+ * Interface for manipulation with objects of class Company
  * 
  * @author Matus Makovy
  */
@@ -12,9 +12,11 @@ public interface CompanyManager {
     /**
      * Inserts new company to database
      * 
-     * @param company 
-     * @return Company added to database or null if process wasnt succesful.
-     * @throws DatabaseException when connection is not established
+     * @param company
+     * @param username
+     * @param password
+     * @return Company added to database or null if process wasn't succesful.
+     * @throws DatabaseException when connection wasn't established
      */
     Company addCompany(Company company, String username, String password) throws DatabaseException;
     
@@ -22,17 +24,17 @@ public interface CompanyManager {
      * Removes comapany from database
      * 
      * @param company
-     * @throws CompanyException if company wasnt removed
-     * @throws DatabaseException if connection wasnt established
+     * @throws CompanyException if company wasn't removed.
+     * @throws DatabaseException if connection wasn't established.
      */
-    void removeCompany(Company company) throws CompanyException, DatabaseException, OfferException;
+    void removeCompany(Company company) throws CompanyException, DatabaseException;
     
     /**
      * Updates company in database
      * 
      * @param company
      * @throws CompanyException if company wasnt updated
-     * @throws DatabaseException if connection wasnt established
+     * @throws DatabaseException if connection wasn't established
      */
     void updateCompany(Company company) throws CompanyException, DatabaseException;
     
@@ -40,7 +42,7 @@ public interface CompanyManager {
      *  Lists all companies from database
      * 
      * @return List of companies from database
-     * @throws DatabaseException if connection wasnt established
+     * @throws DatabaseException if connection wasn't established
      */
     List<Company> getAllCompanies() throws DatabaseException;
     
@@ -49,12 +51,24 @@ public interface CompanyManager {
      * 
      * @param id
      * @return company with specific ID
-     * @throws DatabaseException if connection wasnt established
+     * @throws DatabaseException if connection wasn't established
      */
     Company getCompanyById(Long id) throws DatabaseException;
     
+    /**
+     * 
+     * @param email
+     * @return true when specified e-mail address is in database, false otherwise
+     * @throws DatabaseException if connection wasn't established
+     */  
     boolean isEmailInDatabase(String email) throws DatabaseException;
     
+    /**
+     * 
+     * @param email
+     * @return company with specified e-mail address
+     * @throws DatabaseException when connection wasn't established
+     */
     Company getCompanyByEmail(String email) throws DatabaseException;
      
 }
