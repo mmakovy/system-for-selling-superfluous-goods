@@ -7,7 +7,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for manipulating with objects of class Offer
+ * Class implementing OfferManager
  *
  * @author Matus Makovy
  */
@@ -48,7 +48,7 @@ public class OfferManagerImpl implements OfferManager {
                 st.setString(9, offer.getPhotoUrl());
 
                 if (st.executeUpdate() == 0) {
-                    log.error("Error when adding offer to database");
+                    log.error("Error when adding offer to database. Execute update returned 0");
                     return null;
                 }
 
@@ -88,15 +88,11 @@ public class OfferManagerImpl implements OfferManager {
                 st.setLong(1, offer.getId());
 
                 if (st.executeUpdate() == 0) {
-                    DatabaseConnection.doRollback(con);
-                    log.error("Offer wasnt deleted from database - offers");
-                    throw new OfferException("Offer wasnt deleted from database - offers");
+                    log.error("Offer wasnt deleted from database. Execute update returned 0 ");
+                    throw new OfferException("Offer wasnt deleted from database. Execute update returned 0");
                 }
-                
-                con.commit();
 
             } catch (Exception ex) {
-                DatabaseConnection.doRollback(con);
                 log.error(ex.getMessage());
                 throw new OfferException(ex.getMessage());
             } finally {
@@ -135,11 +131,12 @@ public class OfferManagerImpl implements OfferManager {
 
 
                 if (st.executeUpdate() == 0) {
-                    log.error("Update of offer wasnt completed");
-                    throw new OfferException("Update wasnt completed");
+                    log.error("Update of offer wasnt completed. Execute update returned 0");
+                    throw new OfferException("Update wasnt completed. Execute update returned 0");
                 }
             } catch (SQLException ex) {
                 log.error(ex.getMessage());
+                throw new OfferException(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }
@@ -216,7 +213,7 @@ public class OfferManagerImpl implements OfferManager {
                 }
                 return offers;
             } catch (SQLException ex) {
-                System.err.println(ex.getMessage());
+                log.error(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }
@@ -255,7 +252,7 @@ public class OfferManagerImpl implements OfferManager {
                 }
                 return offer;
             } catch (SQLException ex) {
-                System.err.println(ex.getMessage());
+                log.error(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }
@@ -363,7 +360,7 @@ public class OfferManagerImpl implements OfferManager {
                 }
                 return offers;
             } catch (SQLException ex) {
-                System.err.println(ex.getMessage());
+                log.error(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }

@@ -5,20 +5,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Implementation of interface UserManager
+ * 
  * @author Matus Makovy
  */
 public class UserManagerImpl implements UserManager {
 
     final static Logger log = LoggerFactory.getLogger(UserManagerImpl.class);
 
+    @Override
     public User findUser(String username, String password) throws DatabaseException {
 
         if (username == null) {
@@ -42,7 +42,7 @@ public class UserManagerImpl implements UserManager {
                 st.setBlob(2, blobHash);
 
                 ResultSet usersDB = st.executeQuery();
-                User user = null;
+                User user;
                 if (usersDB.next()) {
                     user = new User();
                     user.setIdCompany(usersDB.getLong("company_id"));
@@ -66,6 +66,7 @@ public class UserManagerImpl implements UserManager {
         return null;
     }
 
+    @Override
     public User getUser(Long id) throws DatabaseException {
 
         if (id == null) {
@@ -82,7 +83,7 @@ public class UserManagerImpl implements UserManager {
                 st.setLong(1, id);
 
                 ResultSet usersDB = st.executeQuery();
-                User user = null;
+                User user;
                 if (usersDB.next()) {
                     user = new User();
                     user.setIdCompany(usersDB.getLong("company_id"));
@@ -124,12 +125,14 @@ public class UserManagerImpl implements UserManager {
 
                 int result = st.executeUpdate();
                 if (result == 0) {
+                    log.error("E-mail wasnt verified, code wasnt found in DB");
                     throw new UserException("E-mail wasnt verified, code wasnt found in DB");
                 }
 
 
             } catch (SQLException ex) {
                 log.error(ex.getMessage());
+                throw new UserException(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }
@@ -137,7 +140,7 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public boolean isVerified(User user) throws DatabaseException, UserException {
+    public boolean isVerified(User user) throws DatabaseException {
 
         if (user == null) {
             throw new IllegalArgumentException("code");
@@ -150,6 +153,7 @@ public class UserManagerImpl implements UserManager {
         return false;
     }
 
+    @Override
     public boolean isUsernameInDatabase(String username) throws DatabaseException {
         if (username == null) {
             throw new IllegalArgumentException("username");
@@ -181,8 +185,9 @@ public class UserManagerImpl implements UserManager {
         }
     }
 
-    public String newPassword(String email) throws DatabaseException {
-        
+    @Override
+    public String newPassword(String email) throws DatabaseException, UserException {
+
         if (email == null) {
             throw new IllegalArgumentException("email");
         }
@@ -201,12 +206,11 @@ public class UserManagerImpl implements UserManager {
 
             Blob blobHash = hashPassword(password);
 
-            try {
-                changePasswordInDB(id, blobHash);
-            } catch (UserException ex) {
-                return null;
+            if (blobHash == null) {
+                throw new UserException("Problem with hashing. hashPassword returned null");
+            } else {
+                changePasswordInDB(id, blobHash);               
             }
-
             return password;
         }
 
@@ -235,10 +239,11 @@ public class UserManagerImpl implements UserManager {
                 int result = st.executeUpdate();
 
                 if (result == 0) {
-                    throw new UserException("Password wasnt updated");
+                    throw new UserException("Password wasnt updated. Execute Update returened 0.");
                 }
             } catch (SQLException ex) {
                 log.error(ex.getMessage());
+                throw new UserException(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }
@@ -246,7 +251,7 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void changePassword(User user, String oldPassword, String newPassword) throws DatabaseException,UserException {
+    public void changePassword(User user, String oldPassword, String newPassword) throws DatabaseException, UserException {
 
         if (user == null) {
             throw new IllegalArgumentException("user");
@@ -258,49 +263,61 @@ public class UserManagerImpl implements UserManager {
 
         if (newPassword == null) {
             throw new IllegalArgumentException("newPassword");
-        }      
-        
+        }
+
         if (user.equals(findUser(user.getUserName(), oldPassword))) {
-            
+
             Connection con = DatabaseConnection.getConnection();
             if (con == null) {
                 throw new DatabaseException("Connection to database wasnt established");
             } else {
                 Blob passwordHash = hashPassword(newPassword);
-                changePasswordInDB(user.getIdCompany(),passwordHash);
+
+                if (passwordHash == null) {
+                    throw new UserException("Problem with hashing. hashPassword returned null");
+                } else {
+                    changePasswordInDB(user.getIdCompany(), passwordHash);
+                }
+
             }
         } else {
+            log.error("Wrong OLD password");
             throw new UserException("Wrong OLD password");
         }
 
     }
-    
+
     @Override
     public Blob hashPassword(String password) {
-        
-        MessageDigest md = null;
-            try {
-                md = MessageDigest.getInstance("SHA-256");
-            } catch (NoSuchAlgorithmException ex) {
-            }
-            try {
-                md.update(password.getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-                java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            byte[] digest = md.digest();
 
-            Blob blobHash = null;
+        MessageDigest md;
 
-            try {
-                blobHash = new SerialBlob(digest);
-            } catch (SerialException ex) {
-                java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                java.util.logging.Logger.getLogger(CompanyManagerImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            return blobHash;
-        
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        try {
+            md.update(password.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        byte[] digest = md.digest();
+
+        Blob blobHash;
+
+        try {
+            blobHash = new SerialBlob(digest);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return blobHash;
+
     }
 }

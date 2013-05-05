@@ -3,7 +3,8 @@ package cz.muni.fi.thesis;
 import java.util.Arrays;
 
 /**
- *
+ * Object representing one user in the system, for the purposes of authentication.
+ * 
  * @author Matus Makovy
  */
 public class User {

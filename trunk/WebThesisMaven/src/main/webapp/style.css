@@ -121,46 +121,19 @@ input {
     margin-left: -1px;
 }
 
-#index-content {
-    width: 580px;
-    min-height: 500px;
-    float: right;
-}
-
-#index-content-top {
-    width: 580px;
-    height: 10px;
-    background-image:  url("images/content-top.png");
-}
-
-#index-content-middle {
-    width: 540px;
-    min-height: 400px;
-    background-color: white;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-#index-content-bottom {
-    width: 580px;
-    height: 10px;
-    background-image:  url("images/content-bottom.png");
-}
-
-
-#registration-content {
+#page-content {
     width: 100%;
     min-height: 500px;
     float: right;
 }
 
-#registration-content-top {
+#page-content-top {
     width: 801px;
     height: 10px;
-    background-image:  url("images/registration-content-top.png");
+    background-image:  url("images/page-content-top.png");
 }
 
-#registration-content-middle {
+#page-content-middle {
     width: 761px;
     min-height: 400px;
     background-color: white;
@@ -168,10 +141,10 @@ input {
     padding-right: 20px;
 }
 
-#registration-content-bottom {
+#page-content-bottom {
     width: 801px;
     height: 10px;
-    background-image:  url("images/registration-content-bottom.png");
+    background-image:  url("images/page-content-bottom.png");
 }
 
 h1 {
@@ -408,4 +381,9 @@ form[name='login'] input[type='text'], form[name='login'] input[type='password']
 
 #recaptcha_widget_div {
     margin-top: 10px;
+}
+
+h1 {
+    margin-bottom: 0;
+    padding-bottom: 14px;    
 }

@@ -1,7 +1,8 @@
 package cz.muni.fi.thesis;
 
 /**
- *
+ * The Exception for errors occuring in mailing list management.
+ * 
  * @author Matus Makovy
  */
 public class MailingListException extends Exception {

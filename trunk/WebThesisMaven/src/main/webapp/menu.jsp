@@ -27,7 +27,10 @@
 
 
             <div class="menu-item">
-                <a href="addcompany.jsp">SIGN UP </a>
+                <a href="https://sssg-sssg.rhcloud.com/addcompany.jsp">SIGN UP </a>
+            </div>
+            <div class="menu-item">
+                <a href="https://sssg-sssg.rhcloud.com/login.jsp">LOG IN</a>
             </div>
         </div>
         <div id="menu-right">

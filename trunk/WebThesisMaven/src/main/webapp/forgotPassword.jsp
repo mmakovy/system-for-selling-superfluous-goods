@@ -22,26 +22,10 @@
             <div id ="page">
                 <jsp:include page="menu.jsp"/> 
                 <div id="content">
-                    <div id="log-in-form">
-                        <div id="log-in-form-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="log-in-form-middle">
-                            <div class="log-in">LOGIN</div>
-                            <form method="post" name='login' action="/Login" ><!--onsubmit="return submit_company()">-->
-                                Username: <input type="text" name="userName"/><br/>
-                                Password: <input type="password" name="pwd"/><br/>
-                                <input type="submit" value="Log-in"/>
-                            </form>  
-                            <a href="forgotPassword.jsp">Forgot your password?</a><br/>
-
-                        </div>
-                        <div id="log-in-form-bottom">
-                        </div>
-                    </div>
-                    <div id="index-content">
-                        <div id="index-content-top">
-                        </div>
-                        <div id="index-content-middle">
+                        <div id="page-content-middle">
                             <% if (request.getAttribute("message") != null) {
                                 %>
                                 <div class="error">${fn:escapeXml(message)}</div>
@@ -64,7 +48,7 @@
                                 <input type="submit" value="Send new password"/>
                             </form>
                         </div>
-                        <div id="index-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 

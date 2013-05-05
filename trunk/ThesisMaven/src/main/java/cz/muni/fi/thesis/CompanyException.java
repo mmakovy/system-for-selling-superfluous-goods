@@ -1,7 +1,7 @@
 package cz.muni.fi.thesis;
 
 /**
- *  The exception for manipulations with objects of class Company
+ * The Exception for errors occuring in company management.
  * 
  * @author Matus Makovy
  */

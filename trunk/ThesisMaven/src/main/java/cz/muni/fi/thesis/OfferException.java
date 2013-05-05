@@ -1,7 +1,8 @@
 package cz.muni.fi.thesis;
 
 /**
- *
+ * Exception for errors occuring in offer management
+ * 
  * @author Matus Makovy
  */
 public class OfferException extends Exception {

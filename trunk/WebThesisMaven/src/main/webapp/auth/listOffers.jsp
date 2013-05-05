@@ -25,10 +25,10 @@
             <div id ="page">
                 <jsp:include page="../menu.jsp"/> 
                 <div id="content">
-                    <div id="registration-content">
-                        <div id="registration-content-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <table class="offers-table">
                                 <th> Image </th>
                                 <th> Name </th>
@@ -82,7 +82,7 @@
                             </table>
                                 *-Minimal Buy Quantity
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
                 </div>

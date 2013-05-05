@@ -25,10 +25,10 @@
             <div id ="page">
                 <jsp:include page="../menu.jsp"/> 
                 <div id="content">
-                    <div id="registration-content">
-                        <div id="registration-content-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <% if (request.getAttribute("message")!=null) {
                                 %>
                                 <div class="error">${fn:escapeXml(message)}</div>
@@ -77,7 +77,7 @@
                                 <input type='submit' value='Add offer'><br/>  
                             </form>  
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 

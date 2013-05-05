@@ -28,10 +28,10 @@
             <div id ="page">
                 <jsp:include page="../menu.jsp"/> 
                 <div id="content">
-                    <div id="registration-content">
-                        <div id="registration-content-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <%
                                 ReCaptcha c = ReCaptchaFactory.newReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
                                 Map<String, String> offerData = (Map) request.getAttribute("offerData");
@@ -112,7 +112,7 @@
                             </form>
 
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 

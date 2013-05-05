@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for manipulationg with objects of class Company
+ * Class implementing CompanyManager
  *
  * @author Matus Makovy
  */
@@ -119,12 +119,11 @@ public class CompanyManagerImpl implements CompanyManager {
                 DatabaseConnection.closeConnection(con);
             }
         }
-
         return null;
     }
 
     @Override
-    public void removeCompany(Company company) throws DatabaseException, CompanyException, OfferException {
+    public void removeCompany(Company company) throws DatabaseException, CompanyException{
         if (company == null) {
             throw new IllegalArgumentException("company");
         }
@@ -140,11 +139,10 @@ public class CompanyManagerImpl implements CompanyManager {
             st1.setLong(1, company.getId());
             if (st1.executeUpdate() == 0) {
                 DatabaseConnection.doRollback(con);
-                log.error("Contact wasnt removed");
-                throw new CompanyException("Contact wasnt removed");
+                log.error("Contact wasnt removed. ExecuteUpdate returned 0.");
+                throw new CompanyException("Contact wasnt removed. ExecuteUpdate returned 0.");
             }
-
-
+            
         } catch (SQLException ex) {
             DatabaseConnection.doRollback(con);
             log.error(ex.getMessage());
@@ -182,12 +180,13 @@ public class CompanyManagerImpl implements CompanyManager {
                 st.setLong(9, company.getId());
 
                 if (st.executeUpdate() == 0) {
-                    log.error("Update wasnt done");
-                    throw new CompanyException("Update wasnt done");
+                    log.error("Update wasnt done. ExecuteUpdate returned 0");
+                    throw new CompanyException("Update wasnt done. ExecuteUpdate returned 0");
                 }
 
             } catch (SQLException ex) {
                 log.error(ex.getMessage());
+                throw new CompanyException(ex.getMessage());
             } finally {
                 DatabaseConnection.closeConnection(con);
             }

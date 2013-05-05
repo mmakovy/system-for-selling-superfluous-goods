@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ *  Class for database connection management
+ * 
  * @author Matus Makovy
+ * 
  */
 public final class DatabaseConnection {
 
@@ -21,6 +23,9 @@ public final class DatabaseConnection {
     private static String user;
     private static String pass;
 
+    /**
+     *  loads details from properties file
+     */
     public static void loadProperties() {
         Properties config = new Properties();
         try {
@@ -42,6 +47,11 @@ public final class DatabaseConnection {
         source = ds;
     }
 
+    /**
+     * Returns connection to the database from pool
+     * 
+     * @return Connection to the database
+     */    
     public static Connection getConnection() {
 
         Connection con = null;
@@ -54,6 +64,11 @@ public final class DatabaseConnection {
         return con;
     }
 
+    /**
+     *  Closes connection to database
+     * 
+     * @param con is connection to be closed
+     */
     public static void closeConnection(Connection con) {
         try {
             if (con != null) {
@@ -65,6 +80,11 @@ public final class DatabaseConnection {
         }
     }
 
+    /**
+     * Rolls back connection. (atomicity)
+     * 
+     * @param con represents connection to be rolled back
+     */
     public static void doRollback(Connection con) {
         if (con != null) {
             try {

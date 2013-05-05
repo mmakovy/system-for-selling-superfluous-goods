@@ -24,18 +24,18 @@
             <div id ="page">
                 <jsp:include page="menu.jsp"/>               
                 <div id="content">                    
-                    <div id="registration-content">
+                    <div id="page-content">
                         
-                        <div id="registration-content-top">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <% if (request.getAttribute("message")!=null) {
                                 %>
                                 <div class="error">${fn:escapeXml(message)}</div>
                             <%
                                 }%>
                             <h1>New user registration</h1>
-                            <form method="post" name='add_company' action="/AddCompany" onsubmit="return submit_company()">    
+                            <form method="post" name='add_company' action="https://sssg-sssg.rhcloud.com/AddCompany" onsubmit="return submit_company()">    
                                 <%
                                     session = request.getSession();
 
@@ -85,7 +85,7 @@
                                 <input type="submit" value="Add Company" name="option"/>
                             </form>
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 

@@ -26,10 +26,10 @@
             <div id ="page">
                 <jsp:include page="../menu.jsp"/> 
                 <div id="content">
-                    <div id="registration-content">
-                        <div id="registration-content-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <h1>Welcome to our system</h1>
                             <p> 
                                 You can <a href="ListOffers">browse all the offers</a> and try
@@ -50,7 +50,7 @@
 
                             </p> 
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 
