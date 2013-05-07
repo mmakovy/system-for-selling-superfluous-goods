@@ -13,7 +13,7 @@ public interface OfferManager {
     /**
      * Returns offer according to supplied id 
      * 
-     * @param id
+     * @param id specifies id of offer
      * @return offer with specific id
      * @throws DatabaseException when connection to database wasn't established
      * @throws OfferException in case of SQL error

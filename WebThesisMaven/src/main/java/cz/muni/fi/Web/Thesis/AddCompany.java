@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis;
 
-import com.google.common.base.CharMatcher;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
