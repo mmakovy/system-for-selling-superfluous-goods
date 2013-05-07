@@ -12,9 +12,9 @@ public interface CompanyManager {
     /**
      * Inserts new company to database
      * 
-     * @param company
-     * @param username
-     * @param password
+     * @param company represents new company
+     * @param username represents username for authentication purpose
+     * @param password represents password for authentication purpose
      * @return Company added to database or null if process wasn't succesful.
      * @throws DatabaseException when connection wasn't established
      */
@@ -23,7 +23,7 @@ public interface CompanyManager {
     /**
      * Removes comapany from database
      * 
-     * @param company
+     * @param company represents company. that user wants to remove
      * @throws CompanyException if company wasn't removed.
      * @throws DatabaseException if connection wasn't established.
      */
@@ -32,7 +32,7 @@ public interface CompanyManager {
     /**
      * Updates company in database
      * 
-     * @param company
+     * @param company represents company to be updated
      * @throws CompanyException if company wasnt updated
      * @throws DatabaseException if connection wasn't established
      */
@@ -49,23 +49,25 @@ public interface CompanyManager {
     /**
      * Returns Company with specific ID
      * 
-     * @param id
+     * @param id of company
      * @return company with specific ID
      * @throws DatabaseException if connection wasn't established
      */
     Company getCompanyById(Long id) throws DatabaseException;
     
     /**
+     * Determines whether submitted email is in database
      * 
-     * @param email
+     * @param email represents email that system looks up in database
      * @return true when specified e-mail address is in database, false otherwise
      * @throws DatabaseException if connection wasn't established
      */  
     boolean isEmailInDatabase(String email) throws DatabaseException;
     
     /**
+     * Returns company according to the e-mail address
      * 
-     * @param email
+     * @param email of company
      * @return company with specified e-mail address
      * @throws DatabaseException when connection wasn't established
      */

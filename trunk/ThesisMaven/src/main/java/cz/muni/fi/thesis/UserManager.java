@@ -35,7 +35,7 @@ public interface UserManager {
      * @throws DatabaseException when the connection to database wasn't established
      * @throws UserException when code is wrong
      */
-    void verifyEmail(String code)throws DatabaseException;
+    void verifyEmail(String code)throws DatabaseException, UserException;
     
     /**
      * Determines whether the user e-mail address is verified
@@ -43,19 +43,46 @@ public interface UserManager {
      * @param user specifies user, about which we need information
      * @return true when user address is verified, false otherwise
      * @throws DatabaseException when the connection to database wasn't established
+     * @throws UserException on SQL error, or when code wasnt found in database
      */
     boolean isVerified(User user)throws DatabaseException, UserException;
     
     /**
+     * Determines whether the username is in database or not
      * 
-     * 
-     * @param username
-     * @return
-     * @throws DatabaseException 
+     * @param username specifies submitted username
+     * @return true when username is in database, false otherwise
+     * @throws DatabaseException when the connection to database wasn't established
      */
     boolean isUsernameInDatabase(String username) throws DatabaseException;
+    
+    /**
+     * Method that takes care of "forgot password" functionality
+     * 
+     * @param email specifies e-mail address of company that doesn't know the passwrod
+     * @return new password
+     * @throws DatabaseException  when the connection to database wasn't established
+     * @throws UserException when problem with hashing occurs
+     */
     String newPassword(String email) throws DatabaseException, UserException;
+    
+    /**
+     * Method that takes care of "change password" functionality
+     * 
+     * @param user specifies user that wants to change password
+     * @param oldPassword represents old password
+     * @param newPassword represents new password
+     * @throws DatabaseException when the connection to database wasn't established
+     * @throws UserException when other errors occur
+     */
     void changePassword(User user, String oldPassword,String newPassword) throws DatabaseException, UserException;
+    
+    /**
+     * Hashes entered string(password)
+     * 
+     * @param password represents password to be hashed
+     * @return hash of password
+     */
     Blob hashPassword(String password);
     
 }

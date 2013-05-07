@@ -1,6 +1,5 @@
 package cz.muni.fi.Web.Thesis;
 
-import cz.muni.fi.thesis.CompanyManagerImpl;
 import cz.muni.fi.thesis.UserException;
 import cz.muni.fi.thesis.UserManager;
 import cz.muni.fi.thesis.UserManagerImpl;
