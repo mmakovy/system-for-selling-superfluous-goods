@@ -1,5 +1,6 @@
 package cz.muni.fi.Web.Thesis;
 
+import com.google.common.base.CharMatcher;
 import cz.muni.fi.thesis.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -11,7 +12,9 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet for adding company and user to the system. 
+ * This servlet processes the data obtianed from addcompany.jsp
+ * 
  * @author Matus Makovy
  */
 public class AddCompany extends HttpServlet {
@@ -19,6 +22,7 @@ public class AddCompany extends HttpServlet {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(AddCompany.class);
 
     /**
+     * 
      * Processes requests for both HTTP
      * <code>GET</code> and
      * <code>POST</code> methods.
@@ -121,7 +125,7 @@ public class AddCompany extends HttpServlet {
             }
 
         } else {
-            String message = "Your reCaptcha answer wasnt correct";
+            String message = "Your reCaptcha answer wasn't correct";
             request.setAttribute("message", message);
             request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
         }

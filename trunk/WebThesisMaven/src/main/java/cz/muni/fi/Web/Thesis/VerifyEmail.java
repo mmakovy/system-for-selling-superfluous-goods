@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Servlet for e-mail verification.
+ * Links from verification messages lead here for e-mail verification.
  *
  * @author Matus Makovy
  */
@@ -42,7 +44,7 @@ public class VerifyEmail extends HttpServlet {
             request.setAttribute("message", message);
             request.getRequestDispatcher("/response.jsp").forward(request, response);
         } catch (UserException ex) {
-            log.error("Acc not verified - code not found interface DB");
+            log.error("Account not verified - code not found interface DB");
             String message = "Account wasnt activated, because verification code wasnt found in DB<br/>" + ex.getMessage() ;
             request.setAttribute("message", message);
             request.getRequestDispatcher("/error.jsp").forward(request, response);                    

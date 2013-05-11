@@ -10,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ *  Servlet for authentication.
+ *  Servlet processes data from login.jsp
+ * 
  * @author Matus Makovy
  */
 public class Login extends HttpServlet {

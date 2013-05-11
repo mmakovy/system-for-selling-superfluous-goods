@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Servlet removes one offer from the system.
  *
  * @author Matus Makovy
  */

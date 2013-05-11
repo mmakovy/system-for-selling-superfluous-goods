@@ -11,7 +11,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet obtains all offers that user is following.
+ * Servlet passes data to mySubscriptions.jsp.
+ * 
  * @author matus
  */
 public class MySubscriptions extends HttpServlet {

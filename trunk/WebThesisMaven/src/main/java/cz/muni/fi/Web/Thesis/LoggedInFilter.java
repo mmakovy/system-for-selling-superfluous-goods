@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Filter for authentication
+ * 
  * @author Matus Makovy
  */
 public class LoggedInFilter implements Filter {

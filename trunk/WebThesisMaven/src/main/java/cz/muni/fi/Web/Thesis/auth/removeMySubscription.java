@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet removes one subscription from selected user to selected offer.
+ * 
  * @author Matus Makovy
  */
 public class removeMySubscription extends HttpServlet {

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Servlet obtianes data from database assigned to selected category.
+ * Servlet passes data to listOffers.jsp
  *
  * @author Matus Makovy
  */

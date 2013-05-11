@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Servlet updates company in the database.
+ * Servlet obtains data from updateCompany.jsp.
  *
  * @author Matus Makovy
  */

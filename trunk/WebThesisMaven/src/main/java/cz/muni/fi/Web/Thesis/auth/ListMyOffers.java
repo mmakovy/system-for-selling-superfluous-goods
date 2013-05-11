@@ -11,7 +11,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet obtains all "my" offers from database.
+ * Servlet passes data to listOffers.jsp.
+ * 
  * @author Matus Makovy
  */
 public class ListMyOffers extends HttpServlet {

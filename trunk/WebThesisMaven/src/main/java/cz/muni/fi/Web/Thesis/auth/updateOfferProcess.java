@@ -23,7 +23,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet updated one offer in database.
+ * Servlet obtains data from updateOffer.jsp
+ * 
  * @author Matus Makovy
  */
 public class updateOfferProcess extends HttpServlet {

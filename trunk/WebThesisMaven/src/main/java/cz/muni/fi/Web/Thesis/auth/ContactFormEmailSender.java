@@ -15,7 +15,9 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet that mediates sending e-mails from page with offer.
+ * Servlet processes data obtained from showOffer.jsp
+ * 
  * @author Matus Makovy
  */
 public class ContactFormEmailSender extends HttpServlet {

@@ -17,6 +17,9 @@ function submit_offer() {
     } else  if (price.value == "") {
         alert('Price field is blank');
         return false;
+    } else  if (minBuyQuantity.value == "") {
+        alert('Minimal Buy Quantity field is blank');
+        return false;            
     } else if (isNaN(price.value)) {
         alert('Price must be a number');
         return false;   

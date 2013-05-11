@@ -12,7 +12,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet for changing password.
+ * Servlet processes data obtained from myProfile.jsp
+ * 
  * @author Matus Makovy
  */
 public class ChangePassword extends HttpServlet {

@@ -9,7 +9,8 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet for logout.
+ * 
  * @author Matus Makovy
  */
 public class Logout extends HttpServlet {
