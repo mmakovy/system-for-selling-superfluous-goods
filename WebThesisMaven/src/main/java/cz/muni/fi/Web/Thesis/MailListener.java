@@ -5,6 +5,7 @@ import javax.servlet.ServletContextListener;
 
 /**
  * Web application lifecycle listener.
+ * Starts tread for sending e-mail messages.
  *
  * @author Matus Makovy
  */

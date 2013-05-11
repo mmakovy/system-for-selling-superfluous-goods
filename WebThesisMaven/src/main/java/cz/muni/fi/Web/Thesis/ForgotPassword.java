@@ -15,7 +15,9 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet for recovering the lost password.
+ * Servlet processes data from forgotPassword.jsp.
+ * 
  * @author Matus Makovy
  */
 public class ForgotPassword extends HttpServlet {
@@ -23,6 +25,7 @@ public class ForgotPassword extends HttpServlet {
     final static org.slf4j.Logger log = LoggerFactory.getLogger(ForgotPassword.class);
 
     /**
+     * 
      * Processes requests for both HTTP
      * <code>GET</code> and
      * <code>POST</code> methods.
@@ -77,7 +80,7 @@ public class ForgotPassword extends HttpServlet {
                 request.getRequestDispatcher("/response.jsp").forward(request, response);
             }
         } else {
-            String message = "Your reCaptcha answer wasnt correct";
+            String message = "Your reCaptcha answer wasn't correct";
             request.setAttribute("message", message);
             request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
         }

@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet removes subscriptions from selected user.
+ * 
  * @author Matus Makovy
  */
 public class removeAllMySubscriptions extends HttpServlet {

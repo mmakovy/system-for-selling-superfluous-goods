@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet for adding an entry to mailing_list.
+ * Servlet is called after pressing button "Follow offer".
+ * 
  * @author Matus Makovy
  */
 public class FollowOffer extends HttpServlet {

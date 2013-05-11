@@ -13,7 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet removes company from system.
+ * 
  * @author Matus Makovy
  */
 public class removeCompany extends HttpServlet {

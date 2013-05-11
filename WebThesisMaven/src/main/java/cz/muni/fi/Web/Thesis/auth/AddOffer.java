@@ -25,7 +25,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet for adding offer to the system.
+ * Servlet processes data obtained from addoffer.jsp
+ * 
+ * 
  * @author Matus Makovy
  */
 public class AddOffer extends HttpServlet {
@@ -171,7 +174,8 @@ public class AddOffer extends HttpServlet {
             }
         }
 
-        if (name.length() != 0 && priceString.length() != 0 && quantityString.length() != 0) {
+        if (name.length() != 0 && priceString.length() != 0 && quantityString.length() != 0
+                && minimalBuyString.length() != 0) {
 
             Long userId = (Long) userIdObject;
 

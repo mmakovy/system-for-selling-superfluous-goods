@@ -15,7 +15,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ *  Servlet for searching for offer in the database.
+ *  Servlet processes data from findOffer.jsp.
+ * 
  * @author Matus Makovy
  */
 public class FindOffer extends HttpServlet {

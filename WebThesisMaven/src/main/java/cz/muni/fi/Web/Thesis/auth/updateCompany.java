@@ -15,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet obtains data from database about selected company.
+ * Servlet passes data to updateOffer.jsp.
+ * 
  * @author Matus Makovy
  */
 public class updateCompany extends HttpServlet {

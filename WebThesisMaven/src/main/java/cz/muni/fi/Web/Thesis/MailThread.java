@@ -14,8 +14,9 @@ import javax.servlet.ServletContext;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * @author matus
+ * Thread for sending e-mail messages.
+ * 
+ * @author Matus Makovy
  */
 public class MailThread extends Thread {
 

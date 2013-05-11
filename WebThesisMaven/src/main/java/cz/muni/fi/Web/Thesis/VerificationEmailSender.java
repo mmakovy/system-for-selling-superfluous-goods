@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ *  Servlet for sending e-mails after registration.
+ *  AddCompany servlet redirects here for sending a verification e-mail.
+ * 
  * @author Matus Makovy
  */
 public class VerificationEmailSender extends HttpServlet {

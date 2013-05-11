@@ -15,7 +15,9 @@ import net.tanesha.recaptcha.ReCaptchaFactory;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Servlet shows one offer in the system.
+ * Servlet passes data to showOffer.jsp.
+ * 
  * @author Matus Makovy
  */
 public class ShowOffer extends HttpServlet {
