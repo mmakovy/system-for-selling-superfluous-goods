@@ -42,8 +42,11 @@
                                 <input type='text' name='price'><br/>  
                                 Quantity*:  
                                 <input type='text' name='quantity'><br/> 
-                                MINIMAL Quantity to Buy:  
+                                MINIMAL Quantity to Buy*:  
                                 <input type='text' name='minimal_buy' value="0"><br/>  
+                                <div style="margin-left: 182px;" class="info">
+                                0 is "not specified"
+                                </div>
                                 Description:  
                                 <input type='text' name='description'><br/>  
 

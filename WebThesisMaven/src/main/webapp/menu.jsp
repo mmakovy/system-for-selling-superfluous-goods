@@ -67,6 +67,9 @@
                 </div>
                 <ul>
                     <li>
+                        <a href="ListOffers">All</a>
+                    </li>
+                    <li>
                         <u>Categories:</u>
                     </li>
                     <li>

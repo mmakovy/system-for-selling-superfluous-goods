@@ -38,49 +38,52 @@
                                 <th> Purchase Date </th>
                                 <th> Category </th>
                                 <%
-                                    List<Offer> offers = (List) request.getAttribute("offers");  
+                                    List<Offer> offers = (List) request.getAttribute("offers");
+                                    if (request.getAttribute("message") != null) {
                                 %>
+                                <div class="success">${message}</div>
+                                <%                                }%>
                                 <c:forEach items='${offers}' var="offer">
-                                <tr>
+                                    <tr>
 
-                                    <c:if test='${empty offer.photoUrl}'>
-                                    <td>no-image</td>
-                                    </c:if>
-                                    
-                                    <c:if test='${not empty offer.photoUrl}'>
-                                    <td><img width='100' src='/static/<c:out value='${offer.photoUrl}'/>'/></td>
-                                    </c:if>
+                                        <c:if test='${empty offer.photoUrl}'>
+                                            <td><img width='100' src='/images/no-image.png'/></td>
+                                            </c:if>
 
-                                    <td><a href='ShowOffer?id=<c:out value='${offer.id}'/>'> <c:out value='${offer.name}'/> </a></td>
-                                    <td>  <c:out value='${offer.price}'/> &euro; </td>
-                                    <td> <c:out value='${offer.quantity}'/> </td>
-                                    
-                                    <c:if test='${offer.minimalBuyQuantity == 0}'>
-                                    <td> Not specified</td>
-                                    </c:if>
-                                    
-                                    <c:if test='${offer.minimalBuyQuantity != 0}'>
-                                    <td><c:out value='${offer.minimalBuyQuantity}'/></td>
-                                    </c:if>
+                                        <c:if test='${not empty offer.photoUrl}'>
+                                            <td><img width='100' src='/static/<c:out value='${offer.photoUrl}'/>'/></td>
+                                            </c:if>
 
-                                    
-                                    <c:if test='${empty offer.purchaseDate}'>
-                                    <td> Not specified</td>
-                                    </c:if>
-                                    
-                                    <c:if test='${not empty offer.purchaseDate}'>
-                                    <td><c:out value='${offer.purchaseDate}'/></td>
-                                    </c:if>
-                                    
+                                        <td><a href='ShowOffer?id=<c:out value='${offer.id}'/>'> <c:out value='${offer.name}'/> </a></td>
+                                        <td>  <c:out value='${offer.price}'/> &euro; </td>
+                                        <td> <c:out value='${offer.quantity}'/> </td>
 
-                                    <td><a href="ListOffersFromCategory?category=<c:out value='${offer.category}'/>"><c:out value='${offer.category}'/></a></td>
-                                 
+                                        <c:if test='${offer.minimalBuyQuantity == 0}'>
+                                            <td> Not specified</td>
+                                        </c:if>
 
-                                </tr>
+                                        <c:if test='${offer.minimalBuyQuantity != 0}'>
+                                            <td><c:out value='${offer.minimalBuyQuantity}'/></td>
+                                        </c:if>
+
+
+                                        <c:if test='${empty offer.purchaseDate}'>
+                                            <td> Not specified</td>
+                                        </c:if>
+
+                                        <c:if test='${not empty offer.purchaseDate}'>
+                                            <td><c:out value='${offer.purchaseDate}'/></td>
+                                        </c:if>
+
+
+                                        <td><a href="ListOffersFromCategory?category=<c:out value='${offer.category}'/>"><c:out value='${offer.category}'/></a></td>
+
+
+                                    </tr>
                                 </c:forEach>
-                                
+
                             </table>
-                                *-Minimal Buy Quantity
+                            *-Minimal Buy Quantity
                         </div>
                         <div id="page-content-bottom">
                         </div>

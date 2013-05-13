@@ -26,10 +26,10 @@
             <div id ="page">
                 <jsp:include page="../menu.jsp"/> 
                 <div id="content">
-                    <div id="registration-content">
-                        <div id="registration-content-top">
+                    <div id="page-content">
+                        <div id="page-content-top">
                         </div>
-                        <div id="registration-content-middle">
+                        <div id="page-content-middle">
                             <%
                                 Long id = (Long) session.getAttribute("userID");
                                 ReCaptcha c = ReCaptchaFactory.newSecureReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
@@ -42,19 +42,22 @@
                             <h1>${fn:escapeXml(offerData.get("name"))}</h1> <br/>
 
 
-
-                            <% if (id.toString().equals(offerData.get("idCompany"))) {%>
-                            <div class="update">
-                                <a href='updateOffer?id=${offerData.get("id")}'>Update</a>
+                            <div class="controls">
+                                
+                                <% if (id.toString().equals(offerData.get("idCompany"))) {%>
+                                <div class="update">
+                                    <a href='updateOffer?id=${offerData.get("id")}'>Update</a>
+                                </div>
+                                <div class="remove">
+                                    <a href='removeOffer?id=${offerData.get("id")}' onclick="return confirm('Do you really want to remove this offer?')">Remove</a>
+                                </div>
+                                <%} else {%>
+                                
+                                <div class="follow">
+                                    <a href='FollowOffer?id=${fn:escapeXml(offerData.get("id"))}'>Follow</a>
+                                </div>
+                                <% } %>
                             </div>
-                            <div class="remove">
-                                <a href='removeOffer?id=${offerData.get("id")}' onclick="return confirm('Do you really want to remove this offer?')">Remove</a>
-                            </div>
-                            <%}%>
-                            <div class="follow">
-                                <a href='FollowOffer?id=${fn:escapeXml(offerData.get("id"))}'>Follow this offer</a>
-                            </div>
-
 
 
                             <%
@@ -81,13 +84,13 @@
                             <u>Name:</u>
                             ${fn:escapeXml(offerData.get("companyName"))}</br>
                             <u>E-mail address:</u>
-                            ${fn:escapeXml(offerData.get("companyEmail"))}</br>
+                            ${fn:escapeXml(offerData.get("companyEmail").replaceAll("\\@","(at)").replaceAll("\\.","(dot)"))}</br>
                             <u>Phone number:</u>
                             ${fn:escapeXml(offerData.get("companyPhone"))}</br></br>
 
                             <% if (!offerData.get("companyStreet").isEmpty()
                                         || (!offerData.get("companyPsc").isEmpty())
-                                        || (!offerData.get("companyCity").isEmpty()) 
+                                        || (!offerData.get("companyCity").isEmpty())
                                         || (!offerData.get("companyCountry").isEmpty())) {%>
                             <u>Address:</u> <br/>
                             <% }%>
@@ -113,7 +116,7 @@
                                 <u>Send e-mail:</u><br/>
                                 <br/>
 
-                                Your e-mail address: ${fn:escapeXml(offerData.get("myEmail"))}<br/>
+                                Your e-mail address: ${fn:escapeXml(offerData.get("myEmail").replaceAll("\\@","(at)").replaceAll("\\.","(dot)"))}<br/>
                                 <br/>
                                 Text of message:<br/>
                                 <input type='text' name='text'><br/>
@@ -122,7 +125,7 @@
 
                             </form>
                         </div>
-                        <div id="registration-content-bottom">
+                        <div id="page-content-bottom">
                         </div>
                     </div>
 

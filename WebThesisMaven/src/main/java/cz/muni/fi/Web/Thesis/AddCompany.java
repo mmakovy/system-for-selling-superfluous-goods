@@ -125,7 +125,7 @@ public class AddCompany extends HttpServlet {
             }
 
         } else {
-            String message = "Your reCaptcha answer wasn't correct";
+            String message = "Your reCAPTCHA answer wasn't correct";
             request.setAttribute("message", message);
             request.getRequestDispatcher("/forgotPassword.jsp").forward(request, response);
         }

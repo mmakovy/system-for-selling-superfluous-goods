@@ -63,6 +63,8 @@ public class ListMyOffers extends HttpServlet {
                     request.getRequestDispatcher("../error.jsp").forward(request, response);
                 } else {
                     request.setAttribute("offers", offers);
+                    String message = "You can update or remove your offer, when you open it";
+                    request.setAttribute("message", message);
                     request.getRequestDispatcher("listOffers.jsp").forward(request, response);
                 }
             }

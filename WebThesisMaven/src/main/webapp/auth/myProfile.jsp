@@ -41,7 +41,7 @@
                             <form method='post' name='updateCompany' onsubmit="return update_company()" action='/auth/updateCompanyProcess?id=${fn:escapeXml(id)}'>
                                 Company name:
                                 <input type='text' name='name' value='${fn:escapeXml(companyMap.get("name"))}'><br/>
-                                Email: <span id="email">${fn:escapeXml(companyMap.get("email"))}<br/></span>
+                                Email: <span id="email">${fn:escapeXml(companyMap.get("email").replaceAll("\\@","(at)").replaceAll("\\.","(dot)"))}<br/></span>
                                 Phone Number:
                                 <input type='text' name='phone' value='${fn:escapeXml(companyMap.get("phoneNumber"))}'><br/>
                                 
