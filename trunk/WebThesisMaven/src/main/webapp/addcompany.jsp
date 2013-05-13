@@ -70,7 +70,7 @@
                                 <input type="text" name="city"/><br/>
                                 Country:
                                 <input type="text" name="country"/><br/>
-                                PSC:
+                                PSC/ZIP code:
                                 <input type="text" name="psc"/><br/>
                                 Other information:
                                 <input type="text" name="other"/><br/>
@@ -82,7 +82,7 @@
                                     ReCaptcha c = ReCaptchaFactory.newSecureReCaptcha("6LdWet4SAAAAAOlPY6u3FoRS10OPJxRoE5ow7mbW", "6LdWet4SAAAAALOkcI8Auoub7_pM__sNyQUZbpdr", false);
                                     out.println(c.createRecaptchaHtml(null, null));
                                 %>
-                                <input type="submit" value="Add Company" name="option"/>
+                                <input type="submit" value="SIGN UP" name="option"/>
                             </form>
                         </div>
                         <div id="page-content-bottom">

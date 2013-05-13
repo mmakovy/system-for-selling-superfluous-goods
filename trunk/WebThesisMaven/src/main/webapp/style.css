@@ -318,9 +318,7 @@ form[name='login'] input[type='text'], form[name='login'] input[type='password']
 .info {
     margin-left: 277px;
     font-size: 88%;
-    position: relative;
-    top: -18px;
-    margin-bottom: -20px;
+    margin-top: -1px;
 }
 
 #submenu-middle ul {
@@ -426,5 +424,11 @@ h1 {
 .controls {
     margin-top: -70px;
     float:right;
-    
+
+}
+
+input[name='description']{
+    width: 400px;
+    margin-right: 175px !important;
+    height: 50px;
 }
