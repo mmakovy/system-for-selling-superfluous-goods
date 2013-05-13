@@ -37,7 +37,7 @@
                                 Map<String, String> offerData = (Map) request.getAttribute("offerData");
                                 if (request.getAttribute("message") != null) {
                             %>
-                            <div class="error">${fn:escapeXml(message)}</div>
+                            <div class="error">${message}</div>
                             <%                                }%>
                             <form method='post' name='add_offer' ENCTYPE='multipart/form-data' onsubmit='return submit_offer()' action='updateOfferProcess?id=${fn:escapeXml(offerData.get("id"))}'>
                                 Name*:

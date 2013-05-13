@@ -28,7 +28,7 @@
                         <div id="page-content-middle">
                             <% if (request.getAttribute("message") != null) {
                                 %>
-                                <div class="error">${fn:escapeXml(message)}</div>
+                                <div class="error">${message}</div>
                             <%
                                 }%>
 

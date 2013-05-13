@@ -35,7 +35,7 @@
                                 Long id = (Long) session.getAttribute("userID");
                                 if (request.getAttribute("message") != null) {
                             %>
-                            <div class="error">${fn:escapeXml(message)}</div>
+                            <div class="error">${message}</div>
                             <%                                }%>
                             <h1>Edit my profile info</h1>
                             <form method='post' name='updateCompany' onsubmit="return update_company()" action='/auth/updateCompanyProcess?id=${fn:escapeXml(id)}'>

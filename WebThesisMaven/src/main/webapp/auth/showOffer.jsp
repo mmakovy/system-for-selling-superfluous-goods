@@ -36,7 +36,7 @@
                                 Map<String, String> offerData = (Map) request.getAttribute("offerData");
                                 if (request.getAttribute("message") != null) {
                             %>
-                            <div class="error">${fn:escapeXml(message)}</div>
+                            <div class="error">${message}</div>
                             <%                                }%>
 
                             <h1>${fn:escapeXml(offerData.get("name"))}</h1> <br/>
