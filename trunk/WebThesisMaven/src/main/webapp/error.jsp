@@ -28,7 +28,7 @@
                         </div>
                         <div id="page-content-middle">
                             <div class="error">
-                                ${fn:escapeXml(message)}
+                                ${message}
                             </div>
                         </div>
                         <div id="page-content-bottom">

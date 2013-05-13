@@ -32,7 +32,7 @@
                         <div id="page-content-middle">
                             <% if (request.getAttribute("message") != null) {
                             %>
-                            <div class="error">${fn:escapeXml(message)}</div>
+                            <div class="error">${message}</div>
                             <%                                }%>
                             <h1>Find offer</h1>
                             <form name="findOffer" method="post" action="/auth/FindOffer" onsubmit="return findOffer()">
