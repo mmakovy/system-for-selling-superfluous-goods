@@ -51,7 +51,7 @@
                                 <input type='text' name='street' value='${fn:escapeXml(companyMap.get("street"))}'><br/>
                                 City:
                                 <input type='text' name='city' value='${fn:escapeXml(companyMap.get("city"))}'><br/>
-                                PSC:
+                                PSC/ZIP code:
                                 <input type='text' name='psc' value='${fn:escapeXml(companyMap.get("psc"))}'><br/>
                                 Country:
                                 <input type='text' name='country' value='${fn:escapeXml(companyMap.get("country"))}'><br/><br/>
