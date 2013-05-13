@@ -46,8 +46,11 @@
                                 <input type='text' name='price'  value='${fn:escapeXml(offerData.get("price"))}'><br/>
                                 Quantity*:
                                 <input type='text' name='quantity' value='${fn:escapeXml(offerData.get("quantity"))}'><br/>
-                                Minimal Buy Quantity:
+                                Minimal Buy Quantity*:
                                 <input type='text' name='minimal_buy' value='${fn:escapeXml(offerData.get("minimalQuantity"))}'><br/>
+                                <div style="margin-left: 182px;" class="info">
+                                0 is "not specified"
+                                </div>
                                 Category:
                                 <select name='category'>
                                     <% if (offerData.get("category").equals("BUILDING")) {%>
@@ -103,8 +106,15 @@
                                 Description:
                                 <input type='text' name='description' value='${fn:escapeXml(offerData.get("description"))}'><br/>
 
-                                Image:<br/>
-                                <img width='300' src='/uploads/${fn:escapeXml(offerData.get("photoUrl"))}'><br/>
+                                <%
+                                    if (offerData.get("photoUrl") != null) {
+                                %>
+                                <img width='500' src='/static/${fn:escapeXml(offerData.get("photoUrl"))}'><br/>
+                                <% } else { %>
+                                
+                                no image<br/>
+                                
+                                <% } %>
                                 Update image:<br/>
                                 <input type='file' name='image'><br/>
 

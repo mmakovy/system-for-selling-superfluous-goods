@@ -387,3 +387,44 @@ h1 {
     margin-bottom: 0;
     padding-bottom: 14px;    
 }
+
+.update, .remove, .follow{
+    width: 105px;
+    height: 35px;
+    float: right;
+    text-align: center;
+    padding-top: 3px;
+    margin-left:  5px;  
+}
+
+.update {
+    background: url("../images/update.png"); 
+    background-repeat: no-repeat;
+}
+
+.remove{
+    background: url("../images/remove.png");
+    background-repeat: no-repeat;
+}
+
+.follow{
+    background: url("../images/follow.png");
+    background-repeat: no-repeat;
+}
+
+.update a, .remove a, .follow a {
+    font-size: 23px;
+    text-decoration: none;
+    color: black;
+}
+
+.update a:hover, .remove a:hover, .follow a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.controls {
+    margin-top: -70px;
+    float:right;
+    
+}
