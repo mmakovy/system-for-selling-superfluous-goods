@@ -49,7 +49,7 @@ public class Login extends HttpServlet {
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             } else if (!userManager.isVerified(user)) {
-                String message = "Your email address hasn't been verified yet, look in your mailbox for email from our system";
+                String message = "Your email address hasn't been verified yet, look in your mailbox for email from our system <br/> If you have trouble with e-mail verification, please contact us on helpsssg@gmail.com";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("/error.jsp").forward(request, response);
             } else {

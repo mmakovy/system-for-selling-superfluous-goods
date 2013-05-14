@@ -48,7 +48,7 @@
                                 0 is "not specified"
                                 </div>
                                 Description:  
-                                <input type='text' name='description'><br/>  
+                                <input type='text' name='description'><br/>  <br/> 
 
                                 Category:  
                                 <select name="category">
