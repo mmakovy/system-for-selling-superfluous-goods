@@ -274,7 +274,7 @@ public class OfferManagerImpl implements OfferManager {
             throw new DatabaseException("Connection to database wasnt established");
         } else {
             try {
-                PreparedStatement st = con.prepareStatement("SELECT company_id,name,description,id,price,quantity,purchase_date,minimal_buy_quantity,category,photo_url FROM offer WHERE name LIKE CONCAT('%',?,'%')");
+                PreparedStatement st = con.prepareStatement("SELECT company_id,name,description,id,price,quantity,purchase_date,minimal_buy_quantity,category,photo_url FROM offer WHERE LOWER(name) LIKE LOWER(CONCAT('%',?,'%'))");
                 st.setString(1, expression);
                 ResultSet offerDB = st.executeQuery();
                 Offer offer;
@@ -294,7 +294,7 @@ public class OfferManagerImpl implements OfferManager {
                     offers.add(offer);
                 }
 
-                st = con.prepareStatement("SELECT company_id,name,description,id,price,quantity,purchase_date,minimal_buy_quantity,category,photo_url FROM offer WHERE description LIKE CONCAT('%',?,'%')");
+                st = con.prepareStatement("SELECT company_id,name,description,id,price,quantity,purchase_date,minimal_buy_quantity,category,photo_url FROM offer WHERE LOWER(description) LIKE LOWER(CONCAT('%',?,'%'))");
                 st.setString(1, expression);
                 offerDB = st.executeQuery();
 

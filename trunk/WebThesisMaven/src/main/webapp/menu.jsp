@@ -41,13 +41,13 @@
 %>
 
 <div class="menu-item">
-    <a href="updateCompany">My profile</a>
+    <a href="/auth/updateCompany">My profile</a>
 </div>
 <div class="menu-item">
-    <a href="ListMyOffers">My Offers</a> 
+    <a href="/auth/ListMyOffers">My Offers</a> 
 </div>
 <div class="menu-item" style="width: 140px; margin-left: 5px;">
-    <a href="MySubscriptions">My Subscriptions</a> 
+    <a href="/auth/MySubscriptions">My Subscriptions</a> 
 </div>
 <div class="menu-item logout">
     <a href="../Logout"> Logout </a>
@@ -63,50 +63,50 @@
         <ul>
             <li>
                 <div class="submenu-item browse">
-                    <a href="ListOffers"> Browse offers</a>
+                    <a href="/auth/ListOffers"> Browse offers</a>
                 </div>
                 <ul>
                     <li>
-                        <a href="ListOffers">All</a>
+                        <a href="/auth/ListOffers">All</a>
                     </li>
                     <li>
                         <u>Categories:</u>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=BUILDING">Building</a>
+                        <a href="/auth/ListOffersFromCategory?category=BUILDING">Building</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=FURNITURE">Furniture</a>
+                        <a href="/auth/ListOffersFromCategory?category=FURNITURE">Furniture</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=ELECTROTECHNICS">Electrotechnics</a>
+                        <a href="/auth/ListOffersFromCategory?category=ELECTROTECHNICS">Electrotechnics</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=CARS">Cars</a>
+                        <a href="/auth/ListOffersFromCategory?category=CARS">Cars</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=COMPUTER">Computer</a>
+                        <a href="/auth/ListOffersFromCategory?category=COMPUTER">Computer</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=COSMETICS">Cosmetics</a>
+                        <a href="/auth/ListOffersFromCategory?category=COSMETICS">Cosmetics</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=SPORTS">Sports</a>
+                        <a href="/auth/ListOffersFromCategory?category=SPORTS">Sports</a>
                     </li>
                     <li>
-                        <a href="ListOffersFromCategory?category=OTHERS">Others</a>
+                        <a href="/auth/ListOffersFromCategory?category=OTHERS">Others</a>
                     </li>
 
                 </ul>    
             </li>
             <li>
                 <div class="submenu-item">
-                    <a href="addoffer.jsp">Add offer</a>
+                    <a href="/auth/addoffer.jsp">Add offer</a>
                 </div>
             </li>
             <li>
                 <div class="submenu-item">
-                    <a href="findOffer.jsp">Find offer</a>
+                    <a href="/auth/findOffer.jsp">Find offer</a>
                 </div>
             </li>
         </ul>

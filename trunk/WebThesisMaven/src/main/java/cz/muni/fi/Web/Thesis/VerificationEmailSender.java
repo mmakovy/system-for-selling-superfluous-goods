@@ -62,7 +62,7 @@ public class VerificationEmailSender extends HttpServlet {
             request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
 
-        String message = "Your registration is complete <br/>Please verify your e-mail address " + company.getEmail() + " , you should recieve an e-mail<br/>";
+        String message = "Your registration is complete <br/>Please verify your e-mail address " + company.getEmail() + " , you should recieve an e-mail<br/> If you have trouble with e-mail verification, please contact us on helpsssg@gmail.com";
         request.setAttribute("message", message);
         request.getRequestDispatcher("/response.jsp").forward(request, response);
     }

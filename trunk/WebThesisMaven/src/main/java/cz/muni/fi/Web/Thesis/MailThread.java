@@ -15,20 +15,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Thread for sending e-mail messages.
- * 
+ *
  * @author Matus Makovy
  */
 public class MailThread extends Thread {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(MailThread.class);
-    
     ServletContext sc = null;
     private boolean stop = false;
     private static String pass;
     private static String from;
     private static String host;
-    
-   public static void loadProperties() {
+
+    public static void loadProperties() {
         Properties config = new Properties();
         try {
             config.load(new FileInputStream("/var/lib/openshift/516daf70e0b8cd59c4000169/app-root/data/config.properties"));
@@ -40,7 +39,6 @@ public class MailThread extends Thread {
         }
 
     }
-        
 
     public void setStop(boolean stop) {
         this.stop = stop;
@@ -48,7 +46,7 @@ public class MailThread extends Thread {
 
     @Override
     public void run() {
-        
+
         loadProperties();
 
         while (!stop) {
@@ -64,14 +62,7 @@ public class MailThread extends Thread {
             Session session = Session.getDefaultInstance(props, null);
             MimeMessage message = new MimeMessage(session);
 
-            Transport transport = null;
-            try {
-                message.setFrom(new InternetAddress(from));
-                transport = session.getTransport("smtp");
-                transport.connect(host, from, pass);
-            } catch (Exception ex) {
-                log.error(ex.getMessage());
-            }
+
 
             if (sc != null) {
 
@@ -79,6 +70,16 @@ public class MailThread extends Thread {
                 sc.setAttribute("messagesQueue", messagesQueue);
 
                 while (true) {
+
+                    Transport transport = null;
+                    try {
+                        message.setFrom(new InternetAddress(from));
+                        transport = session.getTransport("smtp");
+                        transport.connect(host, from, pass);
+                    } catch (Exception ex) {
+                        log.error(ex.getMessage());
+                    }
+                    
                     try {
                         Map<String, String> messageMap = messagesQueue.take();
                         message.setRecipient(Message.RecipientType.TO, new InternetAddress(messageMap.get("to")));
