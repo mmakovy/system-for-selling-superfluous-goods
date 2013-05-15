@@ -38,12 +38,15 @@
                                 It is a place where all the companies from your field meet and try to sell their redundant
                                 goods.
                             </p>
-                            <p class="last-p">
+                            <p>
                                 System gives you an oppurtunity to <b>offer your goods</b>, but also to <b>browse through
                                     other offers</b> and <b>find what you need</b>. You can also <b> follow an offer </b> and system
                                 will send you an email when this offer changes or is removed.
                                 Every offer has its <b>contact form</b>, from which you can send e-mail to the seller
                                 of particular offer.
+                            </p>
+                            <p class="last-p">
+                                (Login info for testing purposes - username: test1 pass: testsssg1)
                             </p>
                         </div>
                         <div id="page-content-bottom">

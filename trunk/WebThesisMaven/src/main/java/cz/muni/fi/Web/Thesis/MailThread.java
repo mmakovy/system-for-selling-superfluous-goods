@@ -22,7 +22,6 @@ public class MailThread extends Thread {
 
     final static org.slf4j.Logger log = LoggerFactory.getLogger(MailThread.class);
     ServletContext sc = null;
-    private boolean stop = false;
     private static String pass;
     private static String from;
     private static String host;
@@ -40,60 +39,48 @@ public class MailThread extends Thread {
 
     }
 
-    public void setStop(boolean stop) {
-        this.stop = stop;
-    }
-
     @Override
     public void run() {
 
         loadProperties();
 
-        while (!stop) {
+        if (sc != null) {
 
-            Properties props = System.getProperties();
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", host);
-            props.put("mail.smtp.user", from);
-            props.put("mail.smtp.password", pass);
-            props.put("mail.smtp.port", "587");
-            props.put("mail.smtp.auth", "true");
+            BlockingQueue<Map<String, String>> messagesQueue = new LinkedBlockingQueue<Map<String, String>>();
+            sc.setAttribute("messagesQueue", messagesQueue);
 
-            Session session = Session.getDefaultInstance(props, null);
-            MimeMessage message = new MimeMessage(session);
+            while (true) {
+
+                Properties props = System.getProperties();
+                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.host", host);
+                props.put("mail.smtp.user", from);
+                props.put("mail.smtp.password", pass);
+                props.put("mail.smtp.port", "587");
+                props.put("mail.smtp.auth", "true");
+
+                Session session = Session.getDefaultInstance(props, null);
+                MimeMessage message = new MimeMessage(session);
 
 
-
-            if (sc != null) {
-
-                BlockingQueue<Map<String, String>> messagesQueue = new LinkedBlockingQueue<Map<String, String>>();
-                sc.setAttribute("messagesQueue", messagesQueue);
-
-                while (true) {
-
-                    Transport transport = null;
-                    try {
-                        message.setFrom(new InternetAddress(from));
-                        transport = session.getTransport("smtp");
-                        transport.connect(host, from, pass);
-                    } catch (Exception ex) {
-                        log.error(ex.getMessage());
-                    }
-                    
-                    try {
-                        Map<String, String> messageMap = messagesQueue.take();
-                        message.setRecipient(Message.RecipientType.TO, new InternetAddress(messageMap.get("to")));
-                        message.setSubject(messageMap.get("subject"));
-                        message.setText(messageMap.get("text"));
-                        transport.sendMessage(message, message.getAllRecipients());
-                    } catch (Exception ex) {
-                        log.error(ex.getMessage());
-                    }
+                try {
+                    message.setFrom(new InternetAddress(from));
+                    Transport transport = session.getTransport("smtp");
+                    Map<String, String> messageMap = messagesQueue.take();
+                    message.setRecipient(Message.RecipientType.TO, new InternetAddress(messageMap.get("to")));
+                    message.setSubject(messageMap.get("subject"));
+                    message.setText(messageMap.get("text"));
+                    transport.connect(host, from, pass);
+                    transport.sendMessage(message, message.getAllRecipients());
+                    transport.close();
+                } catch (Exception ex) {
+                    log.error(ex.getMessage());
                 }
-
             }
 
         }
+
+
     }
 
     public void setServletContext(ServletContext sc) {
