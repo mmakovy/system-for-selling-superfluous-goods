@@ -20,6 +20,5 @@ public class MailListener implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-        mailThread.setStop(true);    
     }
 }
