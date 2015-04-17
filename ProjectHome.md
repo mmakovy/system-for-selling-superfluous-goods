@@ -1,0 +1,7 @@
+The goal of this thesis is to create a system that will help commpanies to get rid of goods they won't use anymore. For example, the supplier often offers only package with 20 pieces of some material and purcharser needs only 2. He will buy the package and sell spare 18 pieces through this system to other commpanies that will use them in their production.
+
+System should be more sophisticated than other existing system (e.g. Retourware24, Virrgo,..). There should be more required information about each material(e.g. title, amount, price, photo, purchase date, state, expiration date(if needed),.. ) and also about each seller/buyer (e.g. name, adress, field of bussines, ... ). There sholud be more search options to make it easier for the customer to find disered goods. The commpanies will be able to rate each other (after each deal). (e.g. for fast deal, good/bad comunication, quality of goods,...) The seller/buyer will be able to register for free.
+
+This application should be implemented as a web aplication using Java servlets. Data should be stored in an SQL database and the desing of webpage should be created using XMTML and CSS.
+
+The system will be developed for a certain company in the Czech republic.
